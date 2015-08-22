@@ -1,12 +1,12 @@
 defmodule Mix.Tasks.Generate do
   # For this example we are going to assume the domain of sin to be
-  # between [0, 2 * pi]
-  # + sin_samples :: Integer -> []
+  # between 0 and 2 * pi
+  @spec sin_samples(integer) :: [] # +
   def sin_samples(number) do
     lower_bound = 0
     upper_bound = :math.pi * 2
     step = upper_bound / number
-    # + :: Float -> {{Float, Float}, Float} | Nil
+    # @spec (float) :: {} | nil # +
     sin_generator = fn x ->
       if x > upper_bound do
         nil
@@ -19,10 +19,10 @@ defmodule Mix.Tasks.Generate do
     |> Enum.to_list
   end
 
-  # ! write_to_file :: [{Float, Float}] -> ()
+  @spec write_to_file([tuple]) :: any # !
   def write_to_file(list) do
     {:ok, file} = File.open "samples.list", [:write]
-    # ! :: {Float, Float} -> ()
+    # @spec ({}) :: any # !
     writer = fn pair ->
       IO.write file, elem(pair, 0)
       IO.write file, " "
@@ -33,7 +33,7 @@ defmodule Mix.Tasks.Generate do
     File.close file
   end
 
-  # ! run :: [] -> ()
+  @spec run([]) :: any # !
   def run(args) do
     File.mkdir "samples"
     File.cd "samples"
