@@ -1,4 +1,4 @@
-defmodule NerualNetTest do
+defmodule BrainTonicTest do
   use ExUnit.Case
 
   test "the truth" do

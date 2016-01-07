@@ -1,2 +1,0 @@
-defmodule NerualNet do
-end
