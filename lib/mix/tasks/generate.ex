@@ -27,14 +27,14 @@ defmodule Mix.Tasks.Generate do
       IO.write(file, elem(pair, 1))
       IO.write(file, "\n")
     end
-    list |> Enum.map(writer)
+    Enum.each(list, writer)
     File.close(file)
   end
 
   @spec run([]) :: any
   def run(args) do
-    File.mkdir "samples"
-    File.cd "samples"
+    File.mkdir!("samples")
+    File.cd!("samples")
     args
     |> List.first
     |> Integer.parse
