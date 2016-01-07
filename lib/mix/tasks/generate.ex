@@ -20,15 +20,15 @@ defmodule Mix.Tasks.Generate do
 
   @spec write_to_file([tuple]) :: any
   def write_to_file(list) do
-    {:ok, file} = File.open "samples.list", [:write]
+    {:ok, file} = File.open("samples.list", [:write])
     writer = fn pair ->
-      IO.write file, elem(pair, 0)
-      IO.write file, " "
-      IO.write file, elem(pair, 1)
-      IO.write file, "\n"
+      IO.write(file, elem(pair, 0))
+      IO.write(file, " ")
+      IO.write(file, elem(pair, 1))
+      IO.write(file, "\n")
     end
-    list |> Enum.map writer
-    File.close file
+    list |> Enum.map(writer)
+    File.close(file)
   end
 
   @spec run([]) :: any
