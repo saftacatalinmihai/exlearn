@@ -35,4 +35,20 @@ defmodule BrainTonic do
   def predict(input, pid) do
     send pid, {:predict, input}
   end
+
+  @doc """
+  Saves the neural network to disk
+  """
+  @spec save(pid) :: any
+  def save(pid) do
+    pid
+  end
+
+  @doc """
+  Loads the neural network from disk
+  """
+  @spec load(any) :: pid
+  def load(file) do
+    file
+  end
 end
