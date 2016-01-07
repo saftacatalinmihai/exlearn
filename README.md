@@ -1,4 +1,3 @@
-NerualNet
-=========
+# BrainTonic
 
 Generate X samples with `mix do generate X`
