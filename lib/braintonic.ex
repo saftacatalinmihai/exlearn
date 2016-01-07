@@ -17,7 +17,7 @@ defmodule BrainTonic do
   @spec initialize(map) :: pid
   def initialize(options) do
     settings = Map.merge(@default_options, options)
-    spawn fn -> settings end
+    spawn fn -> network_loop(settings) end
   end
 
   @doc """
@@ -50,5 +50,20 @@ defmodule BrainTonic do
   @spec load(any) :: pid
   def load(file) do
     file
+  end
+
+  @doc """
+  The neural network loop
+  """
+  @spec network_loop(map) :: no_return
+  defp network_loop(state) do
+    receive do
+      {:train, input, caller} ->
+        send caller, input
+        network_loop(state)
+      {:predict, input, caller} ->
+        send caller, input
+        network_loop(state)
+    end
   end
 end
