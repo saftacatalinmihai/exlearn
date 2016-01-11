@@ -38,6 +38,22 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   @doc """
+  Returns a snapshot of the neural network
+  """
+  @spec inspect(pid) :: map
+  def inspect(pid) do
+    send pid, :inspect
+  end
+
+  @doc """
+  Returns a snapshot of a certain part of the neural network
+  """
+  @spec inspect(atom, pid) :: map
+  def inspect(input, pid) do
+    send pid, {:inspect, input}
+  end
+
+  @doc """
   Saves the neural network to disk
   """
   @spec save(pid) :: any
