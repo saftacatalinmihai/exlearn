@@ -5,11 +5,11 @@ defmodule BrainTonic.Builder do
 
   @spec initialize_neural_network(map) :: map
   def initialize_neural_network(parameters) do
-    layers = parameters[:hidden_layers_number] + 1
+    layers = parameters[:hidden_layers_number]
     hidden_sizes = parameters[:hidden_layers_sizes]
     output_size = parameters[:output_layer_size]
     column_sizes = List.insert_at(hidden_sizes, -1, output_size)
-    weights = initialize_network(layers, column_sizes)
+    weights = initialize_network(layers + 1, column_sizes)
     biases = initialize_layer(layers)
     %{
       weights: weights,
@@ -41,7 +41,7 @@ defmodule BrainTonic.Builder do
   end
 
   @spec initialize_tuple(tuple, pos_integer) :: tuple
-  defp initialize_tuple(accumulator, 0) do
+  defp initialize_tuple(accumulator, -1) do
     accumulator
   end
 
