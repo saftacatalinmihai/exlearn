@@ -46,7 +46,9 @@ defmodule BrainTonic.Builder do
   end
 
   defp initialize_tuple(accumulator, count) do
-    # TODO: make this actually random
+    # TODO: make this more random
+    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
+    :random.seed(a,b,c)
     value = :random.uniform
     new_acc = Tuple.append(accumulator, value)
     initialize_tuple(new_acc, count - 1)
