@@ -10,39 +10,39 @@ Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
     * Git
 
 2. Clone the repository
-```
-git clone git@github.com:sdwolf/braintonic.git
-```
+    ```
+    git clone git@github.com:sdwolf/braintonic.git
+    ```
 
 3. Change into the project directory
-```
-cd braintonic
-```
+    ```
+    cd braintonic
+    ```
 
 4. Build the project container
-```
-docker build -t braintonic .
-```
+    ```
+    docker build -t braintonic .
+    ```
 
 5. Run an interactive shell
-```
-docker run --rm -it -u 1000 -v "$PWD":/work braintonic iex -S mix
-```
+    ```
+    docker run --rm -it -u 1000 -v "$PWD":/work braintonic iex -S mix
+    ```
 
 6. Update dependencies
-```
-docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix deps.get
-```
+    ```
+    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix deps.get
+    ```
 
 7. Run tests:
-```
-docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix test
-```
+    ```
+    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix test
+    ```
 
 8. Run dialyzer
-```
-docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix dialyzer
-```
+    ```
+    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix dialyzer
+    ```
 
 ## Misc
 Generate X samples with `mix do generate X`
