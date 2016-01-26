@@ -13,6 +13,5 @@ defmodule BuilderTest do
     }
     result = parameters |> B.initialize_neural_network
     assert result |> is_map
-    result |> IO.inspect
   end
 end

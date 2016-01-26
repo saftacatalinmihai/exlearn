@@ -4,7 +4,7 @@ defmodule BrainTonic.Mixfile do
   def project do
     [app: :braintonic,
      version: "0.0.1",
-     elixir: "~> 1.2.0",
+     elixir: "1.2.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -27,6 +27,6 @@ defmodule BrainTonic.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:dialyxir, "~> 0.3.1", only: [:dev]}]
+    [{:dialyxir, "0.3.2", only: [:dev]}]
   end
 end
