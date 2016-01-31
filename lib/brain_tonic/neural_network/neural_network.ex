@@ -6,9 +6,9 @@ defmodule BrainTonic.NeuralNetwork do
   alias BrainTonic.NeuralNetwork.Builder
 
   @default_parameters %{
-    initialization: %{
+    random: %{
       distribution: :uniform,
-      range: [-1, 1]
+      range: {-1, 1}
     },
     sizes: %{
       hidden: [1],

@@ -1,30 +1,53 @@
 defmodule BuilderTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias BrainTonic.NeuralNetwork.Builder
 
-  test "initialize return a map" do
+  setup do
     parameters = %{
+      random: %{
+        distribution: :uniform,
+        range: {-2, 2}
+      },
       sizes: %{
-        hidden: [1],
-        output: 1
+        hidden: [10, 15, 5],
+        output: 3
       }
     }
-    result = parameters |> Builder.initialize
+    result = Builder.initialize(parameters)
+    {:ok, result}
+  end
+
+  test "initialize return a map", result do
     assert result |> is_map
   end
 
-  test "build_network returns a list of lists" do
-    network_sizes = [1]
-    result = Builder.build_network(network_sizes)
-    [inner] = result
-    assert result |> is_list
-    assert inner |> is_list
+  test "weights is a list of lists", result do
+    %{weights: weights} = result
+    assert weights |> is_list
+    Enum.map(weights, fn (element) ->
+      assert element |> is_list
+    end)
   end
 
-  test "build_list returns a list" do
-    list_size = 1
-    result = Builder.build_list(list_size)
-    assert result |> is_list
+  test "weight values are within range", result do
+    %{weights: weights} = result
+    Enum.map(weights, fn (row) ->
+      Enum.map(row, fn (element) ->
+        assert element >= -2 && element <= 2
+      end)
+    end)
+  end
+
+  test "biases is a list", result do
+    %{biases: biases} = result
+    assert biases |> is_list
+  end
+
+  test "bias values are within range", result do
+    %{biases: biases} = result
+    Enum.map(biases, fn (element) ->
+      assert element >= -2 && element <= 2
+    end)
   end
 end
