@@ -10,11 +10,12 @@ defmodule BrainTonic.NeuralNetwork do
       distribution: :uniform,
       range: [-1, 1]
     },
-    hidden_layers_sizes: [1],
-    hidden_layers_number: 1,
-    input_size: 1,
-    learning_rate: 0.5,
-    output_layer_size: 1
+    sizes: %{
+      hidden: [1],
+      input: 1,
+      output: 1
+    },
+    learning_rate: 0.5
   }
 
   @doc """
