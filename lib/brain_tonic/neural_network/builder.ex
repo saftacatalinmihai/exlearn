@@ -3,8 +3,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
-  @spec initialize_neural_network(map) :: map
-  def initialize_neural_network(parameters) do
+  @spec initialize(map) :: map
+  def initialize(parameters) do
     layers = parameters[:hidden_layers_number]
     hidden_sizes = parameters[:hidden_layers_sizes]
     output_size = parameters[:output_layer_size]
@@ -18,12 +18,12 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     }
   end
 
-  @spec initialize_network(pos_integer, [any(),...]) :: tuple
+  @spec initialize_network(pos_integer, [any(),...]) :: list
   defp initialize_network(rows, column_sizes) do
     initialize_layers([], rows, column_sizes)
   end
 
-  @spec initialize_layers(tuple, pos_integer, list) :: tuple
+  @spec initialize_layers(list, pos_integer, list) :: list
   defp initialize_layers(layers, 0, _sizes) do
     layers
   end
@@ -35,7 +35,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     initialize_layers(new_layers, remaining - 1, other_sizes)
   end
 
-  @spec initialize_layer(pos_integer) :: tuple
+  @spec initialize_layer(pos_integer) :: list
   defp initialize_layer(count) do
     initialize_list([], count - 1)
   end

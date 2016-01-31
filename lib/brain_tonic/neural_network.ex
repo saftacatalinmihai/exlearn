@@ -19,7 +19,7 @@ defmodule BrainTonic.NeuralNetwork do
   @spec initialize(map) :: pid
   def initialize(parameters) do
     state = Map.merge(@default_parameters, parameters)
-      |> Builder.initialize_neural_network
+      |> Builder.initialize
     spawn fn -> network_loop(state) end
   end
 
