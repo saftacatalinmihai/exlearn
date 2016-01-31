@@ -5,9 +5,9 @@ defmodule BuilderTest do
 
   test "initialize return a map" do
     parameters = %{
-      hidden_layers_sizes: [2, 3],
-      hidden_layers_number: 2,
-      output_layer_size: 5
+      hidden_layers_sizes: [1],
+      hidden_layers_number: 1,
+      output_layer_size: 1
     }
     result = parameters |> Builder.initialize
     assert result |> is_map

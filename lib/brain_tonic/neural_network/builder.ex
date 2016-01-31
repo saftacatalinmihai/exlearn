@@ -4,16 +4,16 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   """
 
   @doc """
-  Initializez a neural network with the given parameters
+  Initializez a neural network with the given setup
   """
   @spec initialize(map) :: map
-  def initialize(parameters) do
-    layers = parameters[:hidden_layers_number]
-    hidden_sizes = parameters[:hidden_layers_sizes]
-    output_size = parameters[:output_layer_size]
+  def initialize(setup) do
+    layers = setup[:hidden_layers_number]
+    hidden_sizes = setup[:hidden_layers_sizes]
+    output_size = setup[:output_layer_size]
     column_sizes = hidden_sizes ++ [output_size]
-    weights = initialize_network(layers + 1, column_sizes)
-    biases = initialize_layer(layers)
+    weights = initialize_matrix(column_sizes)
+    biases = initialize_list(layers)
     %{
       weights: weights,
       biases: biases,
@@ -21,36 +21,19 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     }
   end
 
-  @spec initialize_network(pos_integer, [any(),...]) :: list
-  defp initialize_network(rows, column_sizes) do
-    initialize_layers([], rows, column_sizes)
+  @spec initialize_matrix([pos_integer,...]) :: list
+  defp initialize_matrix(column_sizes) do
+    Enum.reduce(column_sizes, [], fn (size, total) ->
+      total ++ initialize_list(size)
+    end)
   end
 
-  @spec initialize_layers(list, pos_integer, list) :: list
-  defp initialize_layers(layers, 0, _sizes) do
-    layers
-  end
-
-  defp initialize_layers(layers, remaining, sizes) do
-    [size | other_sizes] = sizes
-    new_layer = initialize_layer(size)
-    new_layers = layers ++ [new_layer]
-    initialize_layers(new_layers, remaining - 1, other_sizes)
-  end
-
-  @spec initialize_layer(pos_integer) :: list
-  defp initialize_layer(count) do
-    initialize_list([], count - 1)
-  end
-
-  @spec initialize_list(list, pos_integer) :: list
-  defp initialize_list(accumulator, -1) do
-    accumulator
-  end
-
-  defp initialize_list(accumulator, count) do
-    value = :rand.uniform
-    new_acc = accumulator ++ [value]
-    initialize_list(new_acc, count - 1)
+  @spec initialize_list(pos_integer) :: list
+  defp initialize_list(size) do
+    Stream.unfold(size, fn
+      0 -> nil
+      n -> {:rand.uniform, n - 1}
+    end)
+    |> Enum.to_list
   end
 end
