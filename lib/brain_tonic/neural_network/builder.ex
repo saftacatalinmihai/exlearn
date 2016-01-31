@@ -3,6 +3,9 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
+  @doc """
+  Initializez a neural network with the given parameters
+  """
   @spec initialize(map) :: map
   def initialize(parameters) do
     layers = parameters[:hidden_layers_number]
@@ -46,10 +49,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   defp initialize_list(accumulator, count) do
-    # TODO: make this more random
-    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
-    :random.seed(a,b,c)
-    value = :random.uniform
+    value = :rand.uniform
     new_acc = accumulator ++ [value]
     initialize_list(new_acc, count - 1)
   end
