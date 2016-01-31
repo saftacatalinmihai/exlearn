@@ -41,8 +41,8 @@ defmodule BuilderTest do
     weights
     |> Enum.with_index
     |> Enum.map(fn
-      {_, index} when index == last ->
-        :ok
+      {element, index} when index == last ->
+        length(element) == @output_size
       {element, index} ->
         assert length(element) == Enum.at(@hidden_sizes, index)
     end)
