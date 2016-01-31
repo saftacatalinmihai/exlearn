@@ -3,15 +3,20 @@ defmodule BuilderTest do
 
   alias BrainTonic.NeuralNetwork.Builder
 
+  @range_min -2
+  @range_max 2
+  @hidden_sizes [10, 15, 10, 20]
+  @output_size 3
+
   setup do
     parameters = %{
       random: %{
         distribution: :uniform,
-        range: {-2, 2}
+        range: {@range_min, @range_max}
       },
       sizes: %{
-        hidden: [10, 15, 5],
-        output: 3
+        hidden: @hidden_sizes,
+        output: @output_size
       }
     }
     result = Builder.initialize(parameters)
@@ -30,12 +35,16 @@ defmodule BuilderTest do
     end)
   end
 
-  test "weight values are within range", result do
+  test "weights lists are the correct size", result do
     %{weights: weights} = result
-    Enum.map(weights, fn (row) ->
-      Enum.map(row, fn (element) ->
-        assert element >= -2 && element <= 2
-      end)
+    last = length(@hidden_sizes)
+    weights
+    |> Enum.with_index
+    |> Enum.map(fn
+      {_, index} when index == last ->
+        :ok
+      {element, index} ->
+        assert length(element) == Enum.at(@hidden_sizes, index)
     end)
   end
 
@@ -44,10 +53,22 @@ defmodule BuilderTest do
     assert biases |> is_list
   end
 
-  test "bias values are within range", result do
+  test "biases list is the correct size", result do
+    %{weights: biases} = result
+    assert length(biases) == length(@hidden_sizes) + 1
+  end
+
+  test "weight and bias values are within range", result do
+    %{weights: weights} = result
+    Enum.map(weights, fn (row) ->
+      Enum.map(row, fn (element) ->
+        assert element >= @range_min && element <= @range_max
+      end)
+    end)
+
     %{biases: biases} = result
     Enum.map(biases, fn (element) ->
-      assert element >= -2 && element <= 2
+      assert element >= @range_min && element <= @range_max
     end)
   end
 end
