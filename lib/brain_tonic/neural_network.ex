@@ -3,6 +3,8 @@ defmodule BrainTonic.NeuralNetwork do
   A neural network
   """
 
+  alias BrainTonic.NeuralNetwork.Builder
+
   @default_parameters %{
     hidden_layers_sizes: [1],
     hidden_layers_number: 1,
@@ -17,7 +19,7 @@ defmodule BrainTonic.NeuralNetwork do
   @spec initialize(map) :: pid
   def initialize(parameters) do
     state = Map.merge(@default_parameters, parameters)
-      |> BrainTonic.Builder.initialize_neural_network
+      |> Builder.initialize_neural_network
     spawn fn -> network_loop(state) end
   end
 

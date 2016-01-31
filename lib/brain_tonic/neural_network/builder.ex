@@ -1,4 +1,4 @@
-defmodule BrainTonic.Builder do
+defmodule BrainTonic.NeuralNetwork.Builder do
   @moduledoc """
   Build functionality
   """

@@ -1,7 +1,7 @@
 defmodule BuilderTest do
   use ExUnit.Case
 
-  alias BrainTonic.Builder, as: B
+  alias BrainTonic.NeuralNetwork.Builder, as: B
 
   test "initialize_neural_network return a map" do
     parameters = %{
