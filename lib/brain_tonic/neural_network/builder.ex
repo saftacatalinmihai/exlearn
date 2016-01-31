@@ -12,8 +12,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     hidden_sizes = setup[:hidden_layers_sizes]
     output_size = setup[:output_layer_size]
     column_sizes = hidden_sizes ++ [output_size]
-    weights = initialize_matrix(column_sizes)
-    biases = initialize_list(layers)
+    weights = build_network(column_sizes)
+    biases = build_list(layers)
     %{
       weights: weights,
       biases: biases,
@@ -21,15 +21,15 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     }
   end
 
-  @spec initialize_matrix([pos_integer,...]) :: list
-  defp initialize_matrix(column_sizes) do
+  @spec build_network([pos_integer,...]) :: list
+  def build_network(column_sizes) do
     Enum.reduce(column_sizes, [], fn (size, total) ->
-      total ++ initialize_list(size)
+      List.insert_at(total, -1, build_list(size))
     end)
   end
 
-  @spec initialize_list(pos_integer) :: list
-  defp initialize_list(size) do
+  @spec build_list(pos_integer) :: list
+  def build_list(size) do
     Stream.unfold(size, fn
       0 -> nil
       n -> {:rand.uniform, n - 1}
