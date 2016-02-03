@@ -8,22 +8,25 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   """
   @spec initialize(map) :: map
   def initialize(setup) do
-    %{sizes: sizes} = setup
-    %{random: random} = setup
+    %{
+      random: random,
+      sizes:  %{
+        hidden: hidden_sizes,
+        input:  input_size,
+        output: output_size
+      }
+    } = setup
 
-    %{hidden: hidden_sizes} = sizes
-    %{output: output_size}  = sizes
-
-    column_sizes = List.insert_at(hidden_sizes, -1, output_size)
+    column_sizes    = [input_size] ++ hidden_sizes ++ [output_size]
     random_function = determine_random_function(random)
 
     weights = build_network(column_sizes, random_function)
-    biases = build_list(length(weights), random_function)
+    biases  = build_list(length(weights), random_function)
 
     %{
-      weights: weights,
-      biases: biases,
-      activations: []
+      activations: [],
+      biases:      biases,
+      weights:     weights
     }
   end
 

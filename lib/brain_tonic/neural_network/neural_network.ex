@@ -8,11 +8,11 @@ defmodule BrainTonic.NeuralNetwork do
   @default_parameters %{
     random: %{
       distribution: :uniform,
-      range: {-1, 1}
+      range:        {-1, 1}
     },
     sizes: %{
       hidden: [1],
-      input: 1,
+      input:  1,
       output: 1
     },
     learning_rate: 0.5
