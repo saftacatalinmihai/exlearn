@@ -32,9 +32,25 @@ defmodule BrainTonic.NeuralNetwork.Builder do
 
   @spec build_network([pos_integer,...], (() -> float)) :: list
   defp build_network(column_sizes, random_function) do
-    Enum.reduce(column_sizes, [], fn (size, total) ->
-      List.insert_at(total, -1, build_list(size, random_function))
+    build_network(column_sizes, [], random_function)
+  end
+
+  @spec build_network([pos_integer,...], [], (() -> float)) :: list
+  defp build_network([], total, _), do: total
+  defp build_network([_|[]], total, _), do: total
+  defp build_network([first, second | rest], total, random_function) do
+    weights = build_matrix(first, second, random_function)
+    result = total ++ [weights]
+    build_network([second] ++ rest, result, random_function)
+  end
+
+  @spec build_matrix(pos_integer, pos_integer, (() -> float)) :: list
+  defp build_matrix(rows, columns, random_function) do
+    Stream.unfold(rows, fn
+      0 -> nil
+      n -> {build_list(columns, random_function), n - 1}
     end)
+    |> Enum.to_list
   end
 
   @spec build_list(pos_integer, (() -> float)) :: list
