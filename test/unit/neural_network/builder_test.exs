@@ -14,19 +14,19 @@ defmodule BuilderTest do
       layers: %{
         hidden: [
           %{
-            activation: :indentity,
+            activation: :identity,
             size: Enum.at(@hidden_sizes, 0)
           },
           %{
-            activation: :indentity,
+            activation: :identity,
             size: Enum.at(@hidden_sizes, 1)
           },
           %{
-            activation: :indentity,
+            activation: :identity,
             size: Enum.at(@hidden_sizes, 2)
           },
           %{
-            activation: :indentity,
+            activation: :identity,
             size: Enum.at(@hidden_sizes, 3)
           },
         ],

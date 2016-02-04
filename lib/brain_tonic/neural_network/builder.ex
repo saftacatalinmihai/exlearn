@@ -3,6 +3,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
+  alias BrainTonic.NeuralNetwork.{Activation, Distribution}
+
   @doc """
   Initializez a neural network with the given setup
   """
@@ -17,31 +19,29 @@ defmodule BrainTonic.NeuralNetwork.Builder do
       random: random
     } = setup
 
-    layers    = [input_layer] ++ hidden_layers ++ [output_layer]
-    random_function = determine_random_function(random)
-
-    weights = build_network(layers, random_function)
-    biases  = build_biases(layers, random_function)
+    layers          = [input_layer] ++ hidden_layers ++ [output_layer]
+    random_function = Distribution.determine(random)
 
     %{
-      activations: [],
-      biases:      biases,
-      weights:     weights
+      activations: build_activations(layers),
+      biases:      build_biases(layers, random_function),
+      weights:     build_weights(layers, random_function)
     }
   end
 
-  @spec build_network([pos_integer,...], (() -> float)) :: list
-  defp build_network(layers, random_function) do
-    build_network(layers, [], random_function)
+  @spec build_activations([pos_integer,...]) :: list
+  defp build_activations(layers) do
+    build_activations(layers, [])
   end
 
-  @spec build_network([pos_integer,...], [], (() -> float)) :: list
-  defp build_network([], total, _), do: total
-  defp build_network([_|[]], total, _), do: total
-  defp build_network([first, second | rest], total, random_function) do
-    weights = build_matrix(first, second, random_function)
-    result = total ++ [weights]
-    build_network([second] ++ rest, result, random_function)
+  @spec build_activations([pos_integer,...], []) :: list
+  defp build_activations([], total), do: total
+  defp build_activations([_|[]], total), do: total
+  defp build_activations([first, second | rest], total) do
+    activation = Activation.determine(second)
+    result     = total ++ [activation]
+
+    build_activations([second] ++ rest, result)
   end
 
   @spec build_biases([pos_integer,...], (() -> float)) :: list
@@ -53,9 +53,25 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_biases([], total, _), do: total
   defp build_biases([_|[]], total, _), do: total
   defp build_biases([first, second | rest], total, random_function) do
-    weights = build_list(second, random_function)
-    result = total ++ [weights]
+    biases = build_list(second, random_function)
+    result = total ++ [biases]
+
     build_biases([second] ++ rest, result, random_function)
+  end
+
+  @spec build_weights([pos_integer,...], (() -> float)) :: list
+  defp build_weights(layers, random_function) do
+    build_weights(layers, [], random_function)
+  end
+
+  @spec build_weights([pos_integer,...], [], (() -> float)) :: list
+  defp build_weights([], total, _), do: total
+  defp build_weights([_|[]], total, _), do: total
+  defp build_weights([first, second | rest], total, random_function) do
+    weights = build_matrix(first, second, random_function)
+    result  = total ++ [weights]
+
+    build_weights([second] ++ rest, result, random_function)
   end
 
   @spec build_matrix(%{}, %{}, (() -> float)) :: list
@@ -74,20 +90,5 @@ defmodule BrainTonic.NeuralNetwork.Builder do
       n -> {random_function.(), n - 1}
     end)
     |> Enum.to_list
-  end
-
-  @spec uniform_between({number(),number()}) :: float
-  defp uniform_between({min, max}) do
-    value = :rand.uniform
-    value * (max - min) + min
-  end
-
-  @spec determine_random_function(map) :: (() -> float)
-  defp determine_random_function(setup) do
-    case setup do
-      %{distribution: :uniform} ->
-        %{range: range} = setup
-        fn -> uniform_between(range) end
-    end
   end
 end

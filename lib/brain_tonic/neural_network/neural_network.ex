@@ -9,7 +9,7 @@ defmodule BrainTonic.NeuralNetwork do
     layers: %{
       hidden: [
         %{
-          activation: :indentity,
+          activation: :identity,
           size: 1
         }
       ],
