@@ -9,19 +9,19 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   @spec initialize(map) :: map
   def initialize(setup) do
     %{
-      random: random,
-      sizes:  %{
-        hidden: hidden_sizes,
-        input:  input_size,
-        output: output_size
-      }
+      layers:  %{
+        hidden: hidden_layers,
+        input:  input_layer,
+        output: output_layer
+      },
+      random: random
     } = setup
 
-    column_sizes    = [input_size] ++ hidden_sizes ++ [output_size]
+    layers    = [input_layer] ++ hidden_layers ++ [output_layer]
     random_function = determine_random_function(random)
 
-    weights = build_network(column_sizes, random_function)
-    biases  = build_biases(column_sizes, random_function)
+    weights = build_network(layers, random_function)
+    biases  = build_biases(layers, random_function)
 
     %{
       activations: [],
@@ -31,8 +31,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_network([pos_integer,...], (() -> float)) :: list
-  defp build_network(column_sizes, random_function) do
-    build_network(column_sizes, [], random_function)
+  defp build_network(layers, random_function) do
+    build_network(layers, [], random_function)
   end
 
   @spec build_network([pos_integer,...], [], (() -> float)) :: list
@@ -45,8 +45,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_biases([pos_integer,...], (() -> float)) :: list
-  defp build_biases(column_sizes, random_function) do
-    build_biases(column_sizes, [], random_function)
+  defp build_biases(layers, random_function) do
+    build_biases(layers, [], random_function)
   end
 
   @spec build_biases([pos_integer,...], [], (() -> float)) :: list
@@ -58,8 +58,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     build_biases([second] ++ rest, result, random_function)
   end
 
-  @spec build_matrix(pos_integer, pos_integer, (() -> float)) :: list
-  defp build_matrix(rows, columns, random_function) do
+  @spec build_matrix(%{}, %{}, (() -> float)) :: list
+  defp build_matrix(%{size: rows}, columns, random_function) do
     Stream.unfold(rows, fn
       0 -> nil
       n -> {build_list(columns, random_function), n - 1}
@@ -67,8 +67,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     |> Enum.to_list
   end
 
-  @spec build_list(pos_integer, (() -> float)) :: list
-  defp build_list(size, random_function) do
+  @spec build_list(%{}, (() -> float)) :: list
+  defp build_list(%{size: size}, random_function) do
     Stream.unfold(size, fn
       0 -> nil
       n -> {random_function.(), n - 1}

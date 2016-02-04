@@ -11,14 +11,37 @@ defmodule BuilderTest do
 
   setup do
     parameters = %{
+      layers: %{
+        hidden: [
+          %{
+            activation: :indentity,
+            size: Enum.at(@hidden_sizes, 0)
+          },
+          %{
+            activation: :indentity,
+            size: Enum.at(@hidden_sizes, 1)
+          },
+          %{
+            activation: :indentity,
+            size: Enum.at(@hidden_sizes, 2)
+          },
+          %{
+            activation: :indentity,
+            size: Enum.at(@hidden_sizes, 3)
+          },
+        ],
+        input: %{
+          size: @input_size
+        },
+        output: %{
+          activation: :identity,
+          size: @output_size
+        }
+      },
+      learning_rate: 0.5,
       random: %{
         distribution: :uniform,
         range:        {@range_min, @range_max}
-      },
-      sizes: %{
-        hidden: @hidden_sizes,
-        input:  @input_size,
-        output: @output_size
       }
     }
     result = Builder.initialize(parameters)

@@ -6,16 +6,26 @@ defmodule BrainTonic.NeuralNetwork do
   alias BrainTonic.NeuralNetwork.Builder
 
   @default_parameters %{
+    layers: %{
+      hidden: [
+        %{
+          activation: :indentity,
+          size: 1
+        }
+      ],
+      input: %{
+        size: 1
+      },
+      output: %{
+        activation: :identity,
+        size: 1
+      }
+    },
+    learning_rate: 0.5,
     random: %{
       distribution: :uniform,
       range:        {-1, 1}
-    },
-    sizes: %{
-      hidden: [1],
-      input:  1,
-      output: 1
-    },
-    learning_rate: 0.5
+    }
   }
 
   @doc """
