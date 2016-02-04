@@ -27,14 +27,16 @@ defmodule BuilderTest do
 
   test "initialize return a map", %{result: result} do
     assert result |> is_map
-    IO.inspect result
   end
 
-  test "weights is a list of lists", %{result: result} do
+  test "weights is a list of matrixes", %{result: result} do
     %{weights: weights} = result
     assert weights |> is_list
-    Enum.map(weights, fn (element) ->
-      assert element |> is_list
+    Enum.map(weights, fn (matrix) ->
+      assert matrix |> is_list
+      Enum.map(matrix, fn (list) ->
+        assert list |> is_list
+      end)
     end)
   end
 
@@ -44,16 +46,19 @@ defmodule BuilderTest do
     weights
     |> Enum.with_index
     |> Enum.map(fn
+      {element, index} when index == 0 ->
+        length(element) == @input_size
       {element, index} when index == last ->
         length(element) == @output_size
       {element, index} ->
-        assert length(element) == Enum.at(@hidden_sizes, index)
+        assert length(element) == Enum.at(@hidden_sizes, index - 1)
     end)
   end
 
   test "biases is a list", %{result: result} do
     %{biases: biases} = result
     assert biases |> is_list
+    IO.inspect result
   end
 
   test "biases list is the correct size", %{result: result} do
@@ -63,9 +68,11 @@ defmodule BuilderTest do
 
   test "weight and bias values are within range", %{result: result} do
     %{weights: weights} = result
-    Enum.map(weights, fn (row) ->
-      Enum.map(row, fn (element) ->
-        assert element >= @range_min && element <= @range_max
+    Enum.map(weights, fn (matrix) ->
+      Enum.map(matrix, fn (row) ->
+        Enum.map(row, fn (element) ->
+          assert element >= @range_min && element <= @range_max
+        end)
       end)
     end)
 
