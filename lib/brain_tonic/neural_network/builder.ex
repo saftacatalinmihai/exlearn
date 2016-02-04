@@ -21,7 +21,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     random_function = determine_random_function(random)
 
     weights = build_network(column_sizes, random_function)
-    biases  = build_list(length(weights), random_function)
+    biases  = build_biases(column_sizes, random_function)
 
     %{
       activations: [],
@@ -42,6 +42,20 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     weights = build_matrix(first, second, random_function)
     result = total ++ [weights]
     build_network([second] ++ rest, result, random_function)
+  end
+
+  @spec build_biases([pos_integer,...], (() -> float)) :: list
+  defp build_biases(column_sizes, random_function) do
+    build_biases(column_sizes, [], random_function)
+  end
+
+  @spec build_biases([pos_integer,...], [], (() -> float)) :: list
+  defp build_biases([], total, _), do: total
+  defp build_biases([_|[]], total, _), do: total
+  defp build_biases([first, second | rest], total, random_function) do
+    weights = build_list(second, random_function)
+    result = total ++ [weights]
+    build_biases([second] ++ rest, result, random_function)
   end
 
   @spec build_matrix(pos_integer, pos_integer, (() -> float)) :: list
