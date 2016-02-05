@@ -20,7 +20,22 @@ defmodule MatrixTest do
     end)
   end
 
-  test "#multiply multiplies two matrixes" do
+  test "#add adds two lists" do
+    first  = [1, 2, 3]
+    second = [4, 5, 6]
+
+    expected = [5, 7, 9]
+
+    [result] = Matrix.add([first], second)
+
+    assert length(result) == length(second)
+    Enum.with_index(result)
+    |> Enum.each(fn ({element, index}) ->
+      assert element == Enum.at(expected, index)
+    end)
+  end
+
+  test "#multiply multiplies two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]
     second = [[1, 2], [3, 4], [5, 6]]
 

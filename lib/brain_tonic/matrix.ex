@@ -4,6 +4,17 @@ defmodule BrainTonic.Matrix do
   """
 
   @doc """
+  Adds a list to the row of a 1:n matrix
+  """
+  @spec add([[]], []) :: []
+  def add([first], second) do
+    [
+      Stream.zip(first, second)
+      |> Enum.map(fn({x, y}) -> x + y end)
+    ]
+  end
+
+  @doc """
   Applies the given function on each element of the matrix
   """
   @spec apply([[]], ((number) -> number)) :: [[]]
