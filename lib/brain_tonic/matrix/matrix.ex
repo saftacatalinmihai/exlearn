@@ -8,12 +8,32 @@ defmodule BrainTonic.Matrix do
   """
   @spec apply([[]], ((number) -> number)) :: [[]]
   def apply(matrix, function) do
-    matrix
-    |> Enum.map(fn (row) ->
-      row
-      |> Enum.map(fn (element) ->
-        function.(element)
-      end)
+    Enum.map(matrix, fn (row) ->
+      Enum.map(row, &function.(&1))
     end)
+  end
+
+  @doc """
+  Multiplies two matrices
+  """
+  @spec multiply([[]], [[]]) :: [[]]
+  def multiply(first, second) do
+    second_transposed = transpose(second)
+
+    Enum.map(first, fn(row)->
+      Enum.map(second_transposed, &dot_product(row, &1))
+    end)
+  end
+
+  defp transpose([[]|_]), do: []
+  defp transpose(matrix) do
+    [Enum.map(matrix, &hd(&1)) | transpose(Enum.map(matrix, &tl(&1)))]
+  end
+
+  @spec dot_product([number], [number]) :: number
+  def dot_product(first, second) do
+    Stream.zip(first, second)
+    |> Enum.map(fn({x, y}) -> x * y end)
+    |> Enum.sum
   end
 end
