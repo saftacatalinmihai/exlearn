@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork do
   A neural network
   """
 
-  alias BrainTonic.NeuralNetwork.Builder
+  alias BrainTonic.NeuralNetwork.{Builder, Propagator}
 
   @default_parameters %{
     layers: %{
@@ -51,7 +51,10 @@ defmodule BrainTonic.NeuralNetwork do
   """
   @spec ask(any, pid) :: any
   def ask(input, pid) do
-    send pid, {:ask, input}
+    send pid, {:ask, input, self()}
+    receive do
+      response -> response
+    end
   end
 
   @doc """
@@ -93,7 +96,8 @@ defmodule BrainTonic.NeuralNetwork do
         send caller, input
         network_loop(state)
       {:ask, input, caller} ->
-        send caller, input
+        result = Propagator.feed_forward(input, state)
+        send caller, {:ok, result}
         network_loop(state)
     end
   end
