@@ -49,9 +49,9 @@ defmodule BrainTonic.NeuralNetwork do
   @doc """
   Makes a prediction
   """
-  @spec predict(any, pid) :: any
-  def predict(input, pid) do
-    send pid, {:predict, input}
+  @spec ask(any, pid) :: any
+  def ask(input, pid) do
+    send pid, {:ask, input}
   end
 
   @doc """
@@ -92,7 +92,7 @@ defmodule BrainTonic.NeuralNetwork do
       {:train, input, caller} ->
         send caller, input
         network_loop(state)
-      {:predict, input, caller} ->
+      {:ask, input, caller} ->
         send caller, input
         network_loop(state)
     end

@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
-  alias BrainTonic.NeuralNetwork.{Activation, Distribution}
+  alias BrainTonic.{Activation, Distribution}
 
   @doc """
   Initializez a neural network with the given setup
@@ -37,7 +37,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   @spec build_activations([pos_integer,...], []) :: list
   defp build_activations([], total), do: total
   defp build_activations([_|[]], total), do: total
-  defp build_activations([first, second | rest], total) do
+  defp build_activations([_, second | rest], total) do
     activation = Activation.determine(second)
     result     = total ++ [activation]
 
@@ -52,7 +52,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   @spec build_biases([pos_integer,...], [], (() -> float)) :: list
   defp build_biases([], total, _), do: total
   defp build_biases([_|[]], total, _), do: total
-  defp build_biases([first, second | rest], total, random_function) do
+  defp build_biases([_, second | rest], total, random_function) do
     biases = build_list(second, random_function)
     result = total ++ [biases]
 
