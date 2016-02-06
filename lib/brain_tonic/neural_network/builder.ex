@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
-  alias BrainTonic.{Activation, Distribution}
+  alias BrainTonic.{Activation, Distribution, Objective}
 
   @doc """
   Initializez a neural network with the given setup
@@ -19,12 +19,17 @@ defmodule BrainTonic.NeuralNetwork.Builder do
       random: random
     } = setup
 
-    layers          = [input_layer] ++ hidden_layers ++ [output_layer]
-    random_function = Distribution.determine(random)
+    layers = [input_layer] ++ hidden_layers ++ [output_layer]
+
+    %{size: input_size} = input_layer
+
+    objective_function = Objective.determine(setup, input_size)
+    random_function    = Distribution.determine(random)
 
     %{
       activations: build_activations(layers),
       biases:      build_biases(layers, random_function),
+      objective:   objective_function,
       weights:     build_weights(layers, random_function)
     }
   end

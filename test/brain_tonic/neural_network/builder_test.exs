@@ -39,6 +39,7 @@ defmodule BuilderTest do
         }
       },
       learning_rate: 0.5,
+      objective: :quadratic,
       random: %{
         distribution: :uniform,
         range:        {@range_min, @range_max}

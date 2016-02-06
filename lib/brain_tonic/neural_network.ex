@@ -22,6 +22,7 @@ defmodule BrainTonic.NeuralNetwork do
       }
     },
     learning_rate: 0.5,
+    objective: :quadratic,
     random: %{
       distribution: :uniform,
       range:        {-1, 1}
@@ -52,6 +53,17 @@ defmodule BrainTonic.NeuralNetwork do
   @spec ask(any, pid) :: any
   def ask(input, pid) do
     send pid, {:ask, input, self()}
+    receive do
+      response -> response
+    end
+  end
+
+  @doc """
+  Makes a prediction and returs the cost
+  """
+  @spec test(any, pid) :: any
+  def test(input, pid) do
+    send pid, {:test, input, self()}
     receive do
       response -> response
     end
@@ -98,6 +110,14 @@ defmodule BrainTonic.NeuralNetwork do
       {:ask, input, caller} ->
         result = Propagator.feed_forward(input, state)
         send caller, {:ok, result}
+        network_loop(state)
+      {:test, {input, output}, caller} ->
+        %{objective: objective} = state
+
+        result = Propagator.feed_forward(input, state)
+        cost   = objective.(result, output)
+
+        send caller, {:ok, {result, cost}}
         network_loop(state)
     end
   end

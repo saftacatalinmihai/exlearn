@@ -26,6 +26,7 @@ defmodule PropagatorTest do
         }
       },
       learning_rate: 0.5,
+      objective: :quadratic,
       random: %{
         distribution: :uniform,
         range:        {-1, 1}

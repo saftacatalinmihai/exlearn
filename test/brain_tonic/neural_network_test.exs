@@ -26,6 +26,7 @@ defmodule NeuralNetworkTest do
         }
       },
       learning_rate: 0.5,
+      objective: :quadratic,
       random: %{
         distribution: :uniform,
         range:        {-1, 1}
@@ -42,12 +43,25 @@ defmodule NeuralNetworkTest do
     assert Process.alive?(network)
   end
 
-  test "#ask respondes with a list of numbers", %{result: network} do
+  test "#ask responds with a list of numbers", %{result: network} do
     {:ok, result} = NeuralNetwork.ask(@input, network)
 
     assert length(result) == @output_size
     Enum.each(result, fn (element) ->
       assert element |> is_number
     end)
+  end
+
+  test "#test responds with a tuple", %{result: network} do
+    input  = {@input, [1]}
+
+    output = NeuralNetwork.test(input, network)
+    {:ok, {result, cost}} = output
+
+    assert length(result) == @output_size
+    Enum.each(result, fn (element) ->
+      assert element |> is_number
+    end)
+    assert cost |> is_number
   end
 end
