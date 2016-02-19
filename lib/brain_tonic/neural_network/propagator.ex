@@ -33,4 +33,12 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       |> Matrix.apply(d)
     feed_forward([result|network], biases, activations)
   end
+
+  @doc """
+  Performs backpropagation
+  """
+  @spec back_propagate(number, map) :: map
+  def back_propagate(cost, network) do
+    network
+  end
 end

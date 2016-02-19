@@ -43,8 +43,11 @@ defmodule BrainTonic.NeuralNetwork do
   Trains the neural network
   """
   @spec train(any, pid) :: any
-  def train(value, pid) do
-    send pid, {:train, value}
+  def train(input, pid) do
+    send pid, {:train, input, self()}
+    receive do
+      response -> response
+    end
   end
 
   @doc """
@@ -104,9 +107,16 @@ defmodule BrainTonic.NeuralNetwork do
   @spec network_loop(map) :: no_return
   defp network_loop(state) do
     receive do
-      {:train, input, caller} ->
-        send caller, input
-        network_loop(state)
+      {:train, {input, output}, caller} ->
+        %{objective: objective} = state
+
+        result = Propagator.feed_forward(input, state)
+        cost   = objective.(result, output)
+
+        new_state = Propagator.back_propagate(cost, state)
+
+        send caller, {:ok, {result, cost}}
+        network_loop(new_state)
       {:ask, input, caller} ->
         result = Propagator.feed_forward(input, state)
         send caller, {:ok, result}

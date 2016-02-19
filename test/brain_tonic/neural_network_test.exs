@@ -3,10 +3,11 @@ defmodule NeuralNetworkTest do
 
   alias BrainTonic.NeuralNetwork
 
-  @hidden_sizes [10]
-  @input        [0, 1, 2, 3, 4]
-  @input_size   5
-  @output_size  1
+  @expected_output [1]
+  @hidden_sizes    [10]
+  @input           [0, 1, 2, 3, 4]
+  @input_size      5
+  @output_size     1
 
   setup do
     parameters = %{
@@ -53,9 +54,22 @@ defmodule NeuralNetworkTest do
   end
 
   test "#test responds with a tuple", %{result: network} do
-    input  = {@input, [1]}
+    input  = {@input, @expected_output}
 
     output = NeuralNetwork.test(input, network)
+    {:ok, {result, cost}} = output
+
+    assert length(result) == @output_size
+    Enum.each(result, fn (element) ->
+      assert element |> is_number
+    end)
+    assert cost |> is_number
+  end
+
+  test "#train responds with a tuple", %{result: network} do
+    input  = {@input, @expected_output}
+
+    output = NeuralNetwork.train(input, network)
     {:ok, {result, cost}} = output
 
     assert length(result) == @output_size
