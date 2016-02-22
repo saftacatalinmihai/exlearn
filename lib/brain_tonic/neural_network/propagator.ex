@@ -16,23 +16,26 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       weights:     weights
     } = network
 
-    full_network = [[input]|weights]
+    full_network = {[[input]|weights],[]}
 
     feed_forward(full_network, biases, activations)
   end
 
   @spec feed_forward([[[number]]], [[number]], [function]) :: [number]
-  defp feed_forward([network|[]], _, _) do
+  defp feed_forward({[network|[]], activity}, _, _) do
     [result] = network
-    result
+    {result, activity}
   end
 
-  defp feed_forward([a, b | network], [c | biases], [d | activations]) do
+  defp feed_forward({[a, b | network], activity}, [c | biases], [d | activations]) do
     %{function: activation_function} = d;
     result = Matrix.multiply(a, b)
       |> Matrix.add(c)
       |> Matrix.apply(activation_function)
-    feed_forward([result|network], biases, activations)
+
+    new_activity = result ++ activity
+
+    feed_forward({[result|network], new_activity}, biases, activations)
   end
 
   @doc """
