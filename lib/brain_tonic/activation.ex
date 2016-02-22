@@ -9,10 +9,13 @@ defmodule BrainTonic.Activation do
   @spec determine(map) :: (() -> float)
   def determine(setup) do
     case setup do
-      %{function: function} when function |> is_function ->
-        function
+      %{function: function, derivative: derivative}
+          when function |> is_function and derivative |> is_function ->
+        %{function: function, derivative: derivative, values: []}
       %{activation: :identity} ->
-        fn (x) -> x end
+        function   = fn (x) -> x end
+        derivative = fn (x) -> 1 end
+        %{function: function, derivative: derivative, values: []}
     end
   end
 end

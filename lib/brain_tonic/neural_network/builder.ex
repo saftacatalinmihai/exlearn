@@ -47,7 +47,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_activations([_|[]], total), do: total
   defp build_activations([_, second | rest], total) do
     activation = Activation.determine(second)
-    result     = total ++ [activation]
+
+    result = total ++ [activation]
 
     build_activations([second] ++ rest, result)
   end

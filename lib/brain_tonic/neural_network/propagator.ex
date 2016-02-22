@@ -28,9 +28,10 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   end
 
   defp feed_forward([a, b | network], [c | biases], [d | activations]) do
+    %{function: activation_function} = d;
     result = Matrix.multiply(a, b)
       |> Matrix.add(c)
-      |> Matrix.apply(d)
+      |> Matrix.apply(activation_function)
     feed_forward([result|network], biases, activations)
   end
 
