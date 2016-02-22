@@ -21,9 +21,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
 
     layers = [input_layer] ++ hidden_layers ++ [output_layer]
 
-    %{size: input_size} = input_layer
-
-    objective_function = Objective.determine(setup, input_size)
+    objective_function = Objective.determine(setup)
     random_function    = Distribution.determine(random)
 
     network = %{

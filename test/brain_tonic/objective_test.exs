@@ -6,11 +6,11 @@ defmodule ObjectiveTest do
   test "#determine return the quadratic function" do
     first    = [1, 2, 3]
     second   = [1, 2, 5]
-    expected = 3
+    expected = 1
 
     setup = %{objective: :quadratic}
 
-    function = Objective.determine(setup, length(first))
+    function = Objective.determine(setup)
 
     assert function.(first, second) == expected
   end
