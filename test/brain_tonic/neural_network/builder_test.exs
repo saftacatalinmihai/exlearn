@@ -56,7 +56,8 @@ defmodule BuilderTest do
   end
 
   test "weights is a list of matrixes", %{result: result} do
-    %{weights: weights} = result
+    %{network: network} = result
+    %{weights: weights} = network
 
     assert weights |> is_list
     Enum.each(weights, fn (matrix) ->
@@ -68,7 +69,8 @@ defmodule BuilderTest do
   end
 
   test "weights lists are the correct size", %{result: result} do
-    %{weights: weights} = result
+    %{network: network} = result
+    %{weights: weights} = network
 
     last = length(@hidden_sizes)
 
@@ -95,7 +97,8 @@ defmodule BuilderTest do
   end
 
   test "biases is a list of lists", %{result: result} do
-    %{biases: biases} = result
+    %{network: network} = result
+    %{biases: biases}   = network
 
     assert biases |> is_list
     Enum.each(biases, fn (list) ->
@@ -104,7 +107,8 @@ defmodule BuilderTest do
   end
 
   test "biases lists are the correct size", %{result: result} do
-    %{biases: biases} = result
+    %{network: network} = result
+    %{biases: biases}   = network
 
     last = length(biases)
 
@@ -120,7 +124,8 @@ defmodule BuilderTest do
   end
 
   test "weight and bias values are within range", %{result: result} do
-    %{weights: weights, biases: biases} = result
+    %{network: network} = result
+    %{weights: weights, biases: biases} = network
 
     Enum.each(weights, fn (matrix) ->
       Enum.each(matrix, fn (row) ->

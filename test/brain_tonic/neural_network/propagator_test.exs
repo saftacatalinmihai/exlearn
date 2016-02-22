@@ -38,7 +38,9 @@ defmodule PropagatorTest do
     {:ok, result: result}
   end
 
-  test "#feed_forward returns a list of numbers", %{result: network} do
+  test "#feed_forward returns a list of numbers", %{result: result} do
+    %{network: network} = result
+    
     result = Propagator.feed_forward(@input, network)
 
     assert result |> is_list

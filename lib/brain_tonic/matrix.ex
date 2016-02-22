@@ -48,8 +48,8 @@ defmodule BrainTonic.Matrix do
     |> Enum.sum
   end
 
-  @spec dot_suare_diff([number], [number]) :: number
-  def dot_suare_diff(first, second) do
+  @spec dot_square_diff([number], [number]) :: number
+  def dot_square_diff(first, second) do
     Stream.zip(first, second)
     |> Enum.map(fn({x, y}) -> (x - y) * (x - y) end)
     |> Enum.sum

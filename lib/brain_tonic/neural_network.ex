@@ -108,23 +108,26 @@ defmodule BrainTonic.NeuralNetwork do
   defp network_loop(state) do
     receive do
       {:train, {input, output}, caller} ->
-        %{objective: objective} = state
+        %{network: network} = state
+        %{objective: objective} = network
 
-        result = Propagator.feed_forward(input, state)
+        result = Propagator.feed_forward(input, network)
         cost   = objective.(result, output)
 
-        new_state = Propagator.back_propagate(cost, state)
+        new_state = Propagator.back_propagate(cost, network)
 
         send caller, {:ok, {result, cost}}
         network_loop(new_state)
       {:ask, input, caller} ->
-        result = Propagator.feed_forward(input, state)
+        %{network: network} = state
+        result = Propagator.feed_forward(input, network)
         send caller, {:ok, result}
         network_loop(state)
       {:test, {input, output}, caller} ->
-        %{objective: objective} = state
+        %{network: network} = state
+        %{objective: objective} = network
 
-        result = Propagator.feed_forward(input, state)
+        result = Propagator.feed_forward(input, network)
         cost   = objective.(result, output)
 
         send caller, {:ok, {result, cost}}

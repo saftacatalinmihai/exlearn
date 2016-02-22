@@ -20,6 +20,6 @@ defmodule BrainTonic.Objective do
 
   @spec quadratic_cost(pos_integer, [], []) :: []
   defp quadratic_cost(size, output, expected) do
-    1 / 2 * size * :math.sqrt(Matrix.dot_suare_diff(output, expected))
+    1 / 2 * size * :math.sqrt(Matrix.dot_square_diff(output, expected))
   end
 end
