@@ -21,7 +21,9 @@ defmodule BrainTonic.NeuralNetwork.Builder do
 
     layers = [input_layer] ++ hidden_layers ++ [output_layer]
 
-    objective_function = Objective.determine(setup)
+    %{objective: objective_setup} = setup
+
+    objective_function = Objective.determine(objective_setup)
     random_function    = Distribution.determine(random)
 
     network = %{
@@ -46,7 +48,9 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_activations([], total), do: total
   defp build_activations([_|[]], total), do: total
   defp build_activations([_, second | rest], total) do
-    activation = Activation.determine(second)
+    %{activation: function_setup} = second
+
+    activation = Activation.determine(function_setup)
 
     result = total ++ [activation]
 

@@ -8,9 +8,7 @@ defmodule ObjectiveTest do
     second   = [1, 2, 5]
     expected = 2
 
-    setup = %{objective: :quadratic}
-
-    %{function: function} = Objective.determine(setup)
+    %{function: function} = Objective.determine(:quadratic)
 
     assert function.(first, second) == expected
   end

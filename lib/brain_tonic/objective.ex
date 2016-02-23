@@ -11,10 +11,10 @@ defmodule BrainTonic.Objective do
   @spec determine(map) :: (() -> float)
   def determine(setup) do
     case setup do
-      %{objective: %{function: function, derivative: derivative}}
+      %{function: function, derivative: derivative}
           when function |> is_function and derivative |> is_function ->
         %{function: function, derivative: derivative}
-      %{objective: :quadratic} ->
+      :quadratic ->
         function   = &quadratic_cost_function/2
         derivative = &quadratic_cost_partial_derivative/2
         %{function: function, derivative: derivative}
