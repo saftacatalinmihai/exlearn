@@ -27,7 +27,7 @@ defmodule BrainTonic.Objective do
   end
 
   @spec quadratic_cost_partial_derivative([], []) :: []
-  defp quadratic_cost_partial_derivative(output, expected) do
-    Matrix.substract(output, expected)
+  defp quadratic_cost_partial_derivative(expected, actual) do
+    Matrix.substract(actual, expected)
   end
 end
