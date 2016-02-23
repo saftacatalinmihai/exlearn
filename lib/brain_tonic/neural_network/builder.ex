@@ -16,12 +16,11 @@ defmodule BrainTonic.NeuralNetwork.Builder do
         input:  input_layer,
         output: output_layer
       },
-      random: random
+      objective: objective_setup,
+      random:    random
     } = setup
 
     layers = [input_layer] ++ hidden_layers ++ [output_layer]
-
-    %{objective: objective_setup} = setup
 
     objective_function = Objective.determine(objective_setup)
     random_function    = Distribution.determine(random)

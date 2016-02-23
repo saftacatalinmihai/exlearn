@@ -8,11 +8,11 @@ defmodule BrainTonic.Distribution do
   """
   @spec determine(map) :: (() -> float)
   def determine(setup) do
-    case setup do
+    %{distribution: distribution, range: range} = setup
+    case distribution do
       %{function: function} when function |> is_function ->
         function
-      %{distribution: :uniform} ->
-        %{range: range} = setup
+      :uniform ->
         fn -> uniform_between(range) end
     end
   end
