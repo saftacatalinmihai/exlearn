@@ -44,8 +44,9 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(number, map) :: map
-  def back_propagate(cost, network) do
+  @spec back_propagate(tuple, number, map) :: map
+  def back_propagate(forwarded, cost_gradient, network) do
+    {result, weighted_input, activity} = forwarded
     network
   end
 end

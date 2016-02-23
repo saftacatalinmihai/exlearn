@@ -44,6 +44,7 @@ defmodule PropagatorTest do
     {result, weighted_input, activity} = Propagator.feed_forward(@input, network)
 
     assert result |> is_list
+    assert weighted_input |> is_list
     assert activity |> is_list
     assert length(result) == @output_size
     Enum.each(result, fn (element) ->
