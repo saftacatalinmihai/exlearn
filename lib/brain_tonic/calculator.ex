@@ -1,4 +1,4 @@
-defmodule BrainTonic.Matrix do
+defmodule BrainTonic.Calculator do
   @moduledoc """
   Performs operations on matrices
   """

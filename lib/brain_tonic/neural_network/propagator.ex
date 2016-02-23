@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   Propagates input trough a network
   """
 
-  alias BrainTonic.Matrix
+  alias BrainTonic.Calculator
 
   @doc """
   Propagates input forward trough a network and return the result
@@ -29,11 +29,11 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
   defp feed_forward({[a, b | network], weighted_input, activity}, [c | biases], [d | activations]) do
     %{function: activation_function} = d
-    input = Matrix.multiply(a, b)
-      |> Matrix.add(c)
+    input = Calculator.multiply(a, b)
+      |> Calculator.add(c)
 
     result = input
-      |> Matrix.apply(activation_function)
+      |> Calculator.apply(activation_function)
 
     new_activity       = result ++ activity
     new_weighted_input = input ++ weighted_input

@@ -3,7 +3,7 @@ defmodule BrainTonic.Objective do
   Translates objective names to functions
   """
 
-  alias BrainTonic.Matrix
+  alias BrainTonic.Calculator
 
   @doc """
   Returns the appropriate function
@@ -26,11 +26,11 @@ defmodule BrainTonic.Objective do
 
   @spec quadratic_cost_function([], []) :: []
   defp quadratic_cost_function(expected, actual) do
-    1 / 2 * Matrix.dot_square_diff(expected, actual)
+    1 / 2 * Calculator.dot_square_diff(expected, actual)
   end
 
   @spec quadratic_cost_partial_derivative([], []) :: []
   defp quadratic_cost_partial_derivative(expected, actual) do
-    Matrix.substract(actual, expected)
+    Calculator.substract(actual, expected)
   end
 end

@@ -1,13 +1,13 @@
-defmodule MatrixTest do
+defmodule CalculatorTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Matrix
+  alias BrainTonic.Calculator
 
   test "#apply applies a function on each element of the matrix" do
     function = &(&1 + 1)
     matrix   = [[1, 2, 3], [4, 5, 6]]
 
-    Matrix.apply(matrix, function)
+    Calculator.apply(matrix, function)
     |> Enum.with_index
     |> Enum.each(fn ({list, row}) ->
       list
@@ -26,7 +26,7 @@ defmodule MatrixTest do
 
     expected = [5, 7, 9]
 
-    [result] = Matrix.add([first], second)
+    [result] = Calculator.add([first], second)
 
     assert length(result) == length(second)
     Enum.with_index(result)
@@ -41,7 +41,7 @@ defmodule MatrixTest do
 
     expected = [[22, 28], [49, 64]]
 
-    Matrix.multiply(first, second)
+    Calculator.multiply(first, second)
     |> Enum.with_index
     |> Enum.each(fn ({list, row}) ->
       list
