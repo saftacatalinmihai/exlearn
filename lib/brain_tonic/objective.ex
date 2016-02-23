@@ -14,11 +14,14 @@ defmodule BrainTonic.Objective do
       %{function: function, derivative: derivative}
           when function |> is_function and derivative |> is_function ->
         %{function: function, derivative: derivative}
-      :quadratic ->
-        function   = &quadratic_cost_function/2
-        derivative = &quadratic_cost_partial_derivative/2
-        %{function: function, derivative: derivative}
+      :quadratic -> quadratic_pair
     end
+  end
+
+  defp quadratic_pair do
+    function   = &quadratic_cost_function/2
+    derivative = &quadratic_cost_partial_derivative/2
+    %{function: function, derivative: derivative}
   end
 
   @spec quadratic_cost_function([], []) :: []

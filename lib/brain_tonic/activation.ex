@@ -12,10 +12,13 @@ defmodule BrainTonic.Activation do
       %{function: function, derivative: derivative}
           when function |> is_function and derivative |> is_function ->
         %{function: function, derivative: derivative}
-      :identity ->
-        function   = fn (x) -> x end
-        derivative = fn (_) -> 1 end
-        %{function: function, derivative: derivative}
+      :identity -> identity_pair
     end
+  end
+
+  defp identity_pair do
+    function   = fn (x) -> x end
+    derivative = fn (_) -> 1 end
+    %{function: function, derivative: derivative}
   end
 end
