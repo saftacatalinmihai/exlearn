@@ -107,35 +107,47 @@ defmodule BrainTonic.NeuralNetwork do
   @spec network_loop(map) :: no_return
   defp network_loop(state) do
     receive do
-      {:train, {input, output}, caller} ->
-        %{network: network} = state
-        %{objective: %{function: function, derivative: derivative}} = network
-
-        forwarded = Propagator.feed_forward(input, network)
-
-        {result, weighted_input, activity} = forwarded
-
-        cost          = function.(output, result)
-        cost_gradient = derivative.(output, result)
-
-        new_state = Propagator.back_propagate(forwarded, cost_gradient, state)
-
-        send caller, {:ok, {result, cost}}
+      {:train, input, caller} ->
+        new_state = train_network(input, state, caller)
         network_loop(new_state)
       {:ask, input, caller} ->
-        %{network: network} = state
-        {result, weighted_input, activity} = Propagator.feed_forward(input, network)
-        send caller, {:ok, result}
+        ask_network(input, state, caller)
         network_loop(state)
-      {:test, {input, output}, caller} ->
-        %{network: network} = state
-        %{objective: %{function: function}} = network
-
-        {result, weighted_input, activity} = Propagator.feed_forward(input, network)
-        cost = function.(output, result)
-
-        send caller, {:ok, {result, cost}}
+      {:test, input, caller} ->
+        test_network(input, state, caller)
         network_loop(state)
     end
+  end
+
+  defp train_network({input, output}, state, caller) do
+    %{network: network} = state
+    %{objective: %{function: function, derivative: derivative}} = network
+
+    forwarded = Propagator.feed_forward(input, network)
+
+    {result, _, _} = forwarded
+
+    cost          = function.(output, result)
+    cost_gradient = derivative.(output, result)
+
+    send caller, {:ok, {result, cost}}
+
+    Propagator.back_propagate(forwarded, cost_gradient, state)
+  end
+
+  defp ask_network(input, state, caller) do
+    %{network: network} = state
+    {result, _, _} = Propagator.feed_forward(input, network)
+    send caller, {:ok, result}
+  end
+
+  defp test_network({input, output}, state, caller) do
+    %{network: network} = state
+    %{objective: %{function: function}} = network
+
+    {result, _, _} = Propagator.feed_forward(input, network)
+    cost = function.(output, result)
+
+    send caller, {:ok, {result, cost}}
   end
 end

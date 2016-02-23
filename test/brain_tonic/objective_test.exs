@@ -10,7 +10,7 @@ defmodule ObjectiveTest do
 
     setup = %{objective: :quadratic}
 
-    %{function: function, derivative: derivative} = Objective.determine(setup)
+    %{function: function} = Objective.determine(setup)
 
     assert function.(first, second) == expected
   end
