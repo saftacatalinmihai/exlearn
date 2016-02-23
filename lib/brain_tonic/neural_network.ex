@@ -109,10 +109,10 @@ defmodule BrainTonic.NeuralNetwork do
     receive do
       {:train, {input, output}, caller} ->
         %{network: network} = state
-        %{objective: objective} = network
+        %{objective: %{function: function, derivative: derivative}} = network
 
         {result, activity} = Propagator.feed_forward(input, network)
-        cost   = objective.(result, output)
+        cost = function.(output, result)
 
         new_state = Propagator.back_propagate(cost, network)
 
@@ -125,10 +125,10 @@ defmodule BrainTonic.NeuralNetwork do
         network_loop(state)
       {:test, {input, output}, caller} ->
         %{network: network} = state
-        %{objective: objective} = network
+        %{objective: %{function: function, derivative: derivative}} = network
 
         {result, activity} = Propagator.feed_forward(input, network)
-        cost   = objective.(result, output)
+        cost = function.(output, result)
 
         send caller, {:ok, {result, cost}}
         network_loop(state)

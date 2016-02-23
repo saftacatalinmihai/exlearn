@@ -15,6 +15,15 @@ defmodule BrainTonic.Matrix do
   end
 
   @doc """
+  Element-wise list substraction
+  """
+  @spec substract([], []) :: []
+  def substract(first, second) do
+    Stream.zip(first, second)
+    |> Enum.map(fn({x, y}) -> x - y end)
+  end
+
+  @doc """
   Applies the given function on each element of the matrix
   """
   @spec apply([[]], ((number) -> number)) :: [[]]

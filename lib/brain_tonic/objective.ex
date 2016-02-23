@@ -11,15 +11,23 @@ defmodule BrainTonic.Objective do
   @spec determine(map) :: (() -> float)
   def determine(setup) do
     case setup do
-      %{objective: function} when function |> is_function ->
-        function
+      %{objective: %{function: function, derivative: derivative}}
+          when function |> is_function and derivative |> is_function ->
+        %{function: function, derivative: derivative}
       %{objective: :quadratic} ->
-        &quadratic_cost(&1, &2)
+        function   = &quadratic_cost_function/2
+        derivative = &quadratic_cost_partial_derivative/2
+        %{function: function, derivative: derivative}
     end
   end
 
-  @spec quadratic_cost([], []) :: []
-  defp quadratic_cost(output, expected) do
-    1 / 2 * :math.sqrt(Matrix.dot_square_diff(output, expected))
+  @spec quadratic_cost_function([], []) :: []
+  defp quadratic_cost_function(expected, actual) do
+    1 / 2 * Matrix.dot_square_diff(expected, actual)
+  end
+
+  @spec quadratic_cost_partial_derivative([], []) :: []
+  defp quadratic_cost_partial_derivative(output, expected) do
+    Matrix.substract(output, expected)
   end
 end
