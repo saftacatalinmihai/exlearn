@@ -16,9 +16,11 @@ defmodule BrainTonic.Activation do
     end
   end
 
+  @spec identity_pair :: map
   defp identity_pair do
     function   = fn (x) -> x end
     derivative = fn (_) -> 1 end
+
     %{function: function, derivative: derivative}
   end
 end
