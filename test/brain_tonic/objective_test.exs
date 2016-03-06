@@ -23,10 +23,10 @@ defmodule ObjectiveTest do
 
   test "#determine return the quadratic function pair" do
     first    = [1, 2, 3]
-    second   = [1, 2, 5]
+    second   = [1, 2, 7]
 
-    expected_from_function   = 2
-    expected_from_derivative = [0, 0, 2]
+    expected_from_function   = 8
+    expected_from_derivative = [0, 0, 4]
 
     setup = :quadratic
 
