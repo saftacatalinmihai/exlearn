@@ -8,7 +8,7 @@ defmodule BrainTonic.Objective do
   @doc """
   Returns the appropriate function
   """
-  @spec determine(map) :: (() -> float)
+  @spec determine(atom | map) :: map
   def determine(setup) do
     case setup do
       %{function: function, derivative: derivative}
@@ -26,7 +26,7 @@ defmodule BrainTonic.Objective do
     %{function: function, derivative: derivative}
   end
 
-  @spec quadratic_cost_function([], []) :: []
+  @spec quadratic_cost_function([number], [number]) :: float
   defp quadratic_cost_function(expected, actual) do
     1 / 2 * Calculator.dot_square_diff(expected, actual)
   end

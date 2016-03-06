@@ -3,6 +3,20 @@ defmodule CalculatorTest do
 
   alias BrainTonic.Calculator
 
+  test "#add adds two lists" do
+    first    = [1, 2, 3]
+    second   = [4, 5, 6]
+    expected = [5, 7, 9]
+
+    [result] = Calculator.add([first], second)
+
+    assert length(result) == length(second)
+    Enum.with_index(result)
+    |> Enum.each(fn ({element, index}) ->
+      assert element == Enum.at(expected, index)
+    end)
+  end
+
   test "#apply applies a function on each element of the matrix" do
     function = &(&1 + 1)
     matrix   = [[1, 2, 3], [4, 5, 6]]
@@ -20,19 +34,24 @@ defmodule CalculatorTest do
     end)
   end
 
-  test "#add adds two lists" do
-    first  = [1, 2, 3]
-    second = [4, 5, 6]
+  test "#dot_product computes the sum of element product of two lists" do
+    first    = [1, 2, 3]
+    second   = [5, 3, 3]
+    expected = 20
 
-    expected = [5, 7, 9]
+    result = Calculator.dot_product(first, second)
 
-    [result] = Calculator.add([first], second)
+    assert result == expected
+  end
 
-    assert length(result) == length(second)
-    Enum.with_index(result)
-    |> Enum.each(fn ({element, index}) ->
-      assert element == Enum.at(expected, index)
-    end)
+  test "#dot_square_diff computes the sum of squared difference of two lists" do
+    first    = [1, 2, 3]
+    second   = [5, 3, 3]
+    expected = 17
+
+    result = Calculator.dot_square_diff(first, second)
+
+    assert result == expected
   end
 
   test "#multiply multiplies two matrices" do
@@ -41,15 +60,18 @@ defmodule CalculatorTest do
 
     expected = [[22, 28], [49, 64]]
 
-    Calculator.multiply(first, second)
-    |> Enum.with_index
-    |> Enum.each(fn ({list, row}) ->
-      list
-      |> Enum.with_index
-      |> Enum.each(fn ({element, column}) ->
-        current = Enum.at(Enum.at(expected, row), column)
-        assert element == current
-      end)
-    end)
+    result = Calculator.multiply(first, second)
+
+    assert result == expected
+  end
+
+  test "#substract computes the element difference of two lists" do
+    first    = [1, 2, 3]
+    second   = [5, 3, 1]
+    expected = [-4, -1, 2]
+
+    result = Calculator.substract(first, second)
+
+    assert result == expected
   end
 end

@@ -6,7 +6,7 @@ defmodule BrainTonic.Distribution do
   @doc """
   Returns the appropriate function
   """
-  @spec determine(map) :: (() -> float)
+  @spec determine(atom | map) :: map
   def determine(setup) do
     %{distribution: distribution, range: range} = setup
     case distribution do
