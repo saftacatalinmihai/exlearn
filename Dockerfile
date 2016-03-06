@@ -1,4 +1,4 @@
-FROM sdwolf/elixir:1.2.1
+FROM sdwolf/elixir:1.2.3
 
 ADD mix.* /work/
 
