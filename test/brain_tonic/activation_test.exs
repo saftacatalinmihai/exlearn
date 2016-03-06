@@ -3,7 +3,7 @@ defmodule ActivationTest do
 
   alias BrainTonic.Activation
 
-  test "#determine return the give function pair" do
+  test "#determine return the given function pair" do
     argument = 1
 
     expected_from_function   = 2
@@ -20,7 +20,7 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
-  test "#determine return the quadratic function pair" do
+  test "#determine return the identity pair" do
     argument = 10
 
     expected_from_function   = 10

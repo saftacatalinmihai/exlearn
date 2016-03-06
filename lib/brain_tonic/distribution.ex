@@ -11,7 +11,7 @@ defmodule BrainTonic.Distribution do
     %{distribution: distribution, range: range} = setup
     case distribution do
       %{function: function} when function |> is_function ->
-        function
+        fn -> function.(range) end
       :uniform ->
         fn -> uniform_between(range) end
     end

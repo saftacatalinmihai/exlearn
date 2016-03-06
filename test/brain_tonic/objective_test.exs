@@ -3,7 +3,7 @@ defmodule ObjectiveTest do
 
   alias BrainTonic.Objective
 
-  test "#determine return the give function pair" do
+  test "#determine return the given function pair" do
     first  = 1
     second = 2
 
