@@ -18,9 +18,11 @@ defmodule BrainTonic.Objective do
     end
   end
 
+  @spec quadratic_pair :: map
   defp quadratic_pair do
     function   = &quadratic_cost_function/2
     derivative = &quadratic_cost_partial_derivative/2
+
     %{function: function, derivative: derivative}
   end
 
