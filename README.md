@@ -2,6 +2,38 @@
 
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
+## Neural Network
+
+### Parameters
+
+Example:
+
+```elixir
+%{
+  layers: %{
+    hidden: [
+      %{
+        activation: :identity,
+        size: 1
+      }
+    ],
+    input: %{
+      size: 1
+    },
+    output: %{
+      activation: :identity,
+      size: 1
+    }
+  },
+  learning_rate: 0.5,
+  objective: :quadratic,
+  random: %{
+    distribution: :uniform,
+    range:        {-1, 1}
+  }
+}
+```
+
 ## Development
 
 1. Install the latest version of the following:

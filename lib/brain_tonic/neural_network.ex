@@ -5,37 +5,13 @@ defmodule BrainTonic.NeuralNetwork do
 
   alias BrainTonic.NeuralNetwork.{Builder, Propagator}
 
-  @default_parameters %{
-    layers: %{
-      hidden: [
-        %{
-          activation: :identity,
-          size: 1
-        }
-      ],
-      input: %{
-        size: 1
-      },
-      output: %{
-        activation: :identity,
-        size: 1
-      }
-    },
-    learning_rate: 0.5,
-    objective: :quadratic,
-    random: %{
-      distribution: :uniform,
-      range:        {-1, 1}
-    }
-  }
-
   @doc """
   Initalizez the neural network
   """
   @spec initialize(map) :: pid
   def initialize(parameters) do
-    state = Map.merge(@default_parameters, parameters)
-      |> Builder.initialize
+    state = Builder.initialize(parameters)
+
     spawn fn -> network_loop(state) end
   end
 
