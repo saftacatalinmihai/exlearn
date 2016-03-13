@@ -45,8 +45,8 @@ defmodule BrainTonic.Calculator do
     end)
   end
 
-  defp transpose([[]|_]), do: []
-  defp transpose(matrix) do
+  def transpose([[]|_]), do: []
+  def transpose(matrix) do
     [Enum.map(matrix, &hd(&1)) | transpose(Enum.map(matrix, &tl(&1)))]
   end
 
