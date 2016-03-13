@@ -42,38 +42,38 @@ Example:
     * Git
 
 2. Clone the repository
-    ```
+    ```bash
     git clone git@github.com:sdwolf/braintonic.git
     ```
 
-3. Change into the project directory
-    ```
-    cd braintonic
-    ```
-
-4. Build the project container
-    ```
-    docker build -t braintonic .
-    ```
-
-5. Run an interactive shell
-    ```
-    docker run --rm -it -u 1000 -v "$PWD":/work braintonic iex -S mix
+3. Build the project container
+    ```bash
+    docker build                        \
+      -t braintonic                     \
+      --build-arg HOST_USER_UID=`id -u` \
+      --build-arg HOST_USER_GID=`id -g` \
+      -f docker/Dockerfile              \
+      .
     ```
 
-6. Update dependencies
-    ```
-    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix deps.get
-    ```
-
-7. Run tests:
-    ```
-    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix test
+4. Run an interactive shell
+    ```bash
+    docker run --rm -it -v "$PWD":/work braintonic iex -S mix
     ```
 
-8. Run dialyzer
+5. Update dependencies
+    ```bash
+    docker run --rm -it -v "$PWD":/work braintonic mix deps.get
     ```
-    docker run --rm -it -u 1000 -v "$PWD":/work braintonic mix dialyzer
+
+6. Run tests
+    ```bash
+    docker run --rm -it -v "$PWD":/work braintonic mix test
+    ```
+
+7. Run dialyzer
+    ```bash
+    docker run --rm -it -v "$PWD":/work braintonic mix dialyzer
     ```
 
 ## Misc

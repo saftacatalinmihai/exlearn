@@ -21,6 +21,7 @@ defmodule BrainTonic.NeuralNetwork do
   @spec train(any, pid) :: any
   def train(input, pid) do
     send pid, {:train, input, self()}
+
     receive do
       response -> response
     end
@@ -32,6 +33,7 @@ defmodule BrainTonic.NeuralNetwork do
   @spec ask(any, pid) :: any
   def ask(input, pid) do
     send pid, {:ask, input, self()}
+
     receive do
       response -> response
     end
@@ -43,6 +45,7 @@ defmodule BrainTonic.NeuralNetwork do
   @spec test(any, pid) :: any
   def test(input, pid) do
     send pid, {:test, input, self()}
+
     receive do
       response -> response
     end
@@ -113,7 +116,9 @@ defmodule BrainTonic.NeuralNetwork do
 
   defp ask_network(input, state, caller) do
     %{network: network} = state
+
     {result, _, _} = Propagator.feed_forward(input, network)
+
     send caller, {:ok, result}
   end
 
