@@ -60,6 +60,28 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     } = network
 
     deltas = calculate_detlas(weights, cost_gradient, weighted_input, activations, [])
+    bias_change = deltas
+    weight_chage = calculate_weight_change(activity, deltas, [])
+
+    new_weights = calculate_new_weights(weights, weight_chage, network)
+    new_biases = calculate_new_biases(biases, bias_change, network)
+
+    create_new_network(network, new_weights, new_biases)
+  end
+
+  def calculate_new_weights(weights, weight_chage, network) do
+    # TODO
+    weights
+  end
+
+  def calculate_new_biases(biases, bias_change, network) do
+    # TODO
+    biases
+  end
+
+  def create_new_network(network, new_weights, new_biases) do
+    # TODO
+    network
   end
 
   def calculate_detlas([], cost_gradient, [weighted_input], [activation], totals) do
@@ -76,5 +98,15 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     delta = Calculator.dot_product(Calculator.dot_product(Calculator.trasnspose(weight), delta), derivative.(weighted_input))
 
     calculate_detlas(weights, cost_gradient, weighted_inputs, activations, totals)
+  end
+
+  def calculate_weight_change([], [], totals) do
+    Enum.reverse(totals)
+  end
+
+  def calculate_weight_change([activity|activities], [delta, deltas], total) do
+    result = Calculator.dot_product(activity, delta)
+
+    calculate_weight_change(activities, deltas, [result|total])
   end
 end
