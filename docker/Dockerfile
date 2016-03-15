@@ -1,4 +1,4 @@
-FROM sdwolf/elixir:1.2.3
+FROM elixir:1.2.3
 
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
