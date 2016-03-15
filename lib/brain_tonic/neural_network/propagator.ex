@@ -8,26 +8,24 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   @doc """
   Propagates input forward trough a network and return the result
   """
-  @spec feed_forward([number], [[[number]]]) :: [number]
-  def feed_forward(input, network) do
-    %{
-      activations: activations,
-      biases:      biases,
-      weights:     weights
-    } = network
+  @spec feed_forward([number], map) :: [number]
+  def feed_forward(input, state) do
+    %{network: %{activity: activity, biases: biases, weights: weights}} = state
 
-    full_network = {[[input]|weights], [], []}
+    full_weights:  [[input]|weights]
 
-    feed_forward(full_network, biases, activations)
+    new_activity = feed_forward(full_weights, biases, activity)
+
+    put_in(state.network.activity, new_activity)
   end
 
-  @spec feed_forward([[[number]]], [[number]], [function]) :: [number]
-  defp feed_forward({[network|[]], weighted_input, activity}, _, _) do
+  @spec feed_forward([[[number]]], [[number]], [map]) :: [number]
+  defp feed_forward([network|[]], _, activity) do
     [result] = network
     {result, Enum.reverse(weighted_input), Enum.reverse(activity)}
   end
 
-  defp feed_forward({[a, b | network], weighted_input, activity}, [c | biases], [d | activations]) do
+  defp feed_forward([a, b | network], [c | biases], [d | activity]) do
     %{function: activation_function} = d
     input = Calculator.multiply(a, b)
       |> Calculator.add(c)
@@ -38,7 +36,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     new_activity       = result ++ activity
     new_weighted_input = input ++ weighted_input
 
-    feed_forward({[result|network], new_weighted_input, new_activity}, biases, activations)
+    feed_forward({[result|network], biases, activity)
   end
 
   @doc """

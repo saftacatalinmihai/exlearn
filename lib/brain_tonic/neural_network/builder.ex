@@ -26,10 +26,10 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     random_function    = Distribution.determine(random)
 
     network = %{
-      activations: build_activations(layers),
-      biases:      build_biases(layers, random_function),
-      objective:   objective_function,
-      weights:     build_weights(layers, random_function)
+      activity:  build_activations(layers),
+      biases:    build_biases(layers, random_function),
+      objective: objective_function,
+      weights:   build_weights(layers, random_function)
     }
 
     %{
