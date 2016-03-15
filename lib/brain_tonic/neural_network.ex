@@ -98,37 +98,33 @@ defmodule BrainTonic.NeuralNetwork do
     end
   end
 
-  defp train_network({input, output}, state, caller) do
-    %{network: network} = state
-    %{objective: %{function: function, derivative: derivative}} = network
+  defp train_network({input, target}, state, caller) do
+    new_state = Propagator.feed_forward(input, state)
 
-    forwarded = Propagator.feed_forward(input, network)
+    %{network: %{objective: %{function: objective}, output: output}} = new_state
 
-    {result, _, _} = forwarded
+    cost = objective.(target, output)
 
-    cost          = function.(output, result)
-    cost_gradient = derivative.(output, result)
+    send caller, {:ok, {output, cost}}
 
-    send caller, {:ok, {result, cost}}
-
-    Propagator.back_propagate(forwarded, cost_gradient, state)
+    Propagator.back_propagate(new_state)
   end
 
   defp ask_network(input, state, caller) do
-    %{network: network} = state
+    new_state = Propagator.feed_forward(input, state)
 
-    {result, _, _} = Propagator.feed_forward(input, network)
+    %{network: %{output: output}} = new_state
 
-    send caller, {:ok, result}
+    send caller, {:ok, output}
   end
 
-  defp test_network({input, output}, state, caller) do
-    %{network: network} = state
-    %{objective: %{function: function}} = network
+  defp test_network({input, target}, state, caller) do
+    new_state = Propagator.feed_forward(input, state)
 
-    {result, _, _} = Propagator.feed_forward(input, network)
-    cost = function.(output, result)
+    %{network: %{objective: %{function: objective}, output: output}} = new_state
 
-    send caller, {:ok, {result, cost}}
+    cost = objective.(target, output)
+
+    send caller, {:ok, {output, cost}}
   end
 end
