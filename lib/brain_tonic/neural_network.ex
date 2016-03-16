@@ -98,8 +98,9 @@ defmodule BrainTonic.NeuralNetwork do
     end
   end
 
-  defp train_network({input, target}, state, caller) do
-    new_state = Propagator.feed_forward(input, state)
+  defp train_network(input, state, caller) do
+    {data, target} = input
+    new_state      = Propagator.feed_forward(data, state)
 
     %{network: %{objective: %{function: objective}, output: output}} = new_state
 
@@ -107,7 +108,7 @@ defmodule BrainTonic.NeuralNetwork do
 
     send caller, {:ok, {output, cost}}
 
-    Propagator.back_propagate(new_state)
+    Propagator.back_propagate(new_state, target)
   end
 
   defp ask_network(input, state, caller) do

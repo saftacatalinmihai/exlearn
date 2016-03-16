@@ -15,9 +15,9 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     full_network = put_in(network.weights, [[input]|weights])
 
-    inverse_activity        = calculate_activity(full_network, [])
-    [%{output: [output]} | _] = inverse_activity
-    new_activity            = Enum.reverse(inverse_activity)
+    reversed_activity         = calculate_activity(full_network, [])
+    [%{output: [output]} | _] = reversed_activity
+    new_activity              = Enum.reverse(reversed_activity)
 
     state
       |> put_in([:network, :activity], new_activity)
@@ -30,11 +30,11 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       %{weights: [_|[]]} ->
         activity
       %{weights: [w1, w2 | ws], biases: [b | bs], activity: [a | as]} ->
-        %{function: f} = a
+        %{function: f, derivative: d} = a
 
         input  = Calculator.multiply(w1, w2) |> Calculator.add(b)
         output = input |> Calculator.apply(f)
-        new_a  = %{function: f, input: input, output: output}
+        new_a  = %{function: f, derivative: d, input: input, output: output}
 
         new_network = %{weights: [output | ws], biases: bs, activity: as}
 
@@ -45,29 +45,49 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(tuple, number, map) :: map
-  def back_propagate(forwarded, cost_gradient, network) do
-    {result, weighted_input, activity} = forwarded
-
-    back_propagater(forwarded, cost_gradient, network)
-  end
-
-  def back_propagater(forwarded, cost_gradient, network) do
-    {result, weighted_input, activity} = forwarded
+  @spec back_propagate(map, number) :: map
+  def back_propagate(state, target) do
     %{
-      activations: activations,
-      biases:      biases,
-      weights:     weights
-    } = network
+      network: %{
+        activity:  activity,
+        biases:    biases,
+        weights:   weights,
+        output:    output,
+        objective: %{derivative: derivative}
+      }
+    } = state
 
-    deltas = calculate_detlas(weights, cost_gradient, weighted_input, activations, [])
+    cost_gradient = derivative.(target, output)
+
+    deltas = calculate_detlas(weights, cost_gradient, activity, [])
     bias_change = deltas
     weight_chage = calculate_weight_change(activity, deltas, [])
 
-    new_weights = calculate_new_weights(weights, weight_chage, network)
-    new_biases = calculate_new_biases(biases, bias_change, network)
+    new_weights = calculate_new_weights(weights, weight_chage, state)
+    new_biases = calculate_new_biases(biases, bias_change, state)
 
-    create_new_network(network, new_weights, new_biases)
+    create_new_network(state, new_weights, new_biases)
+  end
+
+  def calculate_detlas([], cost_gradient, [activity], totals) do
+    %{derivative: derivative, input: input} = activity
+
+    delta = Calculator.dot_product(cost_gradient, derivative.(input))
+
+    Enum.reverse([delta|totals])
+  end
+
+  def calculate_detlas([weight|weights], cost_gradient, [activity|activities], [delta|total]) do
+    %{derivative: derivative, input: input} = activity
+
+    delta = Calculator.dot_product(
+      Calculator.dot_product(
+        Calculator.trasnspose(weight), delta
+      ),
+      derivative.(input)
+    )
+
+    calculate_detlas(weights, cost_gradient, activities, [delta|total])
   end
 
   def calculate_new_weights(weights, weight_chage, network) do
@@ -85,22 +105,6 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     network
   end
 
-  def calculate_detlas([], cost_gradient, [weighted_input], [activation], totals) do
-    %{derivative: derivative} = activation
-
-    delta = Calculator.dot_product(cost_gradient, derivative.(weighted_input))
-
-    Enum.reverse([delta|totals])
-  end
-
-  def calculate_detlas([weight|weights], cost_gradient, [weighted_input|weighted_inputs], [activation|activations], [delta|totals]) do
-    %{derivative: derivative} = activation
-
-    delta = Calculator.dot_product(Calculator.dot_product(Calculator.trasnspose(weight), delta), derivative.(weighted_input))
-
-    calculate_detlas(weights, cost_gradient, weighted_inputs, activations, totals)
-  end
-
   def calculate_weight_change([], [], totals) do
     Enum.reverse(totals)
   end
@@ -109,5 +113,10 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     result = Calculator.dot_product(activity, delta)
 
     calculate_weight_change(activities, deltas, [result|total])
+  end
+
+  def calculate_bias_change(network, new_weights, new_biases) do
+    # TODO
+    network
   end
 end
