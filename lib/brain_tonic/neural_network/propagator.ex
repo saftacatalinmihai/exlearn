@@ -8,35 +8,38 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   @doc """
   Propagates input forward trough a network and return the result
   """
-  @spec feed_forward([number], map) :: [number]
+  @spec feed_forward([number], map) :: map
   def feed_forward(input, state) do
-    %{network: %{activity: activity, biases: biases, weights: weights}} = state
+    %{network: network} = state
+    %{weights: weights} = network
 
-    full_weights:  [[input]|weights]
+    full_network = put_in(network.weights, [[input]|weights])
 
-    new_activity = feed_forward(full_weights, biases, activity)
+    inverse_activity        = calculate_activity(full_network, [])
+    [%{output: [output]} | _] = inverse_activity
+    new_activity            = Enum.reverse(inverse_activity)
 
-    put_in(state.network.activity, new_activity)
+    state
+      |> put_in([:network, :activity], new_activity)
+      |> put_in([:network, :output], output)
   end
 
-  @spec feed_forward([[[number]]], [[number]], [map]) :: [number]
-  defp feed_forward([network|[]], _, activity) do
-    [result] = network
-    {result, Enum.reverse(weighted_input), Enum.reverse(activity)}
-  end
+  @spec calculate_activity(map, list) :: map
+  defp calculate_activity(network, activity) do
+    case network do
+      %{weights: [_|[]]} ->
+        activity
+      %{weights: [w1, w2 | ws], biases: [b | bs], activity: [a | as]} ->
+        %{function: f} = a
 
-  defp feed_forward([a, b | network], [c | biases], [d | activity]) do
-    %{function: activation_function} = d
-    input = Calculator.multiply(a, b)
-      |> Calculator.add(c)
+        input  = Calculator.multiply(w1, w2) |> Calculator.add(b)
+        output = input |> Calculator.apply(f)
+        new_a  = %{function: f, input: input, output: output}
 
-    result = input
-      |> Calculator.apply(activation_function)
+        new_network = %{weights: [output | ws], biases: bs, activity: as}
 
-    new_activity       = result ++ activity
-    new_weighted_input = input ++ weighted_input
-
-    feed_forward({[result|network], biases, activity)
+        calculate_activity(new_network, [new_a | activity])
+    end
   end
 
   @doc """

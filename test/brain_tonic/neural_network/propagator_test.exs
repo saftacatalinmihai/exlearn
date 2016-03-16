@@ -39,14 +39,13 @@ defmodule PropagatorTest do
   end
 
   test "#feed_forward returns a list of numbers", %{result: result} do
-    %{network: network} = result
+    new_state = Propagator.feed_forward(@input, result)
 
-    {result, weighted_input, activity} = Propagator.feed_forward(@input, network)
+    %{network: %{output: result}} = new_state
 
     assert result |> is_list
-    assert weighted_input |> is_list
-    assert activity |> is_list
     assert length(result) == @output_size
+
     Enum.each(result, fn (element) ->
       assert element |> is_number
     end)
