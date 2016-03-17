@@ -1,5 +1,7 @@
 # BrainTonic
 
+[![Build Status](https://travis-ci.org/sdwolf/braintonic.svg?branch=master)](https://travis-ci.org/sdwolf/braintonic)
+
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
 ## Neural Network
