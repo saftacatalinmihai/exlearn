@@ -17,6 +17,9 @@ defmodule BrainTonic.Mixfile do
   end
 
   defp deps do
-    [{:dialyxir, "0.3.3", only: [:dev]}]
+    [
+      {:benchwarmer, "0.0.2", only: [:dev]},
+      {:dialyxir,    "0.3.3", only: [:dev]}
+    ]
   end
 end
