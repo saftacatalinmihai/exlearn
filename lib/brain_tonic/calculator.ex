@@ -52,9 +52,13 @@ defmodule BrainTonic.Calculator do
 
   @spec dot_product([number], [number]) :: number
   def dot_product(first, second) do
+    Enum.sum(hadamard(first, second))
+  end
+
+  @spec hadamard([number], [number]) :: [number]
+  def hadamard(first, second) do
     Stream.zip(first, second)
     |> Enum.map(fn({x, y}) -> x * y end)
-    |> Enum.sum
   end
 
   @spec dot_square_diff([number], [number]) :: number

@@ -59,7 +59,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     cost_gradient = derivative.(target, output)
 
-    deltas = calculate_detlas(weights, cost_gradient, activity, [])
+    deltas = calculate_detlas(weights, cost_gradient, activity)
     bias_change = deltas
     weight_chage = calculate_weight_change(activity, deltas, [])
 
@@ -69,23 +69,32 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     create_new_network(state, new_weights, new_biases)
   end
 
-  def calculate_detlas([], cost_gradient, [activity], totals) do
+  def calculate_detlas(ws, cost_gradient, as) do
+    weights  = Enum.reverse(ws)
+    activities = Enum.reverse(as)
+
+    [activity|rest] = activities
     %{derivative: derivative, input: input} = activity
 
-    delta = Calculator.dot_product(cost_gradient, derivative.(input))
+    [value] = Calculator.apply(input, derivative)
 
-    Enum.reverse([delta|totals])
+    delta = Calculator.hadamard(cost_gradient, value)
+
+    calculate_detlas(weights, cost_gradient, rest, [delta])
+  end
+
+  def calculate_detlas([], cost_gradient, [activity], totals) do
+    totals
   end
 
   def calculate_detlas([weight|weights], cost_gradient, [activity|activities], [delta|total]) do
     %{derivative: derivative, input: input} = activity
 
-    delta = Calculator.dot_product(
-      Calculator.dot_product(
-        Calculator.trasnspose(weight), delta
-      ),
-      derivative.(input)
-    )
+    transposed = Calculator.transpose(weight)
+
+    prev = Calculator.multiply(transposed, delta)
+
+    delta = Calculator.hadamard(prev, derivative.(input))
 
     calculate_detlas(weights, cost_gradient, activities, [delta|total])
   end
