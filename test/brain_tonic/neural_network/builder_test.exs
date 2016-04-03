@@ -14,19 +14,19 @@ defmodule BuilderTest do
       layers: %{
         hidden: [
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 0)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 1)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 2)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 3)
           }
         ],
@@ -34,7 +34,7 @@ defmodule BuilderTest do
           size: @input_size
         },
         output: %{
-          activation: :identity,
+          activity: :identity,
           size: @output_size
         }
       },

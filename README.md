@@ -15,7 +15,7 @@ Example:
   layers: %{
     hidden: [
       %{
-        activation: :identity,
+        activity: :identity,
         size: 1
       }
     ],
@@ -23,7 +23,7 @@ Example:
       size: 1
     },
     output: %{
-      activation: :identity,
+      activity: :identity,
       size: 1
     }
   },
