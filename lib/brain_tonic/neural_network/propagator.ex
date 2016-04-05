@@ -70,7 +70,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   end
 
   def calculate_detlas(ws, cost_gradient, as) do
-    weights  = Enum.reverse(ws)
+    weights    = Enum.reverse(ws)
     activities = Enum.reverse(as)
 
     [activity|rest] = activities
@@ -80,7 +80,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     delta = Calculator.hadamard(cost_gradient, value)
 
-    calculate_detlas(weights, cost_gradient, rest, [delta])
+    calculate_detlas(weights, cost_gradient, rest, [[delta]])
   end
 
   def calculate_detlas([], cost_gradient, [activity], totals) do
@@ -92,9 +92,9 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     transposed = Calculator.transpose(weight)
 
-    prev = Calculator.multiply(transposed, delta)
+    [prev] = Calculator.multiply(transposed, delta)
 
-    delta = Calculator.hadamard(prev, derivative.(input))
+    delta = Calculator.hadamard(prev, [derivative.(input)])
 
     calculate_detlas(weights, cost_gradient, activities, [delta|total])
   end

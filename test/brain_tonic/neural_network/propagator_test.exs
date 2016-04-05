@@ -50,4 +50,12 @@ defmodule PropagatorTest do
       assert element |> is_number
     end)
   end
+
+  test "#back_propagate returns a map", %{result: result} do
+    forwarded_state = Propagator.feed_forward(@input, result)
+
+    new_state = Propagator.back_propagate(forwarded_state, [123])
+
+    assert new_state |> is_map
+  end
 end
