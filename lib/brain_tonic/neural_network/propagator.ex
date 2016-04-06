@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   Propagates input trough a network
   """
 
-  alias BrainTonic.Calculator
+  alias BrainTonic.{Matrix, Vector}
 
   @doc """
   Propagates input forward trough a network and return the result
@@ -32,8 +32,8 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       %{weights: [w1, w2 | ws], biases: [b | bs], activity: [a | as]} ->
         %{function: f, derivative: d} = a
 
-        input  = Calculator.multiply(w1, w2) |> Calculator.add(b)
-        output = input |> Calculator.apply(f)
+        input  = Matrix.multiply(w1, w2) |> Matrix.add([b])
+        output = input |> Matrix.apply(f)
         new_a  = %{function: f, derivative: d, input: input, output: output}
 
         new_network = %{weights: [output | ws], biases: bs, activity: as}
@@ -76,9 +76,9 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     [activity|rest] = activities
     %{derivative: derivative, input: input} = activity
 
-    [value] = Calculator.apply(input, derivative)
+    [value] = Matrix.apply(input, derivative)
 
-    delta = Calculator.hadamard(cost_gradient, value)
+    delta = Vector.hadamard(cost_gradient, value)
 
     calculate_detlas(weights, cost_gradient, rest, [[delta]])
   end
@@ -90,11 +90,11 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   def calculate_detlas([weight|weights], cost_gradient, [activity|activities], [delta|total]) do
     %{derivative: derivative, input: input} = activity
 
-    transposed = Calculator.transpose(weight)
+    transposed = Matrix.transpose(weight)
 
-    [prev] = Calculator.multiply(transposed, delta)
+    [prev] = Matrix.multiply(transposed, delta)
 
-    delta = Calculator.hadamard(prev, [derivative.(input)])
+    delta = Vector.hadamard(prev, [derivative.(input)])
 
     calculate_detlas(weights, cost_gradient, activities, [delta|total])
   end
@@ -119,7 +119,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   end
 
   def calculate_weight_change([activity|activities], [delta, deltas], total) do
-    result = Calculator.dot_product(activity, delta)
+    result = Vector.dot_product(activity, delta)
 
     calculate_weight_change(activities, deltas, [result|total])
   end
