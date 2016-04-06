@@ -3,6 +3,16 @@ defmodule VectorTest do
 
   alias BrainTonic.Vector
 
+  test "#apply applies a function on each element of the vector" do
+    function = &(&1 + 1)
+    input    = [1, 2, 3, 4, 5, 6]
+    expected = [2, 3, 4, 5, 6, 7]
+
+    result = Vector.apply(input, function)
+
+    assert result == expected
+  end
+
   test "#dot_product computes the sum of element of two lists" do
     first    = [1, 2, 3]
     second   = [5, 3, 3]
@@ -23,12 +33,12 @@ defmodule VectorTest do
     assert result == expected
   end
 
-  test "#dot_square_diff computes the sum of squared difference of two lists" do
+  test "#dot_square_difference computes the sum of squared difference of two lists" do
     first    = [1, 2, 3]
     second   = [5, 3, 3]
     expected = 17
 
-    result = Vector.dot_square_diff(first, second)
+    result = Vector.dot_square_difference(first, second)
 
     assert result == expected
   end

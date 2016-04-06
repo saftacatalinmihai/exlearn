@@ -78,7 +78,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     [value] = Matrix.apply(input, derivative)
 
-    delta = Vector.hadamard(cost_gradient, value)
+    delta = Vector.multiply(cost_gradient, value)
 
     calculate_detlas(weights, cost_gradient, rest, [[delta]])
   end
@@ -94,7 +94,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     [prev] = Matrix.multiply(transposed, delta)
 
-    delta = Vector.hadamard(prev, [derivative.(input)])
+    delta = Vector.multiply(prev, [derivative.(input)])
 
     calculate_detlas(weights, cost_gradient, activities, [delta|total])
   end
