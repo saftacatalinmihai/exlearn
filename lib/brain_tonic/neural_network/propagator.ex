@@ -57,10 +57,12 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       }
     } = state
 
-    cost_gradient = derivative.(target, output)
+    cost_gradient = [derivative.(target, output)]
 
-    deltas = calculate_detlas(weights, cost_gradient, activity)
+    deltas = calculate_detlas(weights, activity, cost_gradient)
+
     bias_change = deltas
+
     weight_chage = calculate_weight_change(activity, deltas, [])
 
     new_weights = calculate_new_weights(weights, weight_chage, state)
@@ -69,34 +71,34 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     create_new_network(state, new_weights, new_biases)
   end
 
-  def calculate_detlas(ws, cost_gradient, as) do
+  def calculate_detlas(ws, as, cost_gradient) do
     weights    = Enum.reverse(ws)
     activities = Enum.reverse(as)
 
     [activity|rest] = activities
     %{derivative: derivative, input: input} = activity
 
-    [value] = Matrix.apply(input, derivative)
+    value = Matrix.apply(input, derivative)
 
-    delta = Vector.multiply(cost_gradient, value)
+    delta = Matrix.multiply(cost_gradient, value)
 
-    calculate_detlas(weights, cost_gradient, rest, [[delta]])
+    calculate_detla(weights, rest, [delta])
   end
 
-  def calculate_detlas(_, cost_gradient, [], totals) do
+  def calculate_detla(_, [], totals) do
     totals
   end
 
-  def calculate_detlas([weight|weights], cost_gradient, [activity|activities], [delta|total]) do
+  def calculate_detla([weight|weights], [activity|activities], [delta|total]) do
     %{derivative: derivative, input: input} = activity
 
     transposed = Matrix.transpose(weight)
 
-    [prev] = Matrix.multiply(transposed, delta)
+    prev = Matrix.multiply(transposed, delta)
 
-    delta = Vector.multiply(prev, [derivative.(input)])
+    delta = Matrix.multiply(prev, Matrix.apply(input, derivative))
 
-    calculate_detlas(weights, cost_gradient, activities, [delta|total])
+    calculate_detla(weights, activities, [delta|total])
   end
 
   def calculate_new_weights(weights, weight_chage, network) do
