@@ -83,7 +83,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     calculate_detlas(weights, cost_gradient, rest, [[delta]])
   end
 
-  def calculate_detlas([], cost_gradient, [activity], totals) do
+  def calculate_detlas(_, cost_gradient, [], totals) do
     totals
   end
 
@@ -118,10 +118,11 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     Enum.reverse(totals)
   end
 
-  def calculate_weight_change([activity|activities], [delta, deltas], total) do
-    result = Vector.dot_product(activity, delta)
-
-    calculate_weight_change(activities, deltas, [result|total])
+  def calculate_weight_change([activity|activities], [delta|deltas], total) do
+    # result = Vector.dot_product(input, delta)
+    #
+    # calculate_weight_change(activities, deltas, [result|total])
+    total
   end
 
   def calculate_bias_change(network, new_weights, new_biases) do
