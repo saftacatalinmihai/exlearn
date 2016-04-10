@@ -51,6 +51,28 @@ defmodule PropagatorTest do
     end)
   end
 
+  test "#feed_forward_for_output returns a list of numbers", %{result: result} do
+    output = Propagator.feed_forward_for_output(@input, result)
+
+    assert output |> is_list
+    assert length(output) == @output_size
+
+    Enum.each(output, fn (element) ->
+      assert element |> is_number
+    end)
+  end
+
+  test "#feed_forward_for_activity returns a list of maps", %{result: result} do
+    output = Propagator.feed_forward_for_activity(@input, result)
+
+    assert output |> is_list
+    assert length(output) == length(@hidden_sizes) + 1
+
+    Enum.each(output, fn (element) ->
+      assert element |> is_map
+    end)
+  end
+
   test "#back_propagate returns a map", %{result: result} do
     forwarded_state = Propagator.feed_forward(@input, result)
 

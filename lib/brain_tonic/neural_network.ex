@@ -112,17 +112,15 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   defp ask_network(input, state, caller) do
-    new_state = Propagator.feed_forward(input, state)
-
-    %{network: %{output: output}} = new_state
+    output = Propagator.feed_forward_for_output(input, state)
 
     send caller, {:ok, output}
   end
 
   defp test_network({input, target}, state, caller) do
-    new_state = Propagator.feed_forward(input, state)
+    output = Propagator.feed_forward_for_output(input, state)
 
-    %{network: %{objective: %{function: objective}, output: output}} = new_state
+    %{network: %{objective: %{function: objective}}} = state
 
     cost = objective.(target, output)
 
