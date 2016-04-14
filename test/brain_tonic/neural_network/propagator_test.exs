@@ -38,19 +38,6 @@ defmodule PropagatorTest do
     {:ok, result: result}
   end
 
-  test "#feed_forward returns a list of numbers", %{result: result} do
-    new_state = Propagator.feed_forward(@input, result)
-
-    %{network: %{output: result}} = new_state
-
-    assert result |> is_list
-    assert length(result) == @output_size
-
-    Enum.each(result, fn (element) ->
-      assert element |> is_number
-    end)
-  end
-
   test "#feed_forward_for_output returns a list of numbers", %{result: result} do
     output = Propagator.feed_forward_for_output(@input, result)
 
@@ -74,9 +61,9 @@ defmodule PropagatorTest do
   end
 
   test "#back_propagate returns a map", %{result: result} do
-    forwarded_state = Propagator.feed_forward(@input, result)
+    activity = Propagator.feed_forward_for_activity(@input, result)
 
-    new_state = Propagator.back_propagate(forwarded_state, [123])
+    new_state = Propagator.back_propagate(result, activity, [123])
 
     assert new_state |> is_map
   end

@@ -6,36 +6,17 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   alias BrainTonic.{Matrix, Vector}
 
   @doc """
-  Propagates input forward trough a network and return the result
-  """
-  @spec feed_forward([number], map) :: map
-  def feed_forward(input, state) do
-    %{network: network} = state
-    %{weights: weights} = network
-
-    full_network = put_in(network.weights, [[input]|weights])
-
-    reversed_activity         = calculate_activity(full_network, [])
-    [%{output: [output]} | _] = reversed_activity
-    new_activity              = Enum.reverse(reversed_activity)
-
-    state
-      |> put_in([:network, :activity], new_activity)
-      |> put_in([:network, :output], output)
-  end
-
-  @doc """
   Propagates input forward trough a network and return the output
   """
   @spec feed_forward_for_output([number], map) :: [number]
   def feed_forward_for_output(input, state) do
     input
       |> full_network(state)
-      |> calculate_network_output
+      |> calculate_output
   end
 
-  @spec calculate_network_output(map) :: [number]
-  defp calculate_network_output(network) do
+  @spec calculate_output(map) :: [number]
+  defp calculate_output(network) do
     case network do
       %{weights: [w|[]]} ->
         [output] = w
@@ -49,7 +30,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
         new_network = %{weights: [output|ws], biases: bs, activity: as}
 
-        calculate_network_output(new_network)
+        calculate_output(new_network)
     end
   end
 
@@ -60,20 +41,20 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   def feed_forward_for_activity(input, state) do
     input
       |> full_network(state)
-      |> calculate_network_activity([])
+      |> calculate_activity([])
   end
 
-  @spec calculate_network_activity(map, [map]) :: map
-  defp calculate_network_activity(network, activities) do
+  @spec calculate_activity(map, [map]) :: map
+  defp calculate_activity(network, activities) do
     case network do
       %{weights: [_|[]]} ->
         activities
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
-        %{function: f} = a
+        %{function: f, derivative: d} = a
 
         input    = Matrix.multiply(w1, w2) |> Matrix.add([b])
         output   = input |> Matrix.apply(f)
-        activity = %{input: input, output: output}
+        activity = %{derivative: d, input: input, output: output}
 
         new_network = %{weights: [output|ws], biases: bs, activity: as}
 
@@ -81,38 +62,20 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     end
   end
 
-  @spec calculate_activity(map, list) :: map
-  defp calculate_activity(network, activity) do
-    case network do
-      %{weights: [_|[]]} ->
-        activity
-      %{weights: [w1, w2 | ws], biases: [b | bs], activity: [a | as]} ->
-        %{function: f, derivative: d} = a
-
-        input  = Matrix.multiply(w1, w2) |> Matrix.add([b])
-        output = input |> Matrix.apply(f)
-        new_a  = %{function: f, derivative: d, input: input, output: output}
-
-        new_network = %{weights: [output | ws], biases: bs, activity: as}
-
-        calculate_activity(new_network, [new_a | activity])
-    end
-  end
-
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(map, number) :: map
-  def back_propagate(state, target) do
+  @spec back_propagate(map, list, number) :: map
+  def back_propagate(state, activity, target) do
     %{
       network: %{
-        activity:  activity,
         biases:    biases,
         weights:   weights,
-        output:    output,
         objective: %{derivative: derivative}
       }
     } = state
+
+    [%{output: [output]}|_] = activity
 
     cost_gradient = [derivative.(target, output)]
 
