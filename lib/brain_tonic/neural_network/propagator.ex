@@ -48,7 +48,10 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   defp calculate_activity(network, activities) do
     case network do
       %{weights: [_|[]]} ->
-        activities
+        [%{output: [output]}|_] = activities
+        result = Enum.reverse(activities)
+
+        %{activity: result, output: output}
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f, derivative: d} = a
 
