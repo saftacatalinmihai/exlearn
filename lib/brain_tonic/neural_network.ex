@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork do
   A neural network
   """
 
-  alias BrainTonic.NeuralNetwork.{Builder, Propagator}
+  alias BrainTonic.NeuralNetwork.{Builder, Forwarder, Propagator}
 
   @doc """
   Initalizez the neural network
@@ -100,7 +100,7 @@ defmodule BrainTonic.NeuralNetwork do
 
   defp train_network(input, state, caller) do
     {data, target} = input
-    activities       = Propagator.feed_forward_for_activity(data, state)
+    activities     = Forwarder.feed_forward_for_activity(data, state)
 
     %{activity: activity, output: output} = activities
 
@@ -114,13 +114,13 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   defp ask_network(input, state, caller) do
-    output = Propagator.feed_forward_for_output(input, state)
+    output = Forwarder.feed_forward_for_output(input, state)
 
     send caller, {:ok, output}
   end
 
   defp test_network({input, target}, state, caller) do
-    output = Propagator.feed_forward_for_output(input, state)
+    output = Forwarder.feed_forward_for_output(input, state)
 
     %{network: %{objective: %{function: objective}}} = state
 
