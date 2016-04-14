@@ -16,19 +16,12 @@ defmodule MatrixTest do
 
   test "#apply applies a function on each element of the matrix" do
     function = &(&1 + 1)
-    matrix   = [[1, 2, 3], [4, 5, 6]]
+    input    = [[1, 2, 3], [4, 5, 6]]
+    expected = [[2, 3, 4], [5, 6, 7]]
 
-    Matrix.apply(matrix, function)
-    |> Enum.with_index
-    |> Enum.each(fn ({list, row}) ->
-      list
-      |> Enum.with_index
-      |> Enum.each(fn ({element, column}) ->
-        current = Enum.at(Enum.at(matrix, row), column)
-        application = function.(current)
-        assert element == application
-      end)
-    end)
+    result = Matrix.apply(input, function)
+
+    assert result == expected
   end
 
   test "#multiply multiplies two matrices" do
