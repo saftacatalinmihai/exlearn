@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
-  alias BrainTonic.{Activation, Distribution, Objective}
+  alias BrainTonic.{Activation, Distribution, Matrix, Objective, Vector}
 
   @doc """
   Initializez a neural network with the given setup
@@ -65,7 +65,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_biases([], total, _), do: total
   defp build_biases([_|[]], total, _), do: total
   defp build_biases([_, second | rest], total, random_function) do
-    biases = build_list(second, random_function)
+    %{size: size} = second
+    biases = Vector.build(size, random_function)
     result = total ++ [biases]
 
     build_biases([second] ++ rest, result, random_function)
@@ -80,27 +81,11 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_weights([], total, _), do: total
   defp build_weights([_|[]], total, _), do: total
   defp build_weights([first, second | rest], total, random_function) do
-    weights = build_matrix(first, second, random_function)
+    %{size: rows}    = first
+    %{size: columns} = second
+    weights = Matrix.build(rows, columns, random_function)
     result  = total ++ [weights]
 
     build_weights([second] ++ rest, result, random_function)
-  end
-
-  @spec build_matrix(%{}, %{}, (() -> float)) :: list
-  defp build_matrix(%{size: rows}, columns, random_function) do
-    Stream.unfold(rows, fn
-      0 -> nil
-      n -> {build_list(columns, random_function), n - 1}
-    end)
-    |> Enum.to_list
-  end
-
-  @spec build_list(%{}, (() -> float)) :: list
-  defp build_list(%{size: size}, random_function) do
-    Stream.unfold(size, fn
-      0 -> nil
-      n -> {random_function.(), n - 1}
-    end)
-    |> Enum.to_list
   end
 end

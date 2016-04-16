@@ -21,12 +21,14 @@ defmodule BrainTonic.Vector do
   end
 
   @doc """
-  Element-wise list substraction
+  Creates a new vector with values provided by the given function
   """
-  @spec substract([number], [number]) :: [number]
-  def substract(first, second) do
-    Stream.zip(first, second)
-    |> Enum.map(fn({x, y}) -> x - y end)
+  def build(size, function) do
+    Stream.unfold(size, fn
+      0 -> nil
+      n -> {function.(), n - 1}
+    end)
+    |> Enum.to_list
   end
 
   @spec dot_product([number], [number]) :: number
@@ -39,6 +41,15 @@ defmodule BrainTonic.Vector do
     Stream.zip(first, second)
     |> Enum.map(fn({x, y}) -> (x - y) * (x - y) end)
     |> Enum.sum
+  end
+
+  @doc """
+  Element-wise list substraction
+  """
+  @spec substract([number], [number]) :: [number]
+  def substract(first, second) do
+    Stream.zip(first, second)
+    |> Enum.map(fn({x, y}) -> x - y end)
   end
 
   @spec multiply([number], [number]) :: [number]

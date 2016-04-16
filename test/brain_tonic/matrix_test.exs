@@ -24,6 +24,17 @@ defmodule MatrixTest do
     assert result == expected
   end
 
+  test "#build creates a new matrix" do
+    rows     = 2
+    columns  = 3
+    function = fn -> 1 end
+    expected = [[1, 1, 1], [1, 1, 1]]
+
+    result = Matrix.build(rows, columns, function)
+
+    assert result == expected
+  end
+
   test "#multiply multiplies two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]
     second = [[1, 2], [3, 4], [5, 6]]

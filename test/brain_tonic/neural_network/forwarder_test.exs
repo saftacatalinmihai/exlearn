@@ -56,7 +56,7 @@ defmodule ForwarderTest do
 
     %{activity: activity, output: output} = activities
 
-    assert length(output)     == length(@hidden_sizes)
+    assert length(output)   == length(@hidden_sizes)
     assert length(activity) == length(@hidden_sizes) + 1
 
     Enum.each(activity, fn (element) ->

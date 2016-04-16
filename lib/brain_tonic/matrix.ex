@@ -25,6 +25,17 @@ defmodule BrainTonic.Matrix do
   end
 
   @doc """
+  Creates a new matrix with values provided by the given function
+  """
+  def build(rows, columns, function) do
+    Stream.unfold(rows, fn
+      0 -> nil
+      n -> {Vector.build(columns, function), n - 1}
+    end)
+    |> Enum.to_list
+  end
+
+  @doc """
   Multiplies two matrices
   """
   @spec multiply([[]], [[]]) :: [[]]
