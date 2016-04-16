@@ -41,9 +41,7 @@ defmodule PropagatorTest do
   test "#back_propagate returns a map", %{result: result} do
     activities = Forwarder.feed_forward_for_activity(@input, result)
 
-    %{activity: activity, output: output} = activities
-
-    new_state = Propagator.back_propagate(result, activity, [123])
+    new_state = Propagator.back_propagate(result, activities, [123])
 
     assert new_state |> is_map
   end

@@ -6,12 +6,11 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   alias BrainTonic.{Matrix, Vector}
   alias BrainTonic.NeuralNetwork.Forwarder
 
-
   @doc """
   Performs backpropagation
   """
   @spec back_propagate(map, list, number) :: map
-  def back_propagate(state, activity, target) do
+  def back_propagate(state, activities, target) do
     %{
       network: %{
         biases:    biases,
@@ -20,7 +19,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       }
     } = state
 
-    [%{output: [output]}|_] = activity
+    %{activity: activity, output: output} = activities
 
     cost_gradient = [derivative.(target, output)]
 

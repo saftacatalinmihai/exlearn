@@ -110,7 +110,7 @@ defmodule BrainTonic.NeuralNetwork do
 
     send caller, {:ok, {output, cost}}
 
-    Propagator.back_propagate(state, activity, target)
+    Propagator.back_propagate(state, activities, target)
   end
 
   defp ask_network(input, state, caller) do
