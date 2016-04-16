@@ -32,10 +32,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
       weights:   build_weights(layers, random_function)
     }
 
-    %{
-      network: network,
-      setup:   setup
-    }
+    %{network: network, setup: setup}
   end
 
   @spec build_activations([pos_integer,...]) :: list
@@ -44,16 +41,21 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_activations([pos_integer,...], []) :: list
-  defp build_activations([], total), do: total
-  defp build_activations([_|[]], total), do: total
+
+  defp build_activations([], total) do
+    Enum.reverse(total)
+  end
+
+  defp build_activations([_|[]], total) do
+    Enum.reverse(total)
+  end
+
   defp build_activations([_, second | rest], total) do
     %{activity: function_setup} = second
 
     activation = Activation.determine(function_setup)
 
-    result = total ++ [activation]
-
-    build_activations([second] ++ rest, result)
+    build_activations([second|rest], [activation|total])
   end
 
   @spec build_biases([pos_integer,...], (() -> float)) :: list
@@ -62,14 +64,21 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_biases([pos_integer,...], [], (() -> float)) :: list
-  defp build_biases([], total, _), do: total
-  defp build_biases([_|[]], total, _), do: total
+
+  defp build_biases([], total, _) do
+    Enum.reverse(total)
+  end
+
+  defp build_biases([_|[]], total, _) do
+    Enum.reverse(total)
+  end
+
   defp build_biases([_, second | rest], total, random_function) do
     %{size: size} = second
     biases = Vector.build(size, random_function)
-    result = total ++ [biases]
+    result = [biases|total]
 
-    build_biases([second] ++ rest, result, random_function)
+    build_biases([second|rest], result, random_function)
   end
 
   @spec build_weights([pos_integer,...], (() -> float)) :: list
@@ -78,14 +87,21 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_weights([pos_integer,...], [], (() -> float)) :: list
-  defp build_weights([], total, _), do: total
-  defp build_weights([_|[]], total, _), do: total
+
+  defp build_weights([], total, _) do
+    Enum.reverse(total)
+  end
+
+  defp build_weights([_|[]], total, _) do
+    Enum.reverse(total)
+  end
+
   defp build_weights([first, second | rest], total, random_function) do
     %{size: rows}    = first
     %{size: columns} = second
     weights = Matrix.build(rows, columns, random_function)
-    result  = total ++ [weights]
+    result  = [weights|total]
 
-    build_weights([second] ++ rest, result, random_function)
+    build_weights([second|rest], result, random_function)
   end
 end
