@@ -11,7 +11,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   @spec initialize(map) :: map
   def initialize(setup) do
     %{
-      layers:  %{
+      layers: %{
         hidden: hidden_layers,
         input:  input_layer,
         output: output_layer
@@ -59,8 +59,8 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_biases([pos_integer,...], (() -> float)) :: list
-  defp build_biases(layers, random_function) do
-    build_biases(layers, [], random_function)
+  defp build_biases(layers, function) do
+    build_biases(layers, [], function)
   end
 
   @spec build_biases([pos_integer,...], [], (() -> float)) :: list
@@ -73,17 +73,18 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     Enum.reverse(total)
   end
 
-  defp build_biases([_, second | rest], total, random_function) do
+  defp build_biases([_, second | rest], total, function) do
     %{size: size} = second
-    biases = Vector.build(size, random_function)
+
+    biases = Vector.build(size, function)
     result = [biases|total]
 
-    build_biases([second|rest], result, random_function)
+    build_biases([second|rest], result, function)
   end
 
   @spec build_weights([pos_integer,...], (() -> float)) :: list
-  defp build_weights(layers, random_function) do
-    build_weights(layers, [], random_function)
+  defp build_weights(layers, function) do
+    build_weights(layers, [], function)
   end
 
   @spec build_weights([pos_integer,...], [], (() -> float)) :: list
@@ -96,12 +97,13 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     Enum.reverse(total)
   end
 
-  defp build_weights([first, second | rest], total, random_function) do
+  defp build_weights([first, second | rest], total, function) do
     %{size: rows}    = first
     %{size: columns} = second
-    weights = Matrix.build(rows, columns, random_function)
+
+    weights = Matrix.build(rows, columns, function)
     result  = [weights|total]
 
-    build_weights([second|rest], result, random_function)
+    build_weights([second|rest], result, function)
   end
 end
