@@ -3,8 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   Backpropagates the error trough a network
   """
 
-  alias BrainTonic.{Matrix, Vector}
-  alias BrainTonic.NeuralNetwork.Forwarder
+  alias BrainTonic.{Matrix}
 
   @doc """
   Performs backpropagation

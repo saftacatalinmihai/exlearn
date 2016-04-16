@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
   Feed forward functionality
   """
 
-  alias BrainTonic.{Matrix, Vector}
+  alias BrainTonic.{Matrix}
 
   @doc """
   Propagates input forward trough a network and return the output

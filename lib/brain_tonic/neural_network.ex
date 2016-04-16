@@ -102,7 +102,7 @@ defmodule BrainTonic.NeuralNetwork do
     {data, target} = input
     activities     = Forwarder.feed_forward_for_activity(data, state)
 
-    %{activity: activity, output: output} = activities
+    %{output: output} = activities
 
     %{network: %{objective: %{function: objective}}} = state
 
