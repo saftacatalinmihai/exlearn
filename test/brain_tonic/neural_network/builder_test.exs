@@ -10,7 +10,7 @@ defmodule BuilderTest do
   @output_size  5
 
   setup do
-    parameters = %{
+    setup = %{
       layers: %{
         hidden: [
           %{
@@ -46,29 +46,18 @@ defmodule BuilderTest do
       }
     }
 
-    result = Builder.initialize(parameters)
-
-    {:ok, result: result}
+    {:ok, setup: setup}
   end
 
-  test "initialize return a map", %{result: result} do
+  test "#initialize return a map", %{setup: setup} do
+    result = Builder.initialize(setup)
+
     assert result |> is_map
   end
 
-  test "weights is a list of matrixes", %{result: result} do
-    %{network: network} = result
-    %{weights: weights} = network
+  test "weights are the correct size", %{setup: setup} do
+    result = Builder.initialize(setup)
 
-    assert weights |> is_list
-    Enum.each(weights, fn (matrix) ->
-      assert matrix |> is_list
-      Enum.each(matrix, fn (list) ->
-        assert list |> is_list
-      end)
-    end)
-  end
-
-  test "weights lists are the correct size", %{result: result} do
     %{network: network} = result
     %{weights: weights} = network
 
@@ -96,17 +85,9 @@ defmodule BuilderTest do
     end)
   end
 
-  test "biases is a list of lists", %{result: result} do
-    %{network: network} = result
-    %{biases: biases}   = network
+  test "biases are the correct size", %{setup: setup} do
+    result = Builder.initialize(setup)
 
-    assert biases |> is_list
-    Enum.each(biases, fn (list) ->
-      assert list |> is_list
-    end)
-  end
-
-  test "biases lists are the correct size", %{result: result} do
     %{network: network} = result
     %{biases: biases}   = network
 
@@ -123,7 +104,9 @@ defmodule BuilderTest do
     end)
   end
 
-  test "weight and bias values are within range", %{result: result} do
+  test "weight and bias values are within range", %{setup: setup} do
+    result = Builder.initialize(setup)
+
     %{network: network} = result
     %{weights: weights, biases: biases} = network
 
