@@ -18,12 +18,10 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
   @spec calculate_output(map) :: [number]
   defp calculate_output(network) do
     case network do
-      %{weights: [w|[]]} ->
-        [output] = w
-        output
+      %{weights: [w|[]]} -> w
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f} = a
-        output = Matrix.multiply(w1, w2)
+        output = Matrix.dot(w1, w2)
           |> Matrix.add([b])
           |> Matrix.apply(f)
 
@@ -47,14 +45,14 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
   defp calculate_activity(network, activities) do
     case network do
       %{weights: [_|[]]} ->
-        [%{output: [output]}|_] = activities
+        [%{output: output}|_] = activities
         result = Enum.reverse(activities)
 
         %{activity: result, output: output}
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f, derivative: d} = a
 
-        input    = Matrix.multiply(w1, w2) |> Matrix.add([b])
+        input    = Matrix.dot(w1, w2) |> Matrix.add([b])
         output   = input |> Matrix.apply(f)
         activity = %{derivative: d, input: input, output: output}
 

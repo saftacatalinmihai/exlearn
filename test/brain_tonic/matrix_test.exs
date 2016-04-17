@@ -35,11 +35,22 @@ defmodule MatrixTest do
     assert result == expected
   end
 
-  test "#multiply multiplies two matrices" do
+  test "#dot multiplies two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]
     second = [[1, 2], [3, 4], [5, 6]]
 
     expected = [[22, 28], [49, 64]]
+
+    result = Matrix.dot(first, second)
+
+    assert result == expected
+  end
+
+  test "#multiply performs elementwise multiplication of two matrices" do
+    first  = [[1, 2, 3], [4, 5, 6]]
+    second = [[5, 2, 1], [3, 4, 6]]
+
+    expected = [[5, 4, 3], [12, 20, 36]]
 
     result = Matrix.multiply(first, second)
 

@@ -53,6 +53,16 @@ defmodule VectorTest do
     assert result == expected
   end
 
+  test "#multiply computes the elementwise multiplication of two lists" do
+    first    = [1, 2, 3]
+    second   = [5, 3, 3]
+    expected = [5, 6, 9]
+
+    result = Vector.multiply(first, second)
+
+    assert result == expected
+  end
+
   test "#substract computes the element difference of two lists" do
     first    = [1, 2, 3]
     second   = [5, 3, 1]

@@ -36,15 +36,23 @@ defmodule BrainTonic.Matrix do
   end
 
   @doc """
-  Multiplies two matrices
+  Matrix multiplication
   """
-  @spec multiply([[]], [[]]) :: [[]]
-  def multiply(first, second) do
+  @spec dot([[]], [[]]) :: [[]]
+  def dot(first, second) do
     second_transposed = transpose(second)
-
     Enum.map(first, fn (row) ->
       Enum.map(second_transposed, &Vector.dot_product(row, &1))
     end)
+  end
+
+  @doc """
+  Elementwise multiplication of two matrices
+  """
+  @spec multiply([[]], [[]]) :: [[]]
+  def multiply(first, second) do
+    Stream.zip(first, second)
+      |> Enum.map(fn({x, y}) -> Vector.multiply(x,y) end)
   end
 
   @doc """

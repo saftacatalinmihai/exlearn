@@ -59,7 +59,7 @@ defmodule ForwarderTest do
     input  = [1, 2, 3]
     output = Forwarder.feed_forward_for_output(input, state)
 
-    assert output == [1395]
+    assert output == [[1395]]
   end
 
   test "#feed_forward_for_activity returns a map", %{setup: setup} do
@@ -84,7 +84,7 @@ defmodule ForwarderTest do
           output:     [[1395]]
         }
       ],
-      output: [1395]
+      output: [[1395]]
     }
 
     result = Forwarder.feed_forward_for_activity(input, state)
