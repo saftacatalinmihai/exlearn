@@ -66,6 +66,7 @@ defmodule PropagatorTest do
     target    = [[1400]]
     new_state = Propagator.back_propagate(network, forwarded, target)
 
+    IO.inspect new_state
     # assert new_state |> is_map
   end
 end

@@ -24,15 +24,13 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     deltas = calculate_detlas(weights, activity, cost_gradient)
 
-    #
-    # bias_change = deltas
-    #
-    # weight_chage = calculate_weight_change(activity, deltas, [])
-    #
-    # new_weights = calculate_new_weights(weights, weight_chage, state)
-    # new_biases = calculate_new_biases(biases, bias_change, state)
-    #
-    # create_new_network(state, new_weights, new_biases)
+    bias_change  = deltas
+    weight_chage = calculate_weight_change(activity, deltas, [])
+
+    new_weights = calculate_new_weights(weights, weight_chage, state)
+    new_biases  = calculate_new_biases(biases, bias_change, state)
+
+    create_new_network(state, new_weights, new_biases)
   end
 
   def calculate_detlas(ws, as, cost_gradient) do
@@ -50,7 +48,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   end
 
   def calculate_detla(_, [], totals) do
-    Enum.reverse(totals)
+    totals
   end
 
   def calculate_detla([w|ws], [a|as], deltas) do
@@ -60,50 +58,38 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     wt = Matrix.transpose(w)
 
-    IO.inspect "#########################"
-    IO.inspect w
-    IO.inspect wt
-    IO.inspect delta
     output_gradient = Matrix.dot(delta, wt)
     input_gradient  = Matrix.apply(i, d)
-    IO.inspect output_gradient
-    IO.inspect input_gradient
 
     next_delta = Matrix.multiply(output_gradient, input_gradient)
-    IO.inspect delta
-    IO.inspect "#########################"
 
     calculate_detla(ws, as, [next_delta|deltas])
   end
-  #
-  # def calculate_new_weights(weights, weight_chage, network) do
-  #   # TODO
-  #   weights
-  # end
-  #
-  # def calculate_new_biases(biases, bias_change, network) do
-  #   # TODO
-  #   biases
-  # end
-  #
-  # def create_new_network(network, new_weights, new_biases) do
-  #   # TODO
-  #   network
-  # end
-  #
-  # def calculate_weight_change([], [], totals) do
-  #   Enum.reverse(totals)
-  # end
-  #
-  # def calculate_weight_change([activity|activities], [delta|deltas], total) do
-  #   # result = Vector.dot_product(input, delta)
-  #   #
-  #   # calculate_weight_change(activities, deltas, [result|total])
-  #   total
-  # end
-  #
-  # def calculate_bias_change(network, new_weights, new_biases) do
-  #   # TODO
-  #   network
-  # end
+
+  def calculate_weight_change([], [], totals) do
+    Enum.reverse(totals)
+  end
+
+  def calculate_weight_change([activity|activities], [delta|deltas], total) do
+    %{output: output} = activity
+    output_transposed = Matrix.transpose(output)
+    result            = Matrix.dot(output_transposed, delta)
+
+    calculate_weight_change(activities, deltas, [result|total])
+  end
+
+  def calculate_new_weights(weights, weight_chage, network) do
+    # TODO
+    weights
+  end
+
+  def calculate_new_biases(biases, bias_change, network) do
+    # TODO
+    biases
+  end
+
+  def create_new_network(network, new_weights, new_biases) do
+    # TODO
+    network
+  end
 end
