@@ -1,7 +1,7 @@
 defmodule ForwarderTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.{Forwarder}
+  alias BrainTonic.NeuralNetwork.Forwarder
 
   # Netowrk mocked as following:
   # - input layer has 3 features
@@ -70,18 +70,18 @@ defmodule ForwarderTest do
       activity: [
         %{
           derivative: d,
-          input:  [[31, 38, 45]],
-          output: [[32, 39, 46]]
+          input:      [[31, 38, 45]],
+          output:     [[32, 39, 46]]
         },
         %{
           derivative: d,
-          input:  [[383, 501]],
-          output: [[384, 502]]
+          input:      [[383, 501]],
+          output:     [[384, 502]]
         },
         %{
           derivative: d,
-          input:  [[1394]],
-          output: [[1395]]
+          input:      [[1394]],
+          output:     [[1395]]
         }
       ],
       output: [1395]

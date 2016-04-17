@@ -1,46 +1,70 @@
 defmodule PropagatorTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.{Builder, Forwarder, Propagator}
-
-  @hidden_sizes [10]
-  @input        [0, 1, 2, 3, 4]
-  @input_size   5
-  @output_size  1
+  alias BrainTonic.NeuralNetwork.Propagator
 
   setup do
-    parameters = %{
-      layers: %{
-        hidden: [
-          %{
-            activity: :identity,
-            size: Enum.at(@hidden_sizes, 0)
-          }
+    d = fn (_)    -> 1 end
+    o = fn (a, b) ->
+      Stream.zip(a, b) |> Enum.map(fn({x, y}) -> x - y end)
+    end
+
+    network = %{
+      network: %{
+        biases: [
+          [1, 2, 3],
+          [4, 5],
+          [6]
         ],
-        input: %{
-          size: @input_size
-        },
-        output: %{
-          activity: :identity,
-          size: @output_size
-        }
-      },
-      learning_rate: 0.5,
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
+        objective: %{derivative: o},
+        weights: [
+          [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+          ],
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6]
+          ],
+          [
+            [1],
+            [2]
+          ]
+        ]
       }
     }
 
-    {:ok, parameters: parameters}
+    forwarded = %{
+      activity: [
+        %{
+          derivative: d,
+          input:      [[31, 38, 45]],
+          output:     [[32, 39, 46]]
+        },
+        %{
+          derivative: d,
+          input:      [[383, 501]],
+          output:     [[384, 502]]
+        },
+        %{
+          derivative: d,
+          input:      [[1394]],
+          output:     [[1395]]
+        }
+      ],
+      output: [1395]
+    }
+
+    {:ok, setup: %{network: network, forwarded: forwarded}}
   end
 
-  test "#back_propagate returns a map", %{parameters: parameters} do
-    network    = Builder.initialize(parameters)
-    activities = Forwarder.feed_forward_for_activity(@input, network)
+  test "#back_propagate returns a map", %{setup: setup} do
+    %{network: network, forwarded: forwarded} = setup
 
-    new_state = Propagator.back_propagate(network, activities, [123])
+    target    = [1400]
+    new_state = Propagator.back_propagate(network, forwarded, target)
 
     assert new_state |> is_map
   end
