@@ -23,7 +23,6 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
         output
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f} = a
-
         output = Matrix.multiply(w1, w2)
           |> Matrix.add([b])
           |> Matrix.apply(f)

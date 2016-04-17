@@ -9,7 +9,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   Performs backpropagation
   """
   @spec back_propagate(map, list, number) :: map
-  def back_propagate(state, activities, target) do
+  def back_propagate(state, forwarded, target) do
     %{
       network: %{
         biases:    biases,
@@ -18,7 +18,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       }
     } = state
 
-    %{activity: activity, output: output} = activities
+    %{activity: activity, output: output} = forwarded
 
     cost_gradient = [derivative.(target, output)]
 

@@ -1,70 +1,94 @@
 defmodule ForwarderTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.{Builder, Forwarder}
+  alias BrainTonic.NeuralNetwork.{Forwarder}
 
-  @hidden_sizes [10]
-  @input        [0, 1, 2, 3, 4]
-  @input_size   5
-  @output_size  1
-
+  # Netowrk mocked as following:
+  # - input layer has 3 features
+  # - there are 2 hidden layers
+  # - h1 has 3 neurons
+  # - h2 has 2 neurons
+  # - output has one value
+  #
+  # I     H1    H2    O
+  #   3x3   3x2   2x1
+  # O     O     O     O
+  # O     O     O
+  # O     O
   setup do
-    parameters = %{
-      layers: %{
-        hidden: [
-          %{
-            activity: :identity,
-            size: Enum.at(@hidden_sizes, 0)
-          }
+    f = fn (x) -> x + 1 end
+    d = fn (_) -> 1     end
+
+    state = %{
+      network: %{
+        activity: [
+          %{function: f, derivative: d},
+          %{function: f, derivative: d},
+          %{function: f, derivative: d}
         ],
-        input: %{
-          size: @input_size
-        },
-        output: %{
-          activity: :identity,
-          size: @output_size
-        }
-      },
-      learning_rate: 0.5,
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
+        biases: [
+          [1, 2, 3],
+          [4, 5],
+          [6]
+        ],
+        weights: [
+          [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+          ],
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6]
+          ],
+          [
+            [1],
+            [2]
+          ]
+        ]
       }
     }
 
-    {:ok, parameters: parameters}
+    {:ok, setup: %{state: state, derivative: d}}
   end
 
-  test "#feed_forward_for_output returns a list of numbers", %{parameters: parameters} do
-    network = Builder.initialize(parameters)
-    output  = Forwarder.feed_forward_for_output(@input, network)
+  test "#feed_forward_for_output returns a list of numbers", %{setup: setup} do
+    %{state: state} = setup
 
-    assert output |> is_list
-    assert length(output) == @output_size
+    input  = [1, 2, 3]
+    output = Forwarder.feed_forward_for_output(input, state)
 
-    Enum.each(output, fn (element) ->
-      assert element |> is_number
-    end)
+    assert output == [1395]
   end
 
-  test "#feed_forward_for_activity returns a map", %{parameters: parameters} do
-    network    = Builder.initialize(parameters)
-    activities = Forwarder.feed_forward_for_activity(@input, network)
+  test "#feed_forward_for_activity returns a map", %{setup: setup} do
+    %{state: state, derivative: d} = setup
 
-    assert activities |> is_map
+    input    = [1, 2, 3]
+    expected = %{
+      activity: [
+        %{
+          derivative: d,
+          input:  [[31, 38, 45]],
+          output: [[32, 39, 46]]
+        },
+        %{
+          derivative: d,
+          input:  [[383, 501]],
+          output: [[384, 502]]
+        },
+        %{
+          derivative: d,
+          input:  [[1394]],
+          output: [[1395]]
+        }
+      ],
+      output: [1395]
+    }
 
-    %{activity: activity, output: output} = activities
+    result = Forwarder.feed_forward_for_activity(input, state)
 
-    assert length(output)   == length(@hidden_sizes)
-    assert length(activity) == length(@hidden_sizes) + 1
-
-    Enum.each(activity, fn (element) ->
-      assert element |> is_map
-    end)
-
-    Enum.each(output, fn (element) ->
-      assert element |> is_number
-    end)
+    assert result == expected
   end
 end
