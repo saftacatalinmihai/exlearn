@@ -33,15 +33,14 @@ defmodule PropagatorTest do
       }
     }
 
-    result = Builder.initialize(parameters)
-
-    {:ok, result: result}
+    {:ok, parameters: parameters}
   end
 
-  test "#back_propagate returns a map", %{result: result} do
-    activities = Forwarder.feed_forward_for_activity(@input, result)
+  test "#back_propagate returns a map", %{parameters: parameters} do
+    network    = Builder.initialize(parameters)
+    activities = Forwarder.feed_forward_for_activity(@input, network)
 
-    new_state = Propagator.back_propagate(result, activities, [123])
+    new_state = Propagator.back_propagate(network, activities, [123])
 
     assert new_state |> is_map
   end

@@ -33,13 +33,12 @@ defmodule ForwarderTest do
       }
     }
 
-    result = Builder.initialize(parameters)
-
-    {:ok, result: result}
+    {:ok, parameters: parameters}
   end
 
-  test "#feed_forward_for_output returns a list of numbers", %{result: result} do
-    output = Forwarder.feed_forward_for_output(@input, result)
+  test "#feed_forward_for_output returns a list of numbers", %{parameters: parameters} do
+    network = Builder.initialize(parameters)
+    output  = Forwarder.feed_forward_for_output(@input, network)
 
     assert output |> is_list
     assert length(output) == @output_size
@@ -49,8 +48,9 @@ defmodule ForwarderTest do
     end)
   end
 
-  test "#feed_forward_for_activity returns a map", %{result: result} do
-    activities = Forwarder.feed_forward_for_activity(@input, result)
+  test "#feed_forward_for_activity returns a map", %{parameters: parameters} do
+    network    = Builder.initialize(parameters)
+    activities = Forwarder.feed_forward_for_activity(@input, network)
 
     assert activities |> is_map
 

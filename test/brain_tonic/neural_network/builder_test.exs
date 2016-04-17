@@ -10,7 +10,7 @@ defmodule BuilderTest do
   @output_size  5
 
   setup do
-    setup = %{
+    parameters = %{
       layers: %{
         hidden: [
           %{
@@ -46,17 +46,17 @@ defmodule BuilderTest do
       }
     }
 
-    {:ok, setup: setup}
+    {:ok, parameters: parameters}
   end
 
-  test "#initialize return a map", %{setup: setup} do
-    result = Builder.initialize(setup)
+  test "#initialize return a map", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
     assert result |> is_map
   end
 
-  test "weights are the correct size", %{setup: setup} do
-    result = Builder.initialize(setup)
+  test "weights are the correct size", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
     %{network: network} = result
     %{weights: weights} = network
@@ -85,8 +85,8 @@ defmodule BuilderTest do
     end)
   end
 
-  test "biases are the correct size", %{setup: setup} do
-    result = Builder.initialize(setup)
+  test "biases are the correct size", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
     %{network: network} = result
     %{biases: biases}   = network
@@ -104,8 +104,8 @@ defmodule BuilderTest do
     end)
   end
 
-  test "weight and bias values are within range", %{setup: setup} do
-    result = Builder.initialize(setup)
+  test "weight and bias values are within range", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
     %{network: network} = result
     %{weights: weights, biases: biases} = network
