@@ -9,7 +9,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   Performs backpropagation
   """
   @spec back_propagate(map, list, number) :: map
-  def back_propagate(state, forwarded, [target]) do
+  def back_propagate(state, forwarded, {input, [target]}) do
     %{
       network: %{
         biases:    biases,
@@ -24,8 +24,10 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     deltas = calculate_detlas(weights, activity, cost_gradient)
 
+    full_activity = [%{output: [input]}|activity]
+
     bias_change  = deltas
-    weight_chage = calculate_weight_change(activity, deltas, [])
+    weight_chage = calculate_weight_change(full_activity, deltas, [])
 
     new_weights = calculate_new_weights(weights, weight_chage, state)
     new_biases  = calculate_new_biases(biases, bias_change, state)
@@ -66,16 +68,16 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     calculate_detla(ws, as, [next_delta|deltas])
   end
 
-  def calculate_weight_change([], [], totals) do
+  def calculate_weight_change(_, [], totals) do
     Enum.reverse(totals)
   end
 
-  def calculate_weight_change([activity|activities], [delta|deltas], total) do
-    %{output: output} = activity
+  def calculate_weight_change([a|as], [d|ds], total) do
+    %{output: output} = a
     output_transposed = Matrix.transpose(output)
-    result            = Matrix.dot(output_transposed, delta)
+    result            = Matrix.dot(output_transposed, d)
 
-    calculate_weight_change(activities, deltas, [result|total])
+    calculate_weight_change(as, ds, [result|total])
   end
 
   def calculate_new_weights(weights, weight_chage, network) do

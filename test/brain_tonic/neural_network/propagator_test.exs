@@ -63,8 +63,8 @@ defmodule PropagatorTest do
   test "#back_propagate returns a map", %{setup: setup} do
     %{network: network, forwarded: forwarded} = setup
 
-    target    = [[1400]]
-    new_state = Propagator.back_propagate(network, forwarded, target)
+    data      = {[1, 2, 3], [[1400]]}
+    new_state = Propagator.back_propagate(network, forwarded, data)
 
     IO.inspect new_state
     # assert new_state |> is_map
