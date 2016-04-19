@@ -14,19 +14,19 @@ defmodule BuilderTest do
       layers: %{
         hidden: [
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 0)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 1)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 2)
           },
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 3)
           }
         ],
@@ -34,7 +34,7 @@ defmodule BuilderTest do
           size: @input_size
         },
         output: %{
-          activation: :identity,
+          activity: :identity,
           size: @output_size
         }
       },
@@ -46,29 +46,18 @@ defmodule BuilderTest do
       }
     }
 
-    result = Builder.initialize(parameters)
-
-    {:ok, result: result}
+    {:ok, parameters: parameters}
   end
 
-  test "initialize return a map", %{result: result} do
+  test "#initialize return a map", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
+
     assert result |> is_map
   end
 
-  test "weights is a list of matrixes", %{result: result} do
-    %{network: network} = result
-    %{weights: weights} = network
+  test "weights are the correct size", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
-    assert weights |> is_list
-    Enum.each(weights, fn (matrix) ->
-      assert matrix |> is_list
-      Enum.each(matrix, fn (list) ->
-        assert list |> is_list
-      end)
-    end)
-  end
-
-  test "weights lists are the correct size", %{result: result} do
     %{network: network} = result
     %{weights: weights} = network
 
@@ -96,17 +85,9 @@ defmodule BuilderTest do
     end)
   end
 
-  test "biases is a list of lists", %{result: result} do
-    %{network: network} = result
-    %{biases: biases}   = network
+  test "biases are the correct size", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
 
-    assert biases |> is_list
-    Enum.each(biases, fn (list) ->
-      assert list |> is_list
-    end)
-  end
-
-  test "biases lists are the correct size", %{result: result} do
     %{network: network} = result
     %{biases: biases}   = network
 
@@ -116,14 +97,20 @@ defmodule BuilderTest do
 
     Enum.with_index(biases)
     |> Enum.each(fn
-      {element, index} when index == last - 1 ->
-        assert length(element) == @output_size
-      {element, index} ->
-        assert length(element) == Enum.at(@hidden_sizes, index)
+      {list, index} when index == last - 1 ->
+        assert length(list) == 1
+        [content] = list
+        assert length(content) == @output_size
+      {list, index} ->
+        assert length(list) == 1
+        [content] = list
+        assert length(content) == Enum.at(@hidden_sizes, index)
     end)
   end
 
-  test "weight and bias values are within range", %{result: result} do
+  test "weight and bias values are within range", %{parameters: parameters} do
+    result = Builder.initialize(parameters)
+
     %{network: network} = result
     %{weights: weights, biases: biases} = network
 
@@ -134,9 +121,12 @@ defmodule BuilderTest do
         end)
       end)
     end)
-    Enum.each(biases, fn (lists) ->
-      Enum.each(lists, fn (element) ->
-        assert element >= @range_min && element <= @range_max
+
+    Enum.each(biases, fn (matrix) ->
+      Enum.each(matrix, fn (row) ->
+        Enum.each(row, fn (element) ->
+          assert element >= @range_min && element <= @range_max
+        end)
       end)
     end)
   end

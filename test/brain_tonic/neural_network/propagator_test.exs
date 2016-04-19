@@ -1,54 +1,97 @@
 defmodule PropagatorTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.{Builder, Propagator}
-
-  @hidden_sizes [10]
-  @input        [0, 1, 2, 3, 4]
-  @input_size   5
-  @output_size  1
+  alias BrainTonic.NeuralNetwork.Propagator
 
   setup do
-    parameters = %{
-      layers: %{
-        hidden: [
-          %{
-            activation: :identity,
-            size: Enum.at(@hidden_sizes, 0)
-          }
+    d = fn (_)    -> 1 end
+    o = fn (a, b) ->
+      Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
+    end
+
+    network = %{
+      network: %{
+        biases: [
+          [[1, 2, 3]],
+          [[4, 5]],
+          [[6]]
         ],
-        input: %{
-          size: @input_size
-        },
-        output: %{
-          activation: :identity,
-          size: @output_size
-        }
+        objective: %{derivative: o},
+        weights: [
+          [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+          ],
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6]
+          ],
+          [
+            [1],
+            [2]
+          ]
+        ]
       },
-      learning_rate: 0.5,
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
-      }
+      setup: %{learning_rate: 2}
     }
 
-    result = Builder.initialize(parameters)
+    forwarded = %{
+      activity: [
+        %{
+          derivative: d,
+          input:      [[31, 38, 45]],
+          output:     [[32, 39, 46]]
+        },
+        %{
+          derivative: d,
+          input:      [[383, 501]],
+          output:     [[384, 502]]
+        },
+        %{
+          derivative: d,
+          input:      [[1394]],
+          output:     [[1395]]
+        }
+      ],
+      output: [[1395]]
+    }
 
-    {:ok, result: result}
+    {:ok, setup: %{network: network, forwarded: forwarded, derivative: o}}
   end
 
-  test "#feed_forward returns a list of numbers", %{result: result} do
-    %{network: network} = result
+  test "#back_propagate returns a map", %{setup: setup} do
+    %{network: network, forwarded: forwarded, derivative: o} = setup
 
-    {result, weighted_input, activity} = Propagator.feed_forward(@input, network)
+    data     = {[1, 2, 3], [[1400]]}
+    expected = %{
+      biases: [
+        [[-49, -108, -167]],
+        [[-6,  -15]],
+        [[-4]]
+      ],
+      objective: %{derivative: o},
+      weights: [
+        [
+          [-49,  -108, -167],
+          [-96,  -215, -334],
+          [-143, -322, -501]
+        ],
+        [
+          [-319, -638],
+          [-387, -776],
+          [-455, -914]
+        ],
+        [
+          [-3839],
+          [-5018]
+        ]
+      ]
+    }
 
-    assert result |> is_list
-    assert weighted_input |> is_list
-    assert activity |> is_list
-    assert length(result) == @output_size
-    Enum.each(result, fn (element) ->
-      assert element |> is_number
-    end)
+    new_state = Propagator.back_propagate(network, forwarded, data)
+
+    assert new_state == expected
   end
 end

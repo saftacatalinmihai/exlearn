@@ -3,7 +3,7 @@ defmodule NeuralNetworkTest do
 
   alias BrainTonic.NeuralNetwork
 
-  @expected_output [1]
+  @expected_output [[1]]
   @hidden_sizes    [10]
   @input           [0, 1, 2, 3, 4]
   @input_size      5
@@ -14,7 +14,7 @@ defmodule NeuralNetworkTest do
       layers: %{
         hidden: [
           %{
-            activation: :identity,
+            activity: :identity,
             size: Enum.at(@hidden_sizes, 0)
           }
         ],
@@ -22,7 +22,7 @@ defmodule NeuralNetworkTest do
           size: @input_size
         },
         output: %{
-          activation: :identity,
+          activity: :identity,
           size: @output_size
         }
       },
@@ -34,17 +34,17 @@ defmodule NeuralNetworkTest do
       }
     }
 
-    result = NeuralNetwork.initialize(parameters)
+    network = NeuralNetwork.initialize(parameters)
 
-    {:ok, result: result}
+    {:ok, network: network}
   end
 
-  test "#initialize returns a running process", %{result: network} do
+  test "#initialize returns a running process", %{network: network} do
     assert network |> is_pid
     assert Process.alive?(network)
   end
 
-  test "#ask responds with a list of numbers", %{result: network} do
+  test "#ask responds with a list of numbers", %{network: network} do
     {:ok, result} = NeuralNetwork.ask(@input, network)
 
     assert length(result) == @output_size
@@ -53,7 +53,7 @@ defmodule NeuralNetworkTest do
     end)
   end
 
-  test "#test responds with a tuple", %{result: network} do
+  test "#test responds with a tuple", %{network: network} do
     input  = {@input, @expected_output}
 
     output = NeuralNetwork.test(input, network)
@@ -66,7 +66,7 @@ defmodule NeuralNetworkTest do
     assert cost |> is_number
   end
 
-  test "#train responds with a tuple", %{result: network} do
+  test "#train responds with a tuple", %{network: network} do
     input  = {@input, @expected_output}
 
     output = NeuralNetwork.train(input, network)

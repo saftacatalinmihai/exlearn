@@ -3,7 +3,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   Build functionality
   """
 
-  alias BrainTonic.{Activation, Distribution, Objective}
+  alias BrainTonic.{Activation, Distribution, Matrix, Objective, Vector}
 
   @doc """
   Initializez a neural network with the given setup
@@ -11,7 +11,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   @spec initialize(map) :: map
   def initialize(setup) do
     %{
-      layers:  %{
+      layers: %{
         hidden: hidden_layers,
         input:  input_layer,
         output: output_layer
@@ -26,16 +26,13 @@ defmodule BrainTonic.NeuralNetwork.Builder do
     random_function    = Distribution.determine(random)
 
     network = %{
-      activations: build_activations(layers),
-      biases:      build_biases(layers, random_function),
-      objective:   objective_function,
-      weights:     build_weights(layers, random_function)
+      activity:  build_activations(layers),
+      biases:    build_biases(layers, random_function),
+      objective: objective_function,
+      weights:   build_weights(layers, random_function)
     }
 
-    %{
-      network: network,
-      setup:   setup
-    }
+    %{network: network, setup: setup}
   end
 
   @spec build_activations([pos_integer,...]) :: list
@@ -44,63 +41,69 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   end
 
   @spec build_activations([pos_integer,...], []) :: list
-  defp build_activations([], total), do: total
-  defp build_activations([_|[]], total), do: total
+
+  defp build_activations([], total) do
+    Enum.reverse(total)
+  end
+
+  defp build_activations([_|[]], total) do
+    Enum.reverse(total)
+  end
+
   defp build_activations([_, second | rest], total) do
-    %{activation: function_setup} = second
+    %{activity: function_setup} = second
 
     activation = Activation.determine(function_setup)
 
-    result = total ++ [activation]
-
-    build_activations([second] ++ rest, result)
+    build_activations([second|rest], [activation|total])
   end
 
   @spec build_biases([pos_integer,...], (() -> float)) :: list
-  defp build_biases(layers, random_function) do
-    build_biases(layers, [], random_function)
+  defp build_biases(layers, function) do
+    build_biases(layers, [], function)
   end
 
   @spec build_biases([pos_integer,...], [], (() -> float)) :: list
-  defp build_biases([], total, _), do: total
-  defp build_biases([_|[]], total, _), do: total
-  defp build_biases([_, second | rest], total, random_function) do
-    biases = build_list(second, random_function)
-    result = total ++ [biases]
 
-    build_biases([second] ++ rest, result, random_function)
+  defp build_biases([], total, _) do
+    Enum.reverse(total)
+  end
+
+  defp build_biases([_|[]], total, _) do
+    Enum.reverse(total)
+  end
+
+  defp build_biases([_, second | rest], total, function) do
+    %{size: size} = second
+
+    biases = Matrix.build(1, size, function)
+    result = [biases|total]
+
+    build_biases([second|rest], result, function)
   end
 
   @spec build_weights([pos_integer,...], (() -> float)) :: list
-  defp build_weights(layers, random_function) do
-    build_weights(layers, [], random_function)
+  defp build_weights(layers, function) do
+    build_weights(layers, [], function)
   end
 
   @spec build_weights([pos_integer,...], [], (() -> float)) :: list
-  defp build_weights([], total, _), do: total
-  defp build_weights([_|[]], total, _), do: total
-  defp build_weights([first, second | rest], total, random_function) do
-    weights = build_matrix(first, second, random_function)
-    result  = total ++ [weights]
 
-    build_weights([second] ++ rest, result, random_function)
+  defp build_weights([], total, _) do
+    Enum.reverse(total)
   end
 
-  @spec build_matrix(%{}, %{}, (() -> float)) :: list
-  defp build_matrix(%{size: rows}, columns, random_function) do
-    Stream.unfold(rows, fn
-      0 -> nil
-      n -> {build_list(columns, random_function), n - 1}
-    end)
-    |> Enum.to_list
+  defp build_weights([_|[]], total, _) do
+    Enum.reverse(total)
   end
 
-  @spec build_list(%{}, (() -> float)) :: list
-  defp build_list(%{size: size}, random_function) do
-    Stream.unfold(size, fn
-      0 -> nil
-      n -> {random_function.(), n - 1}
-    end)
-    |> Enum.to_list
+  defp build_weights([first, second | rest], total, function) do
+    %{size: rows}    = first
+    %{size: columns} = second
+
+    weights = Matrix.build(rows, columns, function)
+    result  = [weights|total]
+
+    build_weights([second|rest], result, function)
   end
 end
