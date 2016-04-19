@@ -3,7 +3,7 @@ defmodule NeuralNetworkTest do
 
   alias BrainTonic.NeuralNetwork
 
-  @expected_output [1]
+  @expected_output [[1]]
   @hidden_sizes    [10]
   @input           [0, 1, 2, 3, 4]
   @input_size      5
