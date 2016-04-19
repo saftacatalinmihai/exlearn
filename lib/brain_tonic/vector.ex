@@ -57,4 +57,9 @@ defmodule BrainTonic.Vector do
     Stream.zip(first, second)
     |> Enum.map(fn({x, y}) -> x * y end)
   end
+
+  @spec multiplty_with_scalar([number], [number]) :: [number]
+  def multiplty_with_scalar(vector, scalar) do
+    Enum.map(vector, fn (x) -> x * scalar end)
+  end
 end

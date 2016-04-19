@@ -6,7 +6,7 @@ defmodule BrainTonic.Matrix do
   alias BrainTonic.Vector
 
   @doc """
-  Adds a list to the row of a 1:n matrix
+  Adds two matrices
   """
   @spec add([[number]], [[number]]) :: []
   def add(first, second) do
@@ -53,6 +53,25 @@ defmodule BrainTonic.Matrix do
   def multiply(first, second) do
     Stream.zip(first, second)
       |> Enum.map(fn({x, y}) -> Vector.multiply(x,y) end)
+  end
+
+  @doc """
+  Elementwise multiplication of a scalar
+  """
+  @spec multiplty_with_scalar([[]], [[]]) :: [[]]
+  def multiplty_with_scalar(matrix, scalar) do
+    Enum.map(matrix, fn (row) ->
+      Vector.multiplty_with_scalar(row, scalar)
+    end)
+  end
+
+  @doc """
+  Substracts two matrices
+  """
+  @spec substract([[number]], [[number]]) :: []
+  def substract(first, second) do
+    Stream.zip(first, second)
+      |> Enum.map(fn({x, y}) -> Vector.substract(x,y) end)
   end
 
   @doc """

@@ -29,8 +29,8 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     bias_change  = deltas
     weight_chage = calculate_weight_change(full_activity, deltas, [])
 
-    new_weights = calculate_new_weights(weights, weight_chage, state)
-    new_biases  = calculate_new_biases(biases, bias_change, state)
+    new_weights = calculate_new_matrix(weights, weight_chage, state)
+    new_biases  = calculate_new_matrix(biases, bias_change, state)
 
     create_new_network(state, new_weights, new_biases)
   end
@@ -80,18 +80,22 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
     calculate_weight_change(as, ds, [result|total])
   end
 
-  def calculate_new_weights(weights, weight_chage, network) do
-    # TODO
-    weights
+  def calculate_new_matrix(matrix, chage, state) do
+    %{setup: %{learning_rate: rate}} = state
+
+    Stream.zip(matrix, chage)
+      |> Enum.map(fn({x, y}) ->
+        z = Matrix.multiplty_with_scalar(y, rate)
+        Matrix.add(x,z)
+      end)
+      |> Enum.to_list
   end
 
-  def calculate_new_biases(biases, bias_change, network) do
-    # TODO
-    biases
-  end
+  def create_new_network(state, new_weights, new_biases) do
+    %{network: network} = state
+    %{weights: weights, biases: biases} = network
 
-  def create_new_network(network, new_weights, new_biases) do
-    # TODO
-    network
+    put_in(network, [:weights], new_weights)
+    |> put_in([:biases], new_biases)
   end
 end

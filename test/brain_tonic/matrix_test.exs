@@ -57,6 +57,16 @@ defmodule MatrixTest do
     assert result == expected
   end
 
+  test "#multiplty_with_scalar multiplies matrix element by a scalar" do
+    matrix   = [[1, 2, 3], [4, 5, 6]]
+    scalar   = 2
+    expected = [[2, 4, 6], [8, 10, 12]]
+
+    result = Matrix.multiplty_with_scalar(matrix, scalar)
+
+    assert result == expected
+  end
+
   test "#transpose transposes a matrix" do
     input    = [[1, 2, 3], [4, 5, 6]]
     expected = [[1, 4], [2, 5], [3, 6]]

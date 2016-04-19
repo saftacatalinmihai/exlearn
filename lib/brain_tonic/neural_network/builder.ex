@@ -76,7 +76,7 @@ defmodule BrainTonic.NeuralNetwork.Builder do
   defp build_biases([_, second | rest], total, function) do
     %{size: size} = second
 
-    biases = Vector.build(size, function)
+    biases = Matrix.build(1, size, function)
     result = [biases|total]
 
     build_biases([second|rest], result, function)

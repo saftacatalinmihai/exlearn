@@ -12,9 +12,9 @@ defmodule PropagatorTest do
     network = %{
       network: %{
         biases: [
-          [1, 2, 3],
-          [4, 5],
-          [6]
+          [[1, 2, 3]],
+          [[4, 5]],
+          [[6]]
         ],
         objective: %{derivative: o},
         weights: [
@@ -33,7 +33,8 @@ defmodule PropagatorTest do
             [2]
           ]
         ]
-      }
+      },
+      setup: %{learning_rate: 2}
     }
 
     forwarded = %{
@@ -57,16 +58,40 @@ defmodule PropagatorTest do
       output: [[1395]]
     }
 
-    {:ok, setup: %{network: network, forwarded: forwarded}}
+    {:ok, setup: %{network: network, forwarded: forwarded, derivative: o}}
   end
 
   test "#back_propagate returns a map", %{setup: setup} do
-    %{network: network, forwarded: forwarded} = setup
+    %{network: network, forwarded: forwarded, derivative: o} = setup
 
-    data      = {[1, 2, 3], [[1400]]}
+    data     = {[1, 2, 3], [[1400]]}
+    expected = %{
+      biases: [
+        [[-49, -108, -167]],
+        [[-6,  -15]],
+        [[-4]]
+      ],
+      objective: %{derivative: o},
+      weights: [
+        [
+          [-49,  -108, -167],
+          [-96,  -215, -334],
+          [-143, -322, -501]
+        ],
+        [
+          [-319, -638],
+          [-387, -776],
+          [-455, -914]
+        ],
+        [
+          [-3839],
+          [-5018]
+        ]
+      ]
+    }
+
     new_state = Propagator.back_propagate(network, forwarded, data)
 
-    IO.inspect new_state
-    # assert new_state |> is_map
+    assert new_state == expected
   end
 end

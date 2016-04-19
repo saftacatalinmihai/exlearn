@@ -22,7 +22,7 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f} = a
         output = Matrix.dot(w1, w2)
-          |> Matrix.add([b])
+          |> Matrix.add(b)
           |> Matrix.apply(f)
 
         new_network = %{weights: [output|ws], biases: bs, activity: as}
@@ -52,7 +52,7 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
       %{weights: [w1, w2|ws], biases: [b|bs], activity: [a|as]} ->
         %{function: f, derivative: d} = a
 
-        input    = Matrix.dot(w1, w2) |> Matrix.add([b])
+        input    = Matrix.dot(w1, w2) |> Matrix.add(b)
         output   = input |> Matrix.apply(f)
         activity = %{derivative: d, input: input, output: output}
 

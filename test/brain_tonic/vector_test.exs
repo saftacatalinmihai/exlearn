@@ -63,6 +63,16 @@ defmodule VectorTest do
     assert result == expected
   end
 
+  test "#multiplty_with_scalar multiplies matrix element by a scalar" do
+    vector   = [1, 2, 3, 4, 5, 6]
+    scalar   = 2
+    expected = [2, 4, 6, 8, 10, 12]
+
+    result = Vector.multiplty_with_scalar(vector, scalar)
+
+    assert result == expected
+  end
+
   test "#substract computes the element difference of two lists" do
     first    = [1, 2, 3]
     second   = [5, 3, 1]
