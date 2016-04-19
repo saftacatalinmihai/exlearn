@@ -97,10 +97,14 @@ defmodule BuilderTest do
 
     Enum.with_index(biases)
     |> Enum.each(fn
-      {element, index} when index == last - 1 ->
-        assert length(element) == @output_size
-      {element, index} ->
-        assert length(element) == Enum.at(@hidden_sizes, index)
+      {list, index} when index == last - 1 ->
+        assert length(list) == 1
+        [content] = list
+        assert length(content) == @output_size
+      {list, index} ->
+        assert length(list) == 1
+        [content] = list
+        assert length(content) == Enum.at(@hidden_sizes, index)
     end)
   end
 
@@ -117,9 +121,12 @@ defmodule BuilderTest do
         end)
       end)
     end)
-    Enum.each(biases, fn (lists) ->
-      Enum.each(lists, fn (element) ->
-        assert element >= @range_min && element <= @range_max
+
+    Enum.each(biases, fn (matrix) ->
+      Enum.each(matrix, fn (row) ->
+        Enum.each(row, fn (element) ->
+          assert element >= @range_min && element <= @range_max
+        end)
       end)
     end)
   end
