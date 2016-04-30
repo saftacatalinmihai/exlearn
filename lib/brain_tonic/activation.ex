@@ -13,6 +13,7 @@ defmodule BrainTonic.Activation do
           when function |> is_function and derivative |> is_function ->
         %{function: function, derivative: derivative}
       :identity -> identity_pair
+      :binary   -> binary_pair
     end
   end
 
@@ -20,6 +21,22 @@ defmodule BrainTonic.Activation do
   defp identity_pair do
     function   = fn (x) -> x end
     derivative = fn (_) -> 1 end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec binary_pair :: map
+  defp binary_pair do
+    function = fn
+      x when x < 0 -> 0
+      _            -> 1
+    end
+
+    derivative = fn
+      # TODO return some numerical value for x == 0
+      x when x == 0 -> :undefined
+      _             -> 0
+    end
 
     %{function: function, derivative: derivative}
   end

@@ -3,7 +3,7 @@ defmodule ActivationTest do
 
   alias BrainTonic.Activation
 
-  test "#determine return the given function pair" do
+  test "#determine a given function pair" do
     argument = 1
 
     expected_from_function   = 2
@@ -20,7 +20,7 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
-  test "#determine return the identity pair" do
+  test "#determine the identity pair" do
     argument = 10
 
     expected_from_function   = 10
@@ -29,6 +29,36 @@ defmodule ActivationTest do
     setup = :identity
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
+  test "#determine the binary pair" do
+    setup = :binary
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    argument = -1
+
+    expected_from_function   = 0
+    expected_from_derivative = 0
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 0
+
+    expected_from_function   = 1
+    expected_from_derivative = :undefined
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 1
+
+    expected_from_function   = 1
+    expected_from_derivative = 0
 
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
