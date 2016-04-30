@@ -105,4 +105,18 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the softsign pair" do
+    argument = 10
+
+    expected_from_function   = 0.9090909090909091
+    expected_from_derivative = 0.008264462809917356
+
+    setup = :softsign
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end

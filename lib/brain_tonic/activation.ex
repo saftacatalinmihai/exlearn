@@ -17,6 +17,7 @@ defmodule BrainTonic.Activation do
       :logistic -> logistic_pair
       :tanh     -> tanh_pair
       :arctan   -> arctan_pair
+      :softsign -> softsign_pair
     end
   end
 
@@ -70,6 +71,17 @@ defmodule BrainTonic.Activation do
   defp arctan_pair do
     function   = fn (x) -> :math.atan(x) end
     derivative = fn (x) -> 1 / (x * x + 1) end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec softsign_pair :: map
+  defp softsign_pair do
+    function   = fn (x) -> x / (1 + abs(x)) end
+    derivative = fn (x) ->
+      base = 1 + abs(x)
+      1 / (base * base)
+    end
 
     %{function: function, derivative: derivative}
   end
