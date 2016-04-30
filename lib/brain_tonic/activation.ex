@@ -14,6 +14,7 @@ defmodule BrainTonic.Activation do
         %{function: function, derivative: derivative}
       :identity -> identity_pair
       :binary   -> binary_pair
+      :logistic -> logistic_pair
     end
   end
 
@@ -36,6 +37,17 @@ defmodule BrainTonic.Activation do
       # TODO return some numerical value for x == 0
       x when x == 0 -> :undefined
       _             -> 0
+    end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec logistic_pair :: map
+  defp logistic_pair do
+    function   = fn (x) -> 1 / (1 + :math.exp(-x)) end
+    derivative = fn (x) ->
+      result = function.(x)
+      result * (1 - result)
     end
 
     %{function: function, derivative: derivative}
