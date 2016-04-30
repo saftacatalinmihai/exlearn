@@ -149,4 +149,34 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the prelu pair" do
+    setup = {:prelu, alpha: 10}
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    argument = -2
+
+    expected_from_function   = -20
+    expected_from_derivative = 10
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 0
+
+    expected_from_function   = 0
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 2
+
+    expected_from_function   = 2
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end
