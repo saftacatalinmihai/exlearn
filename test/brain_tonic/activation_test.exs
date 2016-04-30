@@ -91,4 +91,18 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the arctan pair" do
+    argument = 10
+
+    expected_from_function   = 1.4711276743037347
+    expected_from_derivative = 0.009900990099009901
+
+    setup = :arctan
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end

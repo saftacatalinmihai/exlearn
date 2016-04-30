@@ -16,6 +16,7 @@ defmodule BrainTonic.Activation do
       :binary   -> binary_pair
       :logistic -> logistic_pair
       :tanh     -> tanh_pair
+      :arctan   -> arctan_pair
     end
   end
 
@@ -54,7 +55,6 @@ defmodule BrainTonic.Activation do
     %{function: function, derivative: derivative}
   end
 
-
   @spec tanh_pair :: map
   defp tanh_pair do
     function   = fn (x) -> :math.tanh(x) end
@@ -62,6 +62,14 @@ defmodule BrainTonic.Activation do
       result = function.(x)
       1 - result * result
     end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec arctan_pair :: map
+  defp arctan_pair do
+    function   = fn (x) -> :math.atan(x) end
+    derivative = fn (x) -> 1 / (x * x + 1) end
 
     %{function: function, derivative: derivative}
   end
