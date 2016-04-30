@@ -20,6 +20,7 @@ defmodule BrainTonic.Activation do
       :softsign -> softsign_pair
       :relu     -> relu_pair
       {:prelu, alpha: alpha} -> prelu_pair(alpha)
+      {:elu,   alpha: alpha} -> elu_pair(alpha)
     end
   end
 
@@ -112,6 +113,21 @@ defmodule BrainTonic.Activation do
 
     derivative = fn
       x when x < 0 -> alpha
+      _            -> 1
+    end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec elu_pair(number) :: map
+  defp elu_pair(alpha) do
+    function = fn
+      x when x < 0 -> alpha * (:math.exp(x) - 1)
+      x            -> x
+    end
+
+    derivative = fn
+      x when x < 0 -> function.(x) + alpha
       _            -> 1
     end
 

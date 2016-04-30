@@ -179,4 +179,34 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the elu pair" do
+    setup = {:elu, alpha: 10}
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    argument = -2
+
+    expected_from_function   = -8.646647167633873
+    expected_from_derivative = 1.3533528323661272
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 0
+
+    expected_from_function   = 0
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 2
+
+    expected_from_function   = 2
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end
