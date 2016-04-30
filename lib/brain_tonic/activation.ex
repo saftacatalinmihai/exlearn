@@ -18,6 +18,7 @@ defmodule BrainTonic.Activation do
       :tanh     -> tanh_pair
       :arctan   -> arctan_pair
       :softsign -> softsign_pair
+      :relu     -> relu_pair
     end
   end
 
@@ -81,6 +82,21 @@ defmodule BrainTonic.Activation do
     derivative = fn (x) ->
       base = 1 + abs(x)
       1 / (base * base)
+    end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec relu_pair :: map
+  defp relu_pair do
+    function = fn
+      x when x < 0 -> 0
+      x            -> x
+    end
+
+    derivative = fn
+      x when x < 0 -> 0
+      _            -> 1
     end
 
     %{function: function, derivative: derivative}

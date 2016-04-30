@@ -119,4 +119,34 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the relu pair" do
+    setup = :relu
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    argument = -2
+
+    expected_from_function   = 0
+    expected_from_derivative = 0
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 0
+
+    expected_from_function   = 0
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 2
+
+    expected_from_function   = 2
+    expected_from_derivative = 1
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end
