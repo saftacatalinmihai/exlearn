@@ -77,4 +77,18 @@ defmodule ActivationTest do
     assert function.(argument)   == expected_from_function
     assert derivative.(argument) == expected_from_derivative
   end
+
+  test "#determine the tanh pair" do
+    argument = 10
+
+    expected_from_function   = 0.9999999958776927
+    expected_from_derivative = 8.244614546626394e-9
+
+    setup = :tanh
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
 end
