@@ -150,6 +150,20 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  test "#determine the softplus pair" do
+    argument = 10
+
+    expected_from_function   = 10.000045398899218
+    expected_from_derivative = 0.9999546021312976
+
+    setup = :softplus
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
   test "#determine the prelu pair" do
     setup = {:prelu, alpha: 10}
 

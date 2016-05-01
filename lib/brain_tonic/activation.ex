@@ -19,6 +19,7 @@ defmodule BrainTonic.Activation do
       :arctan   -> arctan_pair
       :softsign -> softsign_pair
       :relu     -> relu_pair
+      :softplus -> softplus_pair
       {:prelu, alpha: alpha} -> prelu_pair(alpha)
       {:elu,   alpha: alpha} -> elu_pair(alpha)
     end
@@ -100,6 +101,14 @@ defmodule BrainTonic.Activation do
       x when x < 0 -> 0
       _            -> 1
     end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec softplus_pair :: map
+  defp softplus_pair do
+    function   = fn (x) -> :math.log(1 + :math.exp(x)) end
+    derivative = fn (x) -> 1 / (1 + :math.exp(-x)) end
 
     %{function: function, derivative: derivative}
   end
