@@ -178,6 +178,20 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  test "#determine the sinusoid pair" do
+    argument = 0
+
+    expected_from_function   = 0
+    expected_from_derivative = 1
+
+    setup = :sinusoid
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
   test "#determine the prelu pair" do
     setup = {:prelu, alpha: 10}
 

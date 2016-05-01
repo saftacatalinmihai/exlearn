@@ -21,6 +21,7 @@ defmodule BrainTonic.Activation do
       :relu          -> relu_pair
       :softplus      -> softplus_pair
       :bent_identity -> bent_identity_pair
+      :sinusoid      -> sinusoid_pair
       {:prelu, alpha: alpha} -> prelu_pair(alpha)
       {:elu,   alpha: alpha} -> elu_pair(alpha)
     end
@@ -118,6 +119,14 @@ defmodule BrainTonic.Activation do
   defp bent_identity_pair do
     function   = fn (x) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
     derivative = fn (x) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec sinusoid_pair :: map
+  defp sinusoid_pair do
+    function   = fn (x) -> :math.sin(x) end
+    derivative = fn (x) -> :math.cos(x) end
 
     %{function: function, derivative: derivative}
   end
