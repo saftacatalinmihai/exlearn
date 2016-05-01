@@ -214,6 +214,20 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  test "#determine the gaussian pair" do
+    argument = 10
+
+    expected_from_function   = 3.720075976020836e-44
+    expected_from_derivative = -7.440151952041672e-43
+
+    setup = :gaussian
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
   test "#determine the prelu pair" do
     setup = {:prelu, alpha: 10}
 

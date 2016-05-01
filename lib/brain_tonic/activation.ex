@@ -23,6 +23,7 @@ defmodule BrainTonic.Activation do
       :bent_identity -> bent_identity_pair
       :sinusoid      -> sinusoid_pair
       :sinc          -> sinc_pair
+      :gaussian      -> gaussian_pair
       {:prelu, alpha: alpha} -> prelu_pair(alpha)
       {:elu,   alpha: alpha} -> elu_pair(alpha)
     end
@@ -143,6 +144,14 @@ defmodule BrainTonic.Activation do
       x when x == 0 -> 0
       x             -> :math.cos(x) / x - :math.sin(x) / (x * x)
     end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec gaussian_pair :: map
+  defp gaussian_pair do
+    function   = fn (x) -> :math.exp(-x * x) end
+    derivative = fn (x) -> -2 * x * :math.exp(-x * x) end
 
     %{function: function, derivative: derivative}
   end
