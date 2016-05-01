@@ -192,6 +192,28 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  test "#determine the sinc pair" do
+    setup = :sinc
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    argument = 0
+
+    expected_from_function   = 1
+    expected_from_derivative = 0
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+
+    argument = 1
+
+    expected_from_function   = 0.8414709848078965
+    expected_from_derivative = -0.30116867893975674
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
   test "#determine the prelu pair" do
     setup = {:prelu, alpha: 10}
 
