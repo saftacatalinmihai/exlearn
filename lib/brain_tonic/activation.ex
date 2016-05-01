@@ -12,14 +12,15 @@ defmodule BrainTonic.Activation do
       %{function: function, derivative: derivative}
           when function |> is_function and derivative |> is_function ->
         %{function: function, derivative: derivative}
-      :identity -> identity_pair
-      :binary   -> binary_pair
-      :logistic -> logistic_pair
-      :tanh     -> tanh_pair
-      :arctan   -> arctan_pair
-      :softsign -> softsign_pair
-      :relu     -> relu_pair
-      :softplus -> softplus_pair
+      :identity      -> identity_pair
+      :binary        -> binary_pair
+      :logistic      -> logistic_pair
+      :tanh          -> tanh_pair
+      :arctan        -> arctan_pair
+      :softsign      -> softsign_pair
+      :relu          -> relu_pair
+      :softplus      -> softplus_pair
+      :bent_identity -> bent_identity_pair
       {:prelu, alpha: alpha} -> prelu_pair(alpha)
       {:elu,   alpha: alpha} -> elu_pair(alpha)
     end
@@ -109,6 +110,14 @@ defmodule BrainTonic.Activation do
   defp softplus_pair do
     function   = fn (x) -> :math.log(1 + :math.exp(x)) end
     derivative = fn (x) -> 1 / (1 + :math.exp(-x)) end
+
+    %{function: function, derivative: derivative}
+  end
+
+  @spec bent_identity_pair :: map
+  defp bent_identity_pair do
+    function   = fn (x) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
+    derivative = fn (x) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
 
     %{function: function, derivative: derivative}
   end

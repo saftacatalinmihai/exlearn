@@ -164,6 +164,20 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  test "#determine the bent_identity pair" do
+    argument = 10
+
+    expected_from_function   = 14.524937810560445
+    expected_from_derivative = 1.4975185951049945
+
+    setup = :bent_identity
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument)   == expected_from_function
+    assert derivative.(argument) == expected_from_derivative
+  end
+
   test "#determine the prelu pair" do
     setup = {:prelu, alpha: 10}
 
