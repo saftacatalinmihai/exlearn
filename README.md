@@ -36,6 +36,58 @@ Example:
 }
 ```
 
+## Usage
+
+1. Create a network
+    ```elixir
+    setup = %{
+      layers: %{
+        hidden: [
+          %{
+            activity: :identity,
+            size: 1
+          }
+        ],
+        input: %{
+          size: 1
+        },
+        output: %{
+          activity: :identity,
+          size: 1
+        }
+      },
+      objective: :quadratic,
+      random: %{
+        distribution: :uniform,
+        range:        {-1, 1}
+      }
+    }
+
+    network = BrainTonic.NeuralNetwork.initialize(setup)
+    ```
+
+2. Train the network
+    ```elixir
+    parameters = %{
+      batch_size: 2,
+      data: [
+        {[0],  [0]},
+        {[1],  [1]},
+        {[2],  [2]},
+        {[9],  [9]},
+        {[10], [10]},
+        {[42], [42]}
+      ],
+      data_size:      6,
+      dropout:        0.5,
+      epochs:         50,
+      learning_rate:  0.5,
+      regularization: :L2
+    }
+
+    BrainTonic.NeuralNetwork.Feeder.feed(network, parameters)
+    ```
+
 ## Development
 
 1. Install the latest version of the following:
