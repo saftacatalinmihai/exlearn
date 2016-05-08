@@ -6,28 +6,6 @@ defmodule BrainTonic.NeuralNetwork do
   alias BrainTonic.NeuralNetwork.{Builder, Forwarder, Propagator}
 
   @doc """
-  Initalizez the neural network
-  """
-  @spec initialize(map) :: pid
-  def initialize(parameters) do
-    state = Builder.initialize(parameters)
-
-    spawn fn -> network_loop(state) end
-  end
-
-  @doc """
-  Trains the neural network
-  """
-  @spec train(any, pid) :: any
-  def train(input, pid) do
-    send pid, {:train, input, self()}
-
-    receive do
-      response -> response
-    end
-  end
-
-  @doc """
   Makes a prediction
   """
   @spec ask(any, pid) :: any
@@ -40,11 +18,45 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   @doc """
+  Configures the network hyper parameters
+  """
+  @spec configure(map, pid) :: any
+  def configure(parameters, pid) do
+    send pid, {:configure, parameters, self()}
+
+    receive do
+      response -> response
+    end
+  end
+
+  @doc """
+  Initalizez the neural network
+  """
+  @spec initialize(map) :: pid
+  def initialize(parameters) do
+    state = Builder.initialize(parameters)
+
+    spawn fn -> network_loop(state) end
+  end
+
+  @doc """
   Makes a prediction and returs the cost
   """
   @spec test(any, pid) :: any
   def test(input, pid) do
     send pid, {:test, input, self()}
+
+    receive do
+      response -> response
+    end
+  end
+
+  @doc """
+  Trains the neural network
+  """
+  @spec train(any, pid) :: any
+  def train(batch, pid) do
+    send pid, {:train, batch, self()}
 
     receive do
       response -> response
@@ -86,46 +98,47 @@ defmodule BrainTonic.NeuralNetwork do
   @spec network_loop(map) :: no_return
   defp network_loop(state) do
     receive do
-      {:train, input, caller} ->
-        new_state = train_network(input, state, caller)
-        network_loop(new_state)
       {:ask, input, caller} ->
         ask_network(input, state, caller)
         network_loop(state)
+      {:configure, parameters, caller} ->
+        new_state = configure_network(parameters, state)
+        send caller, :ok
+        network_loop(new_state)
       {:test, input, caller} ->
         test_network(input, state, caller)
         network_loop(state)
+      {:train, batch, caller} ->
+        new_state = train_network(batch, state, caller)
+        send caller, :ok
+        network_loop(new_state)
     end
   end
 
-  defp train_network(data, state, caller) do
-    {input, [target]} = data
-    forwarded       = Forwarder.feed_forward_for_activity(input, state)
-
-    %{output: [output]} = forwarded
-
-    %{network: %{objective: %{function: objective}}} = state
-
-    cost = objective.(target, output)
-
-    send caller, {:ok, {output, cost}}
-
-    Propagator.back_propagate(state, forwarded, data)
-  end
-
   defp ask_network(input, state, caller) do
-    [output] = Forwarder.feed_forward_for_output(input, state)
+    [output] = Forwarder.forward_for_output(input, state)
 
     send caller, {:ok, output}
   end
 
+  @spec configure_network(map, map) :: map
+  defp configure_network(parameters, state) do
+    put_in(state, [:parameters], parameters)
+  end
+
   defp test_network({input, [target]}, state, caller) do
-    [output] = Forwarder.feed_forward_for_output(input, state)
+    [output] = Forwarder.forward_for_output(input, state)
 
     %{network: %{objective: %{function: objective}}} = state
 
     cost = objective.(target, output)
 
     send caller, {:ok, {output, cost}}
+  end
+
+  @spec train_network([{[], []}], %{}, pid) :: map
+  defp train_network(batches, state, caller) do
+    Forwarder.forward_for_activity(batches, state)
+    |> Propagator.back_propagate(batches, state)
   end
 end

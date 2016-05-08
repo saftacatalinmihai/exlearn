@@ -34,7 +34,7 @@ defmodule PropagatorTest do
           ]
         ]
       },
-      setup: %{learning_rate: 2}
+      parameters: %{learning_rate: 2}
     }
 
     forwarded = %{
@@ -64,7 +64,7 @@ defmodule PropagatorTest do
   test "#back_propagate returns a map", %{setup: setup} do
     %{network: network, forwarded: forwarded, derivative: o} = setup
 
-    data     = {[1, 2, 3], [[1400]]}
+    data     = [{[1, 2, 3], [1400]}]
     expected = %{
       biases: [
         [[-49, -108, -167]],

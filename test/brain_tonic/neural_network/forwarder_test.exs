@@ -8,12 +8,12 @@ defmodule ForwarderTest do
   # - there are 2 hidden layers
   # - h1 has 3 neurons
   # - h2 has 2 neurons
-  # - output has one value
+  # - output has 2 values
   #
   # I     H1    H2    O
-  #   3x3   3x2   2x1
+  #   3x3   3x2   2x2
   # O     O     O     O
-  # O     O     O
+  # O     O     O     O
   # O     O
   setup do
     f = fn (x) -> x + 1 end
@@ -27,9 +27,9 @@ defmodule ForwarderTest do
           %{function: f, derivative: d}
         ],
         biases: [
-          [[1, 2, 3]],
-          [[4, 5]],
-          [[6]]
+          [1, 2, 3],
+          [4, 5],
+          [6, 7]
         ],
         weights: [
           [
@@ -43,8 +43,8 @@ defmodule ForwarderTest do
             [5, 6]
           ],
           [
-            [1],
-            [2]
+            [1, 2],
+            [3, 4]
           ]
         ]
       }
@@ -53,41 +53,67 @@ defmodule ForwarderTest do
     {:ok, setup: %{state: state, derivative: d}}
   end
 
-  test "#feed_forward_for_output returns a list of numbers", %{setup: setup} do
+  test "#forward_for_output returns the outputs", %{setup: setup} do
     %{state: state} = setup
 
-    input  = [1, 2, 3]
-    output = Forwarder.feed_forward_for_output(input, state)
+    inputs   = [[1, 2, 3], [2, 3, 4]]
+    expected = [[1897, 2784], [2620, 3846]]
 
-    assert output == [[1395]]
+    outputs = Forwarder.forward_for_output(inputs, state)
+
+    assert outputs == expected
   end
 
-  test "#feed_forward_for_activity returns a map", %{setup: setup} do
-    %{state: state, derivative: d} = setup
+  test "#forward_for_activity returns the activities", %{setup: setup} do
+    %{state: state, derivative: derivative} = setup
 
-    input    = [1, 2, 3]
-    expected = %{
+    input = [[1, 2, 3], [2, 3, 4]]
+
+    first_activity = %{
       activity: [
         %{
-          derivative: d,
+          derivative: derivative,
           input:      [[31, 38, 45]],
           output:     [[32, 39, 46]]
         },
         %{
-          derivative: d,
+          derivative: derivative,
           input:      [[383, 501]],
           output:     [[384, 502]]
         },
         %{
-          derivative: d,
-          input:      [[1394]],
-          output:     [[1395]]
+          derivative: derivative,
+          input:      [[1896, 2783]],
+          output:     [[1897, 2784]]
         }
       ],
-      output: [[1395]]
+      output: [1897, 2784]
     }
 
-    result = Forwarder.feed_forward_for_activity(input, state)
+    second_activity = %{
+      activity: [
+        %{
+          derivative: derivative,
+          input:      [[43, 53, 63]],
+          output:     [[44, 54, 64]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[530, 693]],
+          output:     [[531, 694]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[2619, 3845]],
+          output:     [[2620, 3846]]
+        }
+      ],
+      output: [2620, 3846]
+    }
+
+    expected = [first_activity, second_activity]
+
+    result = Forwarder.forward_for_activity(input, state)
 
     assert result == expected
   end

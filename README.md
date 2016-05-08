@@ -81,7 +81,7 @@ Example:
       data_size:      6,
       dropout:        0.5,
       epochs:         50,
-      learning_rate:  0.5,
+      learning_rate:  0.6,
       regularization: :L2
     }
 

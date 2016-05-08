@@ -8,8 +8,8 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(map, list, number) :: map
-  def back_propagate(state, forwarded, {input, [target]}) do
+  @spec back_propagate(%{}, [%{}], [{[], []}]) :: map
+  def back_propagate(state, activities, batches) do
     %{
       network: %{
         biases:    biases,
@@ -18,55 +18,72 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
       }
     } = state
 
-    %{activity: activity, output: [output]} = forwarded
+    # deltas = calculate_detlas(state, activities, batches)
+    #
+    # bias_change  = deltas
+    # weight_chage = calculate_weight_change(state, deltas)
+    #
+    # new_weights = calculate_new_matrix(weight_chage, state)
+    # new_biases  = calculate_new_matrix(bias_change,  state)
+    #
+    # create_new_network(state, new_weights, new_biases)
 
-    cost_gradient = [derivative.(target, output)]
-
-    deltas = calculate_detlas(weights, activity, cost_gradient)
-
-    full_activity = [%{output: [input]}|activity]
-
-    bias_change  = deltas
-    weight_chage = calculate_weight_change(full_activity, deltas, [])
-
-    new_weights = calculate_new_matrix(weights, weight_chage, state)
-    new_biases  = calculate_new_matrix(biases, bias_change, state)
-
-    create_new_network(state, new_weights, new_biases)
+    # %{activity: activity, output: [output]} = forwarded
+    #
+    # cost_gradient = [derivative.(target, output)]
+    #
+    # deltas = calculate_detlas(weights, activity, cost_gradient)
+    #
+    # full_activity = [%{output: [input]}|activity]
+    #
+    # bias_change  = deltas
+    # weight_chage = calculate_weight_change(full_activity, deltas, [])
+    #
+    # new_weights = calculate_new_matrix(weights, weight_chage, state)
+    # new_biases  = calculate_new_matrix(biases, bias_change, state)
+    #
+    # create_new_network(state, new_weights, new_biases)
   end
 
-  def calculate_detlas(ws, as, cost_gradient) do
-    weights    = Enum.reverse(ws)
-    activities = Enum.reverse(as)
+  defp calculate_detlas(state, activities, batches) do
 
-    [activity|rest] = activities
-    %{derivative: derivative, input: input} = activity
-
-    input_gradient = Matrix.apply(input, derivative)
-
-    delta = Matrix.multiply(cost_gradient, input_gradient)
-
-    calculate_detla(weights, rest, [delta])
   end
 
-  def calculate_detla(_, [], totals) do
-    totals
-  end
 
-  def calculate_detla([w|ws], [a|as], deltas) do
-    %{derivative: d, input: i} = a
 
-    [delta|_] = deltas
 
-    wt = Matrix.transpose(w)
-
-    output_gradient = Matrix.dot(delta, wt)
-    input_gradient  = Matrix.apply(i, d)
-
-    next_delta = Matrix.multiply(output_gradient, input_gradient)
-
-    calculate_detla(ws, as, [next_delta|deltas])
-  end
+  # def calculate_detlas(ws, as, cost_gradient) do
+  #   weights    = Enum.reverse(ws)
+  #   activities = Enum.reverse(as)
+  #
+  #   [activity|rest] = activities
+  #   %{derivative: derivative, input: input} = activity
+  #
+  #   input_gradient = Matrix.apply(input, derivative)
+  #
+  #   delta = Matrix.multiply(cost_gradient, input_gradient)
+  #
+  #   calculate_detla(weights, rest, [delta])
+  # end
+  #
+  # def calculate_detla(_, [], totals) do
+  #   totals
+  # end
+  #
+  # def calculate_detla([w|ws], [a|as], deltas) do
+  #   %{derivative: d, input: i} = a
+  #
+  #   [delta|_] = deltas
+  #
+  #   wt = Matrix.transpose(w)
+  #
+  #   output_gradient = Matrix.dot(delta, wt)
+  #   input_gradient  = Matrix.apply(i, d)
+  #
+  #   next_delta = Matrix.multiply(output_gradient, input_gradient)
+  #
+  #   calculate_detla(ws, as, [next_delta|deltas])
+  # end
 
   def calculate_weight_change(_, [], totals) do
     Enum.reverse(totals)
