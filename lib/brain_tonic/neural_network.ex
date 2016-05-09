@@ -137,8 +137,8 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   @spec train_network([{[], []}], %{}, pid) :: map
-  defp train_network(batches, state, caller) do
-    Forwarder.forward_for_activity(batches, state)
-    |> Propagator.back_propagate(batches, state)
+  defp train_network(batch, state, caller) do
+    Forwarder.forward_for_activity(batch, state)
+    |> Propagator.back_propagate(batch, state)
   end
 end

@@ -14,7 +14,7 @@ defmodule PropagatorTest do
         biases: [
           [[1, 2, 3]],
           [[4, 5]],
-          [[6]]
+          [[6, 7]]
         ],
         objective: %{derivative: o},
         weights: [
@@ -29,15 +29,15 @@ defmodule PropagatorTest do
             [5, 6]
           ],
           [
-            [1],
-            [2]
+            [1, 2],
+            [3, 4]
           ]
         ]
       },
       parameters: %{learning_rate: 2}
     }
 
-    forwarded = %{
+    first_activity = %{
       activity: [
         %{
           derivative: d,
@@ -51,12 +51,35 @@ defmodule PropagatorTest do
         },
         %{
           derivative: d,
-          input:      [[1394]],
-          output:     [[1395]]
+          input:      [[1896, 2783]],
+          output:     [[1897, 2784]]
         }
       ],
-      output: [[1395]]
+      output: [1897, 2784]
     }
+
+    second_activity = %{
+      activity: [
+        %{
+          derivative: d,
+          input:      [[43, 53, 63]],
+          output:     [[44, 54, 64]]
+        },
+        %{
+          derivative: d,
+          input:      [[530, 693]],
+          output:     [[531, 694]]
+        },
+        %{
+          derivative: d,
+          input:      [[2619, 3845]],
+          output:     [[2620, 3846]]
+        }
+      ],
+      output: [2620, 3846]
+    }
+
+    forwarded = [first_activity, second_activity]
 
     {:ok, setup: %{network: network, forwarded: forwarded, derivative: o}}
   end
@@ -64,33 +87,40 @@ defmodule PropagatorTest do
   test "#back_propagate returns a map", %{setup: setup} do
     %{network: network, forwarded: forwarded, derivative: o} = setup
 
-    data     = [{[1, 2, 3], [1400]}]
+    data = [
+      {[1, 2, 3], [1900, 2800]},
+      {[2, 3, 4], [2600, 3800]}
+    ]
+
     expected = %{
-      biases: [
-        [[-49, -108, -167]],
-        [[-6,  -15]],
-        [[-4]]
-      ],
-      objective: %{derivative: o},
-      weights: [
-        [
-          [-49,  -108, -167],
-          [-96,  -215, -334],
-          [-143, -322, -501]
+      network: %{
+        biases: [
+          [[-837, -1828, -2819]],
+          [[-150, -337]],
+          [[-28,  -53]]
         ],
-        [
-          [-319, -638],
-          [-387, -776],
-          [-455, -914]
-        ],
-        [
-          [-3839],
-          [-5018]
+        objective: %{derivative: o},
+        weights: [
+          [
+            [-2037, -4452, -6867 ],
+            [-2872, -6279, -9686 ],
+            [-3707, -8106, -12505]
+          ],
+          [
+            [-7615,  -16798],
+            [-9363,  -20654],
+            [-11111, -24510]
+          ],
+          [
+            [-18935, -36562],
+            [-24745, -47780]
+          ]
         ]
-      ]
+      },
+      parameters: %{learning_rate: 2}
     }
 
-    new_state = Propagator.back_propagate(network, forwarded, data)
+    new_state = Propagator.back_propagate(forwarded, data, network)
 
     assert new_state == expected
   end

@@ -27,9 +27,9 @@ defmodule ForwarderTest do
           %{function: f, derivative: d}
         ],
         biases: [
-          [1, 2, 3],
-          [4, 5],
-          [6, 7]
+          [[1, 2, 3]],
+          [[4, 5]],
+          [[6, 7]]
         ],
         weights: [
           [

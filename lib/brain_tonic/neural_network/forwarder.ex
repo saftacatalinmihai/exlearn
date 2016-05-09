@@ -25,7 +25,7 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
 
         output = Enum.map(batch, fn (sample) ->
           Matrix.dot(sample, w)
-            |> Matrix.add([b])
+            |> Matrix.add(b)
             |> Matrix.apply(f)
         end)
 
@@ -60,7 +60,7 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
         %{function: f, derivative: d} = a
 
         activity = Enum.map(batch, fn (sample) ->
-          input  = Matrix.dot(sample, w) |> Matrix.add([b])
+          input  = Matrix.dot(sample, w) |> Matrix.add(b)
           output = input |> Matrix.apply(f)
 
           %{derivative: d, input: input, output: output}
