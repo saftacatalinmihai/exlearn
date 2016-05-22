@@ -3,7 +3,7 @@ defmodule NeuralNetworkTest do
 
   alias BrainTonic.NeuralNetwork
 
-  @expected_output [[1]]
+  @expected_output [1]
   @hidden_sizes    [10]
   @input           [0, 1, 2, 3, 4]
   @input_size      5
@@ -26,7 +26,7 @@ defmodule NeuralNetworkTest do
           size: @output_size
         }
       },
-      objective: :quadratic,
+      objective:  :quadratic,
       random: %{
         distribution: :uniform,
         range:        {-1, 1}
@@ -34,12 +34,13 @@ defmodule NeuralNetworkTest do
     }
 
     network = NeuralNetwork.initialize(parameters)
+    NeuralNetwork.configure(%{learning_rate: 0.5}, network)
 
     {:ok, network: network}
   end
 
   test "#ask responds with a list of numbers", %{network: network} do
-    {:ok, result} = NeuralNetwork.ask(@input, network)
+    {:ok, result} = NeuralNetwork.ask([@input], network)
 
     assert length(result) == @output_size
     Enum.each(result, fn (element) ->
@@ -62,7 +63,7 @@ defmodule NeuralNetworkTest do
   end
 
   test "#test responds with a tuple", %{network: network} do
-    input  = {@input, @expected_output}
+    input  = [{@input, @expected_output}]
 
     output = NeuralNetwork.test(input, network)
     {:ok, {result, cost}} = output
@@ -75,15 +76,11 @@ defmodule NeuralNetworkTest do
   end
 
   test "#train responds with a tuple", %{network: network} do
-    input  = {@input, @expected_output}
+    input    = [{@input, @expected_output}]
+    expected = :ok
 
-    output = NeuralNetwork.train(input, network)
-    {:ok, {result, cost}} = output
+    result = NeuralNetwork.train(input, network)
 
-    assert length(result) == @output_size
-    Enum.each(result, fn (element) ->
-      assert element |> is_number
-    end)
-    assert cost |> is_number
+    assert result == expected
   end
 end

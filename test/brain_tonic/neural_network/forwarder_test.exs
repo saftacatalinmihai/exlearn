@@ -67,7 +67,10 @@ defmodule ForwarderTest do
   test "#forward_for_activity returns the activities", %{setup: setup} do
     %{state: state, derivative: derivative} = setup
 
-    input = [[1, 2, 3], [2, 3, 4]]
+    input = [
+      {[1, 2, 3], [1900, 2800]},
+      {[2, 3, 4], [2600, 3800]}
+    ]
 
     first_activity = %{
       activity: [

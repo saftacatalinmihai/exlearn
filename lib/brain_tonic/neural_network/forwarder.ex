@@ -9,8 +9,8 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
   Propagates input forward trough a network and return the output
   """
   @spec forward_for_output([[number]], map) :: [[number]]
-  def forward_for_output(inputs, state) do
-    inputs
+  def forward_for_output(batch, state) do
+    batch
       |> full_network(state)
       |> calculate_output
   end
@@ -39,8 +39,8 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
   Propagates input forward trough a network and return the activity
   """
   @spec forward_for_activity([number], map) :: [map]
-  def forward_for_activity(input, state) do
-    input
+  def forward_for_activity(batch, state) do
+    batch
       |> full_network(state)
       |> calculate_activity([])
   end
@@ -75,11 +75,16 @@ defmodule BrainTonic.NeuralNetwork.Forwarder do
 
   # Prepends the input as a matrix to the weight list
   @spec full_network([[number]], map) :: map
-  defp full_network(inputs, state) do
+  defp full_network(batch, state) do
     %{network: network} = state
     %{weights: weights} = network
 
-    input_list = Enum.map(inputs, fn (input) -> [input] end)
+    input_list = Enum.map(batch, fn (sample) ->
+      case sample do
+        {input, _} -> [input]
+        input when is_list(input) -> [input]
+      end
+    end)
 
     put_in(network, [:weights], [input_list|weights])
   end

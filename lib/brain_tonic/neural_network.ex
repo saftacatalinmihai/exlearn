@@ -126,14 +126,16 @@ defmodule BrainTonic.NeuralNetwork do
     put_in(state, [:parameters], parameters)
   end
 
-  defp test_network({input, [target]}, state, caller) do
-    [output] = Forwarder.forward_for_output(input, state)
+  defp test_network(batch, state, caller) do
+    [output] = Forwarder.forward_for_output(batch, state)
 
     %{network: %{objective: %{function: objective}}} = state
 
-    cost = objective.(target, output)
+    targets = Enum.map(batch, fn ({_, [target]}) -> target end)
 
-    send caller, {:ok, {output, cost}}
+    costs = objective.(targets, output)
+
+    send caller, {:ok, {output, costs}}
   end
 
   @spec train_network([{[], []}], %{}, pid) :: map

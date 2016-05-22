@@ -1,10 +1,36 @@
 defmodule FeederTest do
   use ExUnit.Case, async: true
 
+  alias BrainTonic.NeuralNetwork
   alias BrainTonic.NeuralNetwork.Feeder
 
   setup do
-    parameters = %{
+    network_parameters = %{
+      layers: %{
+        hidden: [
+          %{
+            activity: :identity,
+            size:     1
+          }
+        ],
+        input: %{
+          size: 1
+        },
+        output: %{
+          activity: :identity,
+          size: 1
+        }
+      },
+      objective: :quadratic,
+      random: %{
+        distribution: :uniform,
+        range:        {-1, 1}
+      }
+    }
+
+    network = NeuralNetwork.initialize(network_parameters)
+
+    input = %{
       batch_size: 2,
       data: [
         {[0],  [0]},
@@ -21,12 +47,10 @@ defmodule FeederTest do
       regularization: :L2
     }
 
-    {:ok, parameters: parameters}
+    {:ok, input: input, network: network}
   end
 
-  test "#feed can be called", %{parameters: parameters} do
-    network = nil
-
-    Feeder.feed(network, parameters)
+  test "#feed can be called", %{input: input, network: network} do
+    Feeder.feed(network, input)
   end
 end
