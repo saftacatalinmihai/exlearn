@@ -33,17 +33,17 @@ defmodule FeederTest do
     input = %{
       batch_size: 2,
       data: [
-        {[0],  [0]},
-        {[1],  [1]},
-        {[2],  [2]},
-        {[9],  [9]},
-        {[10], [10]},
-        {[42], [42]}
+        {[0], [0]},
+        {[1], [1]},
+        {[2], [2]},
+        {[3], [3]},
+        {[4], [4]},
+        {[5], [5]}
       ],
       data_size:      6,
       dropout:        0.5,
-      epochs:         50,
-      learning_rate:  0.5,
+      epochs:         5,
+      learning_rate:  0.005,
       regularization: :L2
     }
 
