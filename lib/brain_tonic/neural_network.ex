@@ -30,6 +30,29 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   @doc """
+  Feeds input to the NeuralNetwork
+  """
+  @spec feed(pid, [{[number], [number]}]) :: atom
+  def feed(network, parameters) do
+    %{epochs: epochs} = parameters
+    feed_network(network, parameters, epochs)
+  end
+
+  @spec feed_network(map, pid, number) :: any
+  defp feed_network(network, parameters, 0),     do: :ok
+  defp feed_network(network, parameters, epochs) do
+    %{batch_size: batch_size, data: data, data_size: data_size} = parameters
+
+    batches = Enum.shuffle(data) |> Enum.chunk(batch_size)
+
+    Enum.each(batches, fn (batch) ->
+      train(batch, network)
+    end)
+
+    feed_network(network, parameters, epochs - 1)
+  end
+
+  @doc """
   Initalizez the neural network
   """
   @spec initialize(map) :: pid
@@ -116,7 +139,7 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   defp ask_network(input, state, caller) do
-    [output] = Forwarder.forward_for_output(input, state)
+    output = Forwarder.forward_for_output(input, state)
 
     send caller, {:ok, output}
   end
@@ -127,15 +150,16 @@ defmodule BrainTonic.NeuralNetwork do
   end
 
   defp test_network(batch, state, caller) do
-    [output] = Forwarder.forward_for_output(batch, state)
+    outputs = Forwarder.forward_for_output(batch, state)
 
     %{network: %{objective: %{function: objective}}} = state
 
-    targets = Enum.map(batch, fn ({_, [target]}) -> target end)
+    targets = Enum.map(batch, fn ({_, target}) -> target end)
 
-    costs = objective.(targets, output)
+    costs = Enum.zip(targets, outputs)
+      |> Enum.map(fn ({target, output}) -> objective.(target, output) end)
 
-    send caller, {:ok, {output, costs}}
+    send caller, {:ok, {outputs, costs}}
   end
 
   @spec train_network([{[], []}], %{}, pid) :: map
