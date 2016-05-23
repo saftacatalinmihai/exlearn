@@ -93,7 +93,7 @@ defmodule BrainTonic.NeuralNetwork.Propagator do
 
     Stream.zip(matrix, chage)
       |> Enum.map(fn({x, y}) ->
-        z = Matrix.multiplty_with_scalar(y, rate)
+        z = Matrix.multiply_with_scalar(y, rate)
         Matrix.substract(x,z)
       end)
       |> Enum.to_list

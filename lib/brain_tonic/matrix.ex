@@ -58,10 +58,10 @@ defmodule BrainTonic.Matrix do
   @doc """
   Elementwise multiplication of a scalar
   """
-  @spec multiplty_with_scalar([[]], [[]]) :: [[]]
-  def multiplty_with_scalar(matrix, scalar) do
+  @spec multiply_with_scalar([[]], [[]]) :: [[]]
+  def multiply_with_scalar(matrix, scalar) do
     Enum.map(matrix, fn (row) ->
-      Vector.multiplty_with_scalar(row, scalar)
+      Vector.multiply_with_scalar(row, scalar)
     end)
   end
 
