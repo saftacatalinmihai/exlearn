@@ -128,6 +128,10 @@ Example:
 7. Run dialyzer
     ```bash
     docker run --rm -it -v "$PWD":/work braintonic mix dialyzer
+
+8. Run samples
+
+    docker run --rm -it -v "$PWD":/work braintonic mix run samples/or.exs
     ```
 
 ## Misc
