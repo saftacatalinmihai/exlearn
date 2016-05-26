@@ -2,8 +2,8 @@ alias BrainTonic.NeuralNetwork, as: NN
 
 network_parameters = %{
   layers: %{
-    input:   %{size: 2},
-    hidden: [%{activity: :logistic, size: 4}],
+    input:   %{size: 1},
+    hidden: [%{activity: :logistic, size: 2}],
     output:  %{activity: :tanh,     size: 1}
   },
   objective: :quadratic,
@@ -21,16 +21,14 @@ configuration = %{
 NN.configure(configuration, network)
 
 data = [
-  {[0, 0], [0]},
-  {[0, 1], [1]},
-  {[1, 0], [1]},
-  {[1, 1], [0]}
+  {[0], [1]},
+  {[1], [0]}
 ]
 
 input = %{
   batch_size: 2,
   data:       data,
-  data_size:  4,
+  data_size:  2,
   epochs:     1000
 }
 
