@@ -6,87 +6,136 @@ Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
 ## Neural Network
 
+### API
+
+| Function   | Arguments | Return |
+| --------   | --------- | ------ |
+| ask        |           |        |
+| configure  |           |        |
+| feed       |           |        |
+| load       |           |        |
+| initialize |           |        |
+| inspect    |           |        |
+| save       |           |        |
+| test       |           |        |
+| train      |           |        |
+
 ### Parameters
 
-Example:
+#### Network Structure
+
+| Key       | Value |
+| ---       | ----- |
+| layers    |       |
+| objective |       |
+| random    |       |
+
+#### Layer Structure
+
+| Key    | Value |
+| ---    | ---   |
+| input  |       |
+| hidden |       |
+| output |       |
+
+#### Activation Functions
+
+| Name | Arguments | Return |
+| ---- | --------- | ------ |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+
+#### Objective Functions
+
+| Name | Arguments | Return |
+| ---- | --------- | ------ |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+|      |           |        |
+
+#### Learning
+
+| Key            | Value |
+| ---            | ---   |
+| dropout        |       |
+| learning_rate  |       |
+| regularization |       |
+
+#### Data Feed
+
+| Key        | Value |
+| ---        | ---   |
+| batch_size |       |
+| data       |       |
+| data_size  |       |
+| epochs     |       |
+
+#### Example
 
 ```elixir
-%{
+alias BrainTonic.NeuralNetwork, as: NN
+
+# Define the network structure
+structure = %{
   layers: %{
-    hidden: [
-      %{
-        activity: :identity,
-        size: 1
-      }
-    ],
-    input: %{
-      size: 1
-    },
-    output: %{
-      activity: :identity,
-      size: 1
-    }
+    input:   %{size: 1},
+    hidden: [%{activity: :identity, size: 1}],
+    output:  %{activity: :identity, size: 1}
   },
-  learning_rate: 0.5,
   objective: :quadratic,
-  random: %{
-    distribution: :uniform,
-    range:        {-1, 1}
-  }
+  random:    %{distribution: :uniform, range: {-1, 1}}
 }
+
+# Initialize the network
+network = NN.initialize(structure)
+
+# Define the learning configuration
+configuration = %{
+  dropout:        0.5,
+  learning_rate:  0.5,
+  regularization: :L2
+}
+
+# Configure the network
+NN.configure(configuration, network)
+
+# Define the training data
+data = [
+  {[0, 0], [0]},
+  {[0, 1], [0]},
+  {[1, 0], [0]},
+  {[1, 1], [1]}
+]
+
+# Define the network input
+input = %{
+  batch_size: 2,
+  data:       data,
+  data_size:  4,
+  epochs:     1000
+}
+
+# Feed the input into the network
+NN.feed(network, input)
+
+# Ask the network to predict values
+result = NN.ask(data, network)
+
+IO.inspect result
 ```
-
-## Usage
-
-1. Create a network
-    ```elixir
-    setup = %{
-      layers: %{
-        hidden: [
-          %{
-            activity: :identity,
-            size: 1
-          }
-        ],
-        input: %{
-          size: 1
-        },
-        output: %{
-          activity: :identity,
-          size: 1
-        }
-      },
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
-      }
-    }
-
-    network = BrainTonic.NeuralNetwork.initialize(setup)
-    ```
-
-2. Train the network
-    ```elixir
-    parameters = %{
-      batch_size: 2,
-      data: [
-        {[0],  [0]},
-        {[1],  [1]},
-        {[2],  [2]},
-        {[9],  [9]},
-        {[10], [10]},
-        {[42], [42]}
-      ],
-      data_size:      6,
-      dropout:        0.5,
-      epochs:         50,
-      learning_rate:  0.6,
-      regularization: :L2
-    }
-
-    BrainTonic.NeuralNetwork.Feeder.feed(network, parameters)
-    ```
 
 ## Development
 
@@ -133,9 +182,6 @@ Example:
 
     docker run --rm -it -v "$PWD":/work braintonic mix run samples/or.exs
     ```
-
-## Misc
-Generate X samples with `mix do generate X`
 
 ## LICENSE
 

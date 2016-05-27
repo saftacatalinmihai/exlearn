@@ -1,16 +1,16 @@
 alias BrainTonic.NeuralNetwork, as: NN
 
-network_parameters = %{
+structure_parameters = %{
   layers: %{
     input:   %{size: 2},
     hidden: [%{activity: :logistic, size: 2}],
-    output:  %{activity: :logistic, size: 1}
+    output:  %{activity: :tanh, size: 1}
   },
   objective: :quadratic,
   random:    %{distribution: :uniform, range: {-1, 1}}
 }
 
-network = NN.initialize(network_parameters)
+network = NN.initialize(structure_parameters)
 
 configuration = %{
   dropout:        0.5,
