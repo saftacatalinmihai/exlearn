@@ -137,49 +137,57 @@ result = NN.ask(data, network)
 IO.inspect result
 ```
 
-## Development
+## Jupyter Notebook
 
-1. Install the latest version of the following:
-    * Docker
-    * Docker Compose
-    * Git
-
-2. Clone the repository
+1. Build the notebook container
     ```bash
-    git clone git@github.com:sdwolf/braintonic.git
+    docker build                        \
+      -t braintonic-jupyter             \
+      --build-arg HOST_USER_UID=`id -u` \
+      --build-arg HOST_USER_GID=`id -g` \
+      -f docker/notebook/Dockerfile     \
+      "$PWD"
     ```
 
-3. Build the project container
+2. Run the server
+    ```bash
+    docker run --rm -it -p 8888:8888 -v "$PWD/notebook":/work braintonic-jupyter
+    ```
+
+## Development
+
+1. Build the project container
     ```bash
     docker build                        \
       -t braintonic                     \
       --build-arg HOST_USER_UID=`id -u` \
       --build-arg HOST_USER_GID=`id -g` \
-      -f docker/Dockerfile              \
-      .
+      -f docker/project/Dockerfile      \
+      "$PWD"
     ```
 
-4. Run an interactive shell
+2. Run an interactive shell
     ```bash
     docker run --rm -it -v "$PWD":/work braintonic iex -S mix
     ```
 
-5. Update dependencies
+3. Update dependencies
     ```bash
     docker run --rm -it -v "$PWD":/work braintonic mix deps.get
     ```
 
-6. Run tests
+4. Run tests
     ```bash
     docker run --rm -it -v "$PWD":/work braintonic mix test
     ```
 
-7. Run dialyzer
+5. Run dialyzer
     ```bash
     docker run --rm -it -v "$PWD":/work braintonic mix dialyzer
+    ```
 
-8. Run samples
-
+6. Run samples
+    ```bash
     docker run --rm -it -v "$PWD":/work braintonic mix run samples/or.exs
     ```
 
