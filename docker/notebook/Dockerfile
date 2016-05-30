@@ -37,4 +37,4 @@ USER notroot
 
 WORKDIR /work
 
-CMD jupyter notebook --ip=0.0.0.0
+CMD jupyter notebook --ip=0.0.0.0 --notebook-dir=/work/notebooks

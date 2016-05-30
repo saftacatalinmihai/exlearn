@@ -151,7 +151,7 @@ IO.inspect result
 
 2. Run the server
     ```bash
-    docker run --rm -it -p 8888:8888 -v "$PWD/notebook":/work braintonic-jupyter
+    docker run --rm -it -p 8888:8888 -v "$PWD":/work braintonic-jupyter
     ```
 
 ## Development
