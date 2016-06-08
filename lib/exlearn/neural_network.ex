@@ -38,9 +38,9 @@ defmodule ExLearn.NeuralNetwork do
     feed_network(network, parameters, epochs)
   end
 
-  @spec feed_network(map, pid, number) :: any
-  defp feed_network(network, parameters, 0),     do: :ok
-  defp feed_network(network, parameters, epochs) do
+  @spec feed_network(map, pid, non_neg_integer) :: atom
+  defp feed_network(network, parameters, 0), do: :ok
+  defp feed_network(network, parameters, epochs) when is_integer(epochs) and epochs > 0 do
     %{batch_size: batch_size, data: data, data_size: data_size} = parameters
 
     batches = Enum.shuffle(data) |> Enum.chunk(batch_size)
