@@ -80,7 +80,7 @@ defmodule NeuralNetworkTest do
     %{config: config, input: input, network: network} = test_setup
 
     NeuralNetwork.configure(config, network)
-    NeuralNetwork.feed(network, input)
+    NeuralNetwork.feed(input, network)
   end
 
   test "#initialize returns a running process", %{network: network} do

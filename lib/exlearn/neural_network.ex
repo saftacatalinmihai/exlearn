@@ -32,8 +32,8 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Feeds input to the NeuralNetwork
   """
-  @spec feed(pid, [{[number], [number]}]) :: atom
-  def feed(network, parameters) do
+  @spec feed([{[number], [number]}], pid) :: atom
+  def feed(parameters, network) do
     %{epochs: epochs} = parameters
     feed_network(network, parameters, epochs)
   end

@@ -4,23 +4,100 @@
 
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
-## Neural Network
+## Neural Networks
 
-### API
+```elixir
+alias ExLearn.NeuralNetwork, as: NN
+```
 
-| Function   | Arguments | Return |
-| --------   | --------- | ------ |
-| ask        |           |        |
-| configure  |           |        |
-| feed       |           |        |
-| load       |           |        |
-| initialize |           |        |
-| inspect    |           |        |
-| save       |           |        |
-| test       |           |        |
-| train      |           |        |
+#### `ask`
 
-### Parameters
+```elixir
+NN.ask(input, network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `configure`
+
+```elixir
+NN.configure(configuration, network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `feed`
+
+```elixir
+NN.feed(input, network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `initialize`
+
+```elixir
+NN.Initialize(structure)
+```
+
+##### Parameters
+##### Example
+
+
+#### `inspect`
+
+```elixir
+NN.inspect(network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `load`
+
+```elixir
+NN.load(structure)
+```
+
+##### Parameters
+##### Example
+
+
+#### `save`
+
+```elixir
+NN.save(network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `test`
+
+```elixir
+NN.test(input, network)
+```
+
+##### Parameters
+##### Example
+
+
+#### `train`
+
+```elixir
+NN.train(input, network)
+```
+
+##### Parameters
+##### Example
 
 #### Network Structure
 
@@ -129,7 +206,7 @@ input = %{
 }
 
 # Feed the input into the network
-NN.feed(network, input)
+NN.feed(input, network)
 
 # Ask the network to predict values
 result = NN.ask(data, network)

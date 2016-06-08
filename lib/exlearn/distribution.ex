@@ -6,7 +6,7 @@ defmodule ExLearn.Distribution do
   @doc """
   Returns the appropriate function
   """
-  @spec determine(atom | map) :: map
+  @spec determine(map) :: ({number, number} -> float)
   def determine(setup) do
     %{distribution: distribution, range: range} = setup
     case distribution do
