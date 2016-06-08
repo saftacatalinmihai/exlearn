@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
   Build functionality
   """
 
-  alias ExLearn.{Activation, Distribution, Matrix, Objective, Vector}
+  alias ExLearn.{Activation, Distribution, Matrix, Objective}
 
   @doc """
   Initializez a neural network with the given setup

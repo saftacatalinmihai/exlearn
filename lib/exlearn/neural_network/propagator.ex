@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   Backpropagates the error trough a network
   """
 
-  alias ExLearn.{Matrix, Vector}
+  alias ExLearn.Matrix
 
   @doc """
   Performs backpropagation
@@ -12,7 +12,6 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   def back_propagate(activities, batch, state) do
     %{
       network: %{
-        biases:    biases,
         weights:   weights,
         objective: %{derivative: derivative}
       }
@@ -101,7 +100,6 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
   defp create_new_network(state, new_weights, new_biases) do
     %{network: network} = state
-    %{weights: weights, biases: biases} = network
 
     new_network = put_in(network, [:weights], new_weights)
       |> put_in([:biases], new_biases)
