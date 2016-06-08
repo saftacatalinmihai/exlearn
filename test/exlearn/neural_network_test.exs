@@ -1,7 +1,7 @@
 defmodule NeuralNetworkTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork
+  alias ExLearn.NeuralNetwork
 
   setup do
     network_parameters = %{

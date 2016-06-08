@@ -1,7 +1,7 @@
 defmodule ObjectiveTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Objective
+  alias ExLearn.Objective
 
   test "#determine return the given function pair" do
     first  = 1

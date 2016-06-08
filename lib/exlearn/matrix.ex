@@ -1,9 +1,9 @@
-defmodule BrainTonic.Matrix do
+defmodule ExLearn.Matrix do
   @moduledoc """
   Performs operations on matrices
   """
 
-  alias BrainTonic.Vector
+  alias ExLearn.Vector
 
   @doc """
   Adds two matrices

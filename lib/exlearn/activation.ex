@@ -1,4 +1,4 @@
-defmodule BrainTonic.Activation do
+defmodule ExLearn.Activation do
   @moduledoc """
   Translates distributon names to functions
   """

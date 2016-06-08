@@ -1,9 +1,9 @@
-defmodule BrainTonic.NeuralNetwork.Propagator do
+defmodule ExLearn.NeuralNetwork.Propagator do
   @moduledoc """
   Backpropagates the error trough a network
   """
 
-  alias BrainTonic.{Matrix, Vector}
+  alias ExLearn.{Matrix, Vector}
 
   @doc """
   Performs backpropagation

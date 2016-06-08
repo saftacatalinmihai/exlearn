@@ -1,7 +1,7 @@
 defmodule PropagatorTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.Propagator
+  alias ExLearn.NeuralNetwork.Propagator
 
   setup do
     d = fn (_)    -> 1 end

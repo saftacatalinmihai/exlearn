@@ -1,7 +1,7 @@
 defmodule VectorTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Vector
+  alias ExLearn.Vector
 
   test "#add computes the sum of element of two lists" do
     first    = [1, 2, 3]

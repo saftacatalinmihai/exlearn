@@ -1,7 +1,7 @@
 defmodule ActivationTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Activation
+  alias ExLearn.Activation
 
   test "#determine a given function pair" do
     argument = 1

@@ -1,6 +1,6 @@
-# BrainTonic
+# ExLearn
 
-[![Build Status](https://travis-ci.org/sdwolf/braintonic.svg?branch=master)](https://travis-ci.org/sdwolf/braintonic)
+[![Build Status](https://travis-ci.org/sdwolf/exlearn.svg?branch=master)](https://travis-ci.org/sdwolf/exlearn)
 
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
@@ -86,7 +86,7 @@ Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 #### Example
 
 ```elixir
-alias BrainTonic.NeuralNetwork, as: NN
+alias ExLearn.NeuralNetwork, as: NN
 
 # Define the network structure
 structure = %{
@@ -142,7 +142,7 @@ IO.inspect result
 1. Build the notebook container
     ```bash
     docker build                        \
-      -t braintonic-jupyter             \
+      -t exlearn-jupyter             \
       --build-arg HOST_USER_UID=`id -u` \
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/notebook/Dockerfile     \
@@ -151,7 +151,7 @@ IO.inspect result
 
 2. Run the server
     ```bash
-    docker run --rm -it -p 8888:8888 -v "$PWD":/work braintonic-jupyter
+    docker run --rm -it -p 8888:8888 -v "$PWD":/work exlearn-jupyter
     ```
 
 ## Development
@@ -159,7 +159,7 @@ IO.inspect result
 1. Build the project container
     ```bash
     docker build                        \
-      -t braintonic                     \
+      -t exlearn                     \
       --build-arg HOST_USER_UID=`id -u` \
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/project/Dockerfile      \
@@ -168,27 +168,27 @@ IO.inspect result
 
 2. Run an interactive shell
     ```bash
-    docker run --rm -it -v "$PWD":/work braintonic iex -S mix
+    docker run --rm -it -v "$PWD":/work exlearn iex -S mix
     ```
 
 3. Update dependencies
     ```bash
-    docker run --rm -it -v "$PWD":/work braintonic mix deps.get
+    docker run --rm -it -v "$PWD":/work exlearn mix deps.get
     ```
 
 4. Run tests
     ```bash
-    docker run --rm -it -v "$PWD":/work braintonic mix test
+    docker run --rm -it -v "$PWD":/work exlearn mix test
     ```
 
 5. Run dialyzer
     ```bash
-    docker run --rm -it -v "$PWD":/work braintonic mix dialyzer
+    docker run --rm -it -v "$PWD":/work exlearn mix dialyzer
     ```
 
 6. Run samples
     ```bash
-    docker run --rm -it -v "$PWD":/work braintonic mix run samples/or.exs
+    docker run --rm -it -v "$PWD":/work exlearn mix run samples/or.exs
     ```
 
 ## LICENSE

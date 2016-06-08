@@ -1,9 +1,9 @@
-defmodule BrainTonic.NeuralNetwork.Builder do
+defmodule ExLearn.NeuralNetwork.Builder do
   @moduledoc """
   Build functionality
   """
 
-  alias BrainTonic.{Activation, Distribution, Matrix, Objective, Vector}
+  alias ExLearn.{Activation, Distribution, Matrix, Objective, Vector}
 
   @doc """
   Initializez a neural network with the given setup

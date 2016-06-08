@@ -1,4 +1,4 @@
-defmodule BrainTonic do
+defmodule ExLearn do
   @moduledoc """
   Machine Learning
   """

@@ -1,4 +1,4 @@
-defmodule BrainTonic.Vector do
+defmodule ExLearn.Vector do
   @moduledoc """
   Performs operations on vectors
   """

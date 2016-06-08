@@ -1,9 +1,9 @@
-defmodule BrainTonic.NeuralNetwork do
+defmodule ExLearn.NeuralNetwork do
   @moduledoc """
   A neural network
   """
 
-  alias BrainTonic.NeuralNetwork.{Builder, Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.{Builder, Forwarder, Propagator}
 
   @doc """
   Makes a prediction

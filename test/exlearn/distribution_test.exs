@@ -1,7 +1,7 @@
 defmodule DistributionTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Distribution
+  alias ExLearn.Distribution
 
   test "#determine return the given function" do
     range    = {-2, 3}

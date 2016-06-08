@@ -1,7 +1,7 @@
 defmodule MatrixTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.Matrix
+  alias ExLearn.Matrix
 
   test "#add adds two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]

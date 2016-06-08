@@ -1,4 +1,4 @@
-defmodule BrainTonic.NeuralNetwork.Validator do
+defmodule ExLearn.NeuralNetwork.Validator do
   @moduledoc """
   Validates neural network parameters
   """

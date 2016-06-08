@@ -1,9 +1,9 @@
-defmodule BrainTonic.Objective do
+defmodule ExLearn.Objective do
   @moduledoc """
   Translates objective names to functions
   """
 
-  alias BrainTonic.{Vector}
+  alias ExLearn.{Vector}
 
   @doc """
   Returns the appropriate function

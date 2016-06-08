@@ -1,7 +1,7 @@
 defmodule ForwarderTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.Forwarder
+  alias ExLearn.NeuralNetwork.Forwarder
 
   # Netowrk mocked as following:
   # - input layer has 3 features

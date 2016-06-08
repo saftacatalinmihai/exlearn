@@ -1,4 +1,4 @@
-alias BrainTonic.NeuralNetwork, as: NN
+alias ExLearn.NeuralNetwork, as: NN
 
 structure_parameters = %{
   layers: %{

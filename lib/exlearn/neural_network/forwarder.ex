@@ -1,9 +1,9 @@
-defmodule BrainTonic.NeuralNetwork.Forwarder do
+defmodule ExLearn.NeuralNetwork.Forwarder do
   @moduledoc """
   Feed forward functionality
   """
 
-  alias BrainTonic.Matrix
+  alias ExLearn.Matrix
 
   @doc """
   Propagates input forward trough a network and return the output

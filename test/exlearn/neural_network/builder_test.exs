@@ -1,7 +1,7 @@
 defmodule BuilderTest do
   use ExUnit.Case, async: true
 
-  alias BrainTonic.NeuralNetwork.Builder
+  alias ExLearn.NeuralNetwork.Builder
 
   @range_min    -1
   @range_max    1
