@@ -91,6 +91,10 @@ IO.inspect result
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/project/Dockerfile      \
       "$PWD"
+
+    # OR the short version if you are user 1000:1000
+
+    docker build -t exlearn -f docker/project/Dockerfile "$PWD"
     ```
 
 3. Run an interactive shell
