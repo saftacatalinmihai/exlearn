@@ -4,163 +4,7 @@
 
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
-## Neural Networks
-
-```elixir
-alias ExLearn.NeuralNetwork, as: NN
-```
-
-#### `ask`
-
-```elixir
-NN.ask(input, network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `configure`
-
-```elixir
-NN.configure(configuration, network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `feed`
-
-```elixir
-NN.feed(input, network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `initialize`
-
-```elixir
-NN.Initialize(structure)
-```
-
-##### Parameters
-##### Example
-
-
-#### `inspect`
-
-```elixir
-NN.inspect(network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `load`
-
-```elixir
-NN.load(structure)
-```
-
-##### Parameters
-##### Example
-
-
-#### `save`
-
-```elixir
-NN.save(network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `test`
-
-```elixir
-NN.test(input, network)
-```
-
-##### Parameters
-##### Example
-
-
-#### `train`
-
-```elixir
-NN.train(input, network)
-```
-
-##### Parameters
-##### Example
-
-#### Network Structure
-
-| Key       | Value |
-| ---       | ----- |
-| layers    |       |
-| objective |       |
-| random    |       |
-
-#### Layer Structure
-
-| Key    | Value |
-| ---    | ---   |
-| input  |       |
-| hidden |       |
-| output |       |
-
-#### Activation Functions
-
-| Name | Arguments | Return |
-| ---- | --------- | ------ |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-
-#### Objective Functions
-
-| Name | Arguments | Return |
-| ---- | --------- | ------ |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-|      |           |        |
-
-#### Learning
-
-| Key            | Value |
-| ---            | ---   |
-| dropout        |       |
-| learning_rate  |       |
-| regularization |       |
-
-#### Data Feed
-
-| Key        | Value |
-| ---        | ---   |
-| batch_size |       |
-| data       |       |
-| data_size  |       |
-| epochs     |       |
-
-#### Example
+## Example
 
 ```elixir
 alias ExLearn.NeuralNetwork, as: NN
@@ -219,7 +63,7 @@ IO.inspect result
 1. Build the notebook container
     ```bash
     docker build                        \
-      -t exlearn-jupyter             \
+      -t exlearn-jupyter                \
       --build-arg HOST_USER_UID=`id -u` \
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/notebook/Dockerfile     \
@@ -233,39 +77,40 @@ IO.inspect result
 
 ## Development
 
-1. Build the project container
+1. Add the following alias to `~/.bash_profile` and source it
+    ```bash
+    alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
+    alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
+    ```
+
+2. Build the project container
     ```bash
     docker build                        \
-      -t exlearn                     \
+      -t exlearn                        \
       --build-arg HOST_USER_UID=`id -u` \
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/project/Dockerfile      \
       "$PWD"
     ```
 
-2. Run an interactive shell
+3. Run an interactive shell
     ```bash
-    docker run --rm -it -v "$PWD":/work exlearn iex -S mix
+    docker-here exlearn iex -S mix
     ```
 
-3. Update dependencies
+4. Update dependencies
     ```bash
-    docker run --rm -it -v "$PWD":/work exlearn mix deps.get
+    docker-here exlearn mix deps.get
     ```
 
-4. Run tests
+5. Run tests
     ```bash
-    docker run --rm -it -v "$PWD":/work exlearn mix test
+    docker-here exlearn mix test
     ```
 
-5. Run dialyzer
+6. Run dialyzer
     ```bash
-    docker run --rm -it -v "$PWD":/work exlearn mix dialyzer
-    ```
-
-6. Run samples
-    ```bash
-    docker run --rm -it -v "$PWD":/work exlearn mix run samples/or.exs
+    docker-here exlearn mix dialyzer
     ```
 
 ## LICENSE

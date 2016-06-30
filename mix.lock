@@ -1,2 +1,2 @@
-%{"benchwarmer": {:hex, :benchwarmer, "0.0.2"},
-  "dialyxir": {:hex, :dialyxir, "0.3.3"}}
+%{"benchwarmer": {:hex, :benchwarmer, "0.0.2", "902e5c020608647b07c38b82103e4af6d2667dfd5d5d13c67382238de6943136", [:mix], []},
+  "dialyxir": {:hex, :dialyxir, "0.3.3", "2f8bb8ab4e17acf4086cae847bd385c0f89296d3e3448dc304c26bfbe4b46cb4", [:mix], []}}
