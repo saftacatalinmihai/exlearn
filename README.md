@@ -58,6 +58,15 @@ result = NN.ask(data, network)
 IO.inspect result
 ```
 
+## Usage with Docker
+
+Add the following aliases to `~/.bash_profile` and source it:
+
+```bash
+alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
+alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
+```
+
 ## Jupyter Notebook
 
 1. Build the notebook container
@@ -68,20 +77,18 @@ IO.inspect result
       --build-arg HOST_USER_GID=`id -g` \
       -f docker/notebook/Dockerfile     \
       "$PWD"
+
+    # OR the short version if you are user 1000:1000
+
+    docker build -t exlearn-jupyter -f docker/notebook/Dockerfile "$PWD"
     ```
 
 2. Run the server
     ```bash
-    docker run --rm -it -p 8888:8888 -v "$PWD":/work exlearn-jupyter
+    docker-here -p 8888:8888 exlearn-jupyter
     ```
 
 ## Development
-
-1. Add the following alias to `~/.bash_profile` and source it
-    ```bash
-    alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
-    alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
-    ```
 
 2. Build the project container
     ```bash

@@ -3,7 +3,7 @@ FROM elixir:1.2.5
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
 
-RUN DEBIAN_FRONTEND=noninteractive                          && \
+RUN set -ex                                                 && \
                                                                \
     echo 'Creating notroot user and group from host'        && \
     groupadd -g $HOST_USER_GID notroot                      && \
@@ -24,17 +24,16 @@ RUN DEBIAN_FRONTEND=noninteractive                          && \
                                                                \
     echo 'Installing mix packages and kernel as notroot'    && \
     runuser notroot -c "                                       \
-    cd ~                                                    && \
-    git clone https://github.com/pprzetacznik/ielixir.git   && \
-    cd ielixir                                              && \
-    mix local.hex --force                                   && \
-    mix local.rebar --force                                 && \
-    mix deps.get                                            && \
-    ./install_script.sh                                        \
-    "
-
-USER notroot
-
-WORKDIR /work
+      mix local.hex --force                                 && \
+      mix local.rebar --force                               && \
+      cd ~                                                  && \
+      git clone https://github.com/pprzetacznik/ielixir.git && \
+      cd ielixir                                            && \
+      mix deps.get                                          && \
+      ./install_script.sh                                      \
+    "                                                       && \
+                                                               \
+    echo 'Removing unnecessary content'                     && \
+    rm -rf /var/lib/apt/lists/*
 
 CMD jupyter notebook --ip=0.0.0.0 --notebook-dir=/work/notebooks
