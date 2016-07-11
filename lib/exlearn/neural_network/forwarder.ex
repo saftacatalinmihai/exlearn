@@ -10,35 +10,30 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   """
   @spec forward_for_output([[number]], map) :: [[number]]
   def forward_for_output(batch, state) do
-    {network: network} = state
+    %{network: %{layers: layers}} = state
 
-    normalized_batch = normalize(batch)
-
-    calculate_output(normalized_batch, network)
+    calculate_output(batch, layers)
   end
 
-  defp calculate_output(input_batch, network) do
-
+  defp calculate_output(output, []) do
+    output
   end
 
-  @spec calculate_output(map) :: [number]
-  defp calculate_output(network) do
-    case network do
-      %{weights: [batch|[]]} ->
-        Enum.map(batch, fn (sample) -> List.first(sample) end)
-      %{weights: [batch, w|ws], biases: [b|bs], activity: [a|as]} ->
-        %{function: f} = a
+  defp calculate_output(batch_input, [layer|rest]) do
+    %{
+      activity: %{function: function},
+      biases:   biases,
+      weights:  weights
+    } = layer
 
-        output = Enum.map(batch, fn (sample) ->
-          Matrix.dot(sample, w)
-            |> Matrix.add(b)
-            |> Matrix.apply(f)
-        end)
+    batch_output = Enum.map(batch_input, fn (sample) ->
+      Matrix.dot([sample], weights)
+        |> Matrix.add(biases)
+        |> Matrix.apply(function)
+        |> List.first()
+    end)
 
-        new_network = %{weights: [output|ws], biases: bs, activity: as}
-
-        calculate_output(new_network)
-    end
+    calculate_output(batch_output, rest)
   end
 
   @doc """

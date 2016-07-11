@@ -21,31 +21,22 @@ defmodule ForwarderTest do
 
     state = %{
       network: %{
-        activity: [
-          %{function: f, derivative: d},
-          %{function: f, derivative: d},
-          %{function: f, derivative: d}
-        ],
-        biases: [
-          [[1, 2, 3]],
-          [[4, 5]],
-          [[6, 7]]
-        ],
-        weights: [
-          [
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]
-          ],
-          [
-            [1, 2],
-            [3, 4],
-            [5, 6]
-          ],
-          [
-            [1, 2],
-            [3, 4]
-          ]
+        layers: [
+          %{
+            activity: %{function: f, derivative: d},
+            biases:   [[1, 2, 3]],
+            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+          },
+          %{
+            activity: %{function: f, derivative: d},
+            biases:   [[4, 5]],
+            weights:  [[1, 2], [3, 4], [5, 6]]
+          },
+          %{
+            activity: %{function: f, derivative: d},
+            biases:   [[6, 7]],
+            weights:  [[1, 2], [3, 4]]
+          },
         ]
       }
     }
@@ -59,9 +50,9 @@ defmodule ForwarderTest do
     inputs   = [[1, 2, 3], [2, 3, 4]]
     expected = [[1897, 2784], [2620, 3846]]
 
-    outputs = Forwarder.forward_for_output(inputs, state)
+    output = Forwarder.forward_for_output(inputs, state)
 
-    assert outputs == expected
+    assert expected == output
   end
 
   test "#forward_for_activity returns the activities", %{setup: setup} do
