@@ -5,7 +5,7 @@ defmodule ExLearn.Mixfile do
     [
       app:             :ExLearn,
       version:         "0.0.1",
-      elixir:          "1.2.5",
+      elixir:          "1.3.1",
       build_embedded:  Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps:            deps
