@@ -20,90 +20,44 @@ defmodule ExLearn.NeuralNetwork.Builder do
       random:    random
     } = setup
 
-    layers = [input_layer] ++ hidden_layers ++ [output_layer]
+    layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
 
     objective_function = Objective.determine(objective_setup)
     random_function    = Distribution.determine(random)
 
-    network = %{
-      activity:  build_activations(layers),
-      biases:    build_biases(layers, random_function),
-      objective: objective_function,
-      weights:   build_weights(layers, random_function)
+    layers = build_network(layer_config, random_function)
+
+    %{network: %{layers: layers, objective: objective_function}, setup: setup}
+  end
+
+  defp build_network(configs, random_function) do
+    build_network(configs, random_function, [])
+  end
+
+  defp build_network([_|[]], _, accumulator) do
+    Enum.reverse(accumulator)
+  end
+
+  defp build_network([first, second|rest], random_function, accumulator) do
+    %{size: rows} = first
+
+    %{
+      activity: function_setup,
+      name:     name,
+      size:     columns,
+    } = second
+
+    activity = Activation.determine(function_setup)
+    biases   = Matrix.build(1, rows, random_function)
+    weights  = Matrix.build(rows, columns, random_function)
+
+    layer = %{
+      activity: activity,
+      biases:   biases,
+      name:     name,
+      weights:  weights,
     }
 
-    %{network: network, setup: setup}
-  end
-
-  @spec build_activations([pos_integer,...]) :: list
-  defp build_activations(layers) do
-    build_activations(layers, [])
-  end
-
-  @spec build_activations([pos_integer,...], []) :: list
-
-  defp build_activations([], total) do
-    Enum.reverse(total)
-  end
-
-  defp build_activations([_|[]], total) do
-    Enum.reverse(total)
-  end
-
-  defp build_activations([_, second | rest], total) do
-    %{activity: function_setup} = second
-
-    activation = Activation.determine(function_setup)
-
-    build_activations([second|rest], [activation|total])
-  end
-
-  @spec build_biases([pos_integer,...], (() -> float)) :: list
-  defp build_biases(layers, function) do
-    build_biases(layers, [], function)
-  end
-
-  @spec build_biases([pos_integer,...], [], (() -> float)) :: list
-
-  defp build_biases([], total, _) do
-    Enum.reverse(total)
-  end
-
-  defp build_biases([_|[]], total, _) do
-    Enum.reverse(total)
-  end
-
-  defp build_biases([_, second | rest], total, function) do
-    %{size: size} = second
-
-    biases = Matrix.build(1, size, function)
-    result = [biases|total]
-
-    build_biases([second|rest], result, function)
-  end
-
-  @spec build_weights([pos_integer,...], (() -> float)) :: list
-  defp build_weights(layers, function) do
-    build_weights(layers, [], function)
-  end
-
-  @spec build_weights([pos_integer,...], [], (() -> float)) :: list
-
-  defp build_weights([], total, _) do
-    Enum.reverse(total)
-  end
-
-  defp build_weights([_|[]], total, _) do
-    Enum.reverse(total)
-  end
-
-  defp build_weights([first, second | rest], total, function) do
-    %{size: rows}    = first
-    %{size: columns} = second
-
-    weights = Matrix.build(rows, columns, function)
-    result  = [weights|total]
-
-    build_weights([second|rest], result, function)
+    build_network([second|rest], random_function, [layer|accumulator])
   end
 end

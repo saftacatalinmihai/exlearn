@@ -6,17 +6,17 @@ defmodule NeuralNetworkTest do
   setup do
     network_parameters = %{
       layers: %{
+        input:  %{size: 1},
         hidden: [
           %{
             activity: :identity,
+            name:     "First Hidden",
             size:     1
           }
         ],
-        input: %{
-          size: 1
-        },
         output: %{
           activity: :identity,
+          name:     "Output",
           size: 1
         }
       },

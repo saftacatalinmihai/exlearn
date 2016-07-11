@@ -3,46 +3,43 @@ defmodule BuilderTest do
 
   alias ExLearn.NeuralNetwork.Builder
 
-  @range_min    -1
-  @range_max    1
-  @hidden_sizes [30, 40, 50, 60]
-  @input_size   20
-  @output_size  5
-
   setup do
     parameters = %{
       layers: %{
+        input:  %{size: 20},
         hidden: [
           %{
             activity: :identity,
-            size: Enum.at(@hidden_sizes, 0)
+            name:     "First Hidden",
+            size:     3
           },
           %{
             activity: :identity,
-            size: Enum.at(@hidden_sizes, 1)
+            name:     "Second Hidden",
+            size:     4
           },
           %{
             activity: :identity,
-            size: Enum.at(@hidden_sizes, 2)
+            name:     "Third Hidden",
+            size:     5
           },
           %{
             activity: :identity,
-            size: Enum.at(@hidden_sizes, 3)
+            name:     "Fourth Hidden",
+            size:     6
           }
         ],
-        input: %{
-          size: @input_size
-        },
         output: %{
           activity: :identity,
-          size: @output_size
+          name:     "Output",
+          size:     5
         }
       },
       learning_rate: 0.5,
-      objective: :quadratic,
+      objective:     :quadratic,
       random: %{
         distribution: :uniform,
-        range:        {@range_min, @range_max}
+        range:        {-1, 1}
       }
     }
 
@@ -55,79 +52,14 @@ defmodule BuilderTest do
     assert result |> is_map
   end
 
-  test "weights are the correct size", %{parameters: parameters} do
+  test "the number of layers is correct", %{parameters: parameters} do
     result = Builder.initialize(parameters)
 
     %{network: network} = result
-    %{weights: weights} = network
+    %{layers:  layers}  = network
 
-    last = length(@hidden_sizes)
+    assert length(layers) == 5
 
-    assert length(weights) == length(@hidden_sizes) + 1
-
-    Enum.with_index(weights)
-    |> Enum.each(fn
-      {list, index} when index == 0 ->
-        assert length(list) == @input_size
-        Enum.each(list, fn (element) ->
-          assert length(element) == Enum.at(@hidden_sizes, index)
-        end)
-      {list, index} when index == last ->
-        assert length(list) == Enum.at(@hidden_sizes, index - 1)
-        Enum.each(list, fn (element) ->
-          assert length(element) == @output_size
-        end)
-      {list, index} ->
-        assert length(list) == Enum.at(@hidden_sizes, index - 1)
-        Enum.each(list, fn (element) ->
-          assert length(element) == Enum.at(@hidden_sizes, index)
-        end)
-    end)
-  end
-
-  test "biases are the correct size", %{parameters: parameters} do
-    result = Builder.initialize(parameters)
-
-    %{network: network} = result
-    %{biases: biases}   = network
-
-    last = length(biases)
-
-    assert length(biases) == length(@hidden_sizes) + 1
-
-    Enum.with_index(biases)
-    |> Enum.each(fn
-      {list, index} when index == last - 1 ->
-        assert length(list) == 1
-        [content] = list
-        assert length(content) == @output_size
-      {list, index} ->
-        assert length(list) == 1
-        [content] = list
-        assert length(content) == Enum.at(@hidden_sizes, index)
-    end)
-  end
-
-  test "weight and bias values are within range", %{parameters: parameters} do
-    result = Builder.initialize(parameters)
-
-    %{network: network} = result
-    %{weights: weights, biases: biases} = network
-
-    Enum.each(weights, fn (matrix) ->
-      Enum.each(matrix, fn (row) ->
-        Enum.each(row, fn (element) ->
-          assert element >= @range_min && element <= @range_max
-        end)
-      end)
-    end)
-
-    Enum.each(biases, fn (matrix) ->
-      Enum.each(matrix, fn (row) ->
-        Enum.each(row, fn (element) ->
-          assert element >= @range_min && element <= @range_max
-        end)
-      end)
-    end)
+    IO.inspect network
   end
 end

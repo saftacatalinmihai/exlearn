@@ -10,9 +10,15 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   """
   @spec forward_for_output([[number]], map) :: [[number]]
   def forward_for_output(batch, state) do
-    batch
-      |> full_network(state)
-      |> calculate_output
+    {network: network} = state
+
+    normalized_batch = normalize(batch)
+
+    calculate_output(normalized_batch, network)
+  end
+
+  defp calculate_output(input_batch, network) do
+
   end
 
   @spec calculate_output(map) :: [number]
