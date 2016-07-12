@@ -35,6 +35,33 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     calculate_output(output, rest)
   end
 
+  @spec forward_for_test([[number]], map) :: [[number]]
+  def forward_for_test(batch, state) do
+    %{network: %{layers: layers}} = state
+
+    Enum.map(batch, fn({input, expected}) ->
+      calculate_test({[input], expected}, layers)
+    end)
+  end
+
+  defp calculate_test({output, expected}, []) do
+    List.first(output)
+  end
+
+  defp calculate_test({input, expected}, [layer|rest]) do
+    %{
+      activity: %{function: function},
+      biases:   biases,
+      weights:  weights
+    } = layer
+
+    output = Matrix.dot(input, weights)
+      |> Matrix.add(biases)
+      |> Matrix.apply(function)
+
+    calculate_test({output, expected}, rest)
+  end
+
   @doc """
   Propagates input forward trough a network and return the activity
   """

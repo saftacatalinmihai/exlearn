@@ -35,7 +35,7 @@ defmodule NeuralNetworkTest do
       regularization: :L2
     }
 
-    data = [
+    training_data = [
       {[0], [0]},
       {[1], [1]},
       {[2], [2]},
@@ -44,18 +44,28 @@ defmodule NeuralNetworkTest do
       {[5], [5]}
     ]
 
+    ask_data = [[0], [1], [2], [3], [4], [5]]
+
     input = %{
       batch_size: 2,
-      data:       data,
+      data:       training_data,
       data_size:  6,
       epochs:     5
     }
 
-    {:ok, config: config, data: data, input: input, network: network}
+    {
+      :ok,
+      ask_data:   ask_data,
+      config:     config,
+      input:      input,
+      network:    network,
+      test_data:  training_data,
+      train_data: training_data
+    }
   end
 
   test "#ask responds with a list of numbers", test_setup do
-    %{data: data, network: network} = test_setup
+    %{ask_data: data, network: network} = test_setup
 
     {:ok, result} = NeuralNetwork.ask(data, network)
 
@@ -88,7 +98,7 @@ defmodule NeuralNetworkTest do
     assert Process.alive?(network)
   end
 
-  test "#test responds with a tuple", %{data: data, network: network} do
+  test "#test responds with a tuple", %{test_data: data, network: network} do
     output = NeuralNetwork.test(data, network)
     {:ok, {result, cost}} = output
 
@@ -100,7 +110,7 @@ defmodule NeuralNetworkTest do
   end
 
   test "#train responds with a tuple", test_setup do
-    %{config: config, data: data, network: network} = test_setup
+    %{config: config, train_data: data, network: network} = test_setup
 
     expected = :ok
 

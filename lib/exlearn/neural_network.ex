@@ -150,7 +150,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   defp test_network(batch, state, caller) do
-    outputs = Forwarder.forward_for_output(batch, state)
+    outputs = Forwarder.forward_for_test(batch, state)
 
     %{network: %{objective: %{function: objective}}} = state
 
