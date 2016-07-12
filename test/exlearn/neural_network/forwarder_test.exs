@@ -81,7 +81,8 @@ defmodule ForwarderTest do
           output:     [[1897, 2784]]
         }
       ],
-      output: [1897, 2784]
+      expected: [1900, 2800],
+      output:   [1897, 2784]
     }
 
     second_activity = %{
@@ -102,13 +103,14 @@ defmodule ForwarderTest do
           output:     [[2620, 3846]]
         }
       ],
-      output: [2620, 3846]
+      expected: [2600, 3800],
+      output:   [2620, 3846]
     }
 
     expected = [first_activity, second_activity]
 
-    result = Forwarder.forward_for_activity(input, state)
+    output = Forwarder.forward_for_activity(input, state)
 
-    assert result == expected
+    assert expected == output
   end
 end

@@ -12,28 +12,27 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   def forward_for_output(batch, state) do
     %{network: %{layers: layers}} = state
 
-    calculate_output(batch, layers)
+    Enum.map(batch, fn(sample) ->
+      calculate_output([sample], layers)
+    end)
   end
 
   defp calculate_output(output, []) do
-    output
+    List.first(output)
   end
 
-  defp calculate_output(batch_input, [layer|rest]) do
+  defp calculate_output(input, [layer|rest]) do
     %{
       activity: %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
 
-    batch_output = Enum.map(batch_input, fn (sample) ->
-      Matrix.dot([sample], weights)
-        |> Matrix.add(biases)
-        |> Matrix.apply(function)
-        |> List.first()
-    end)
+    output = Matrix.dot(input, weights)
+      |> Matrix.add(biases)
+      |> Matrix.apply(function)
 
-    calculate_output(batch_output, rest)
+    calculate_output(output, rest)
   end
 
   @doc """
@@ -43,29 +42,33 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   def forward_for_activity(batch, state) do
     %{network: %{layers: layers}} = state
 
-    calculate_activity(batch, layers, [])
+    Enum.map(batch, fn(sample) ->
+      {input, expected} = sample
+
+      activity = calculate_activity([input], layers, [])
+
+      Map.put(activity, :expected, expected)
+    end)
   end
 
   defp calculate_activity(output, [], activities) do
-    %{activity: activities, output: output}
+    layer_output = List.first(output)
+
+    %{activity: Enum.reverse(activities), output: layer_output}
   end
 
-  defp calculate_activity(batch_input, [layer|rest], activities) do
+  defp calculate_activity(layer_input, [layer|rest], activities) do
     %{
       activity: %{function: function, derivative: derivative},
       biases:   biases,
       weights:  weights
     } = layer
 
-    activity = Enum.map(batch_input, fn (sample) ->
-      input  = Matrix.dot(sample, weights) |> Matrix.add(biases)
-      output = Matrix.apply(input, function)
+    input  = Matrix.dot(layer_input, weights) |> Matrix.add(biases)
+    output = Matrix.apply(input, function)
 
-      %{derivative: derivative, input: input, output: output}
-    end)
+    activity =  %{derivative: derivative, input: input, output: output}
 
-    batch_output = Enum.map(activity, fn (element) -> element[:output] end)
-
-    calculate_activity(batch_output, rest, [activity|activities])
+    calculate_activity(output, rest, [activity|activities])
   end
 end

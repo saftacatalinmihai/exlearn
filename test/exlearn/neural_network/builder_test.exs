@@ -59,7 +59,5 @@ defmodule BuilderTest do
     %{layers:  layers}  = network
 
     assert length(layers) == 5
-
-    IO.inspect network
   end
 end
