@@ -67,6 +67,29 @@ defmodule MatrixTest do
     assert result == expected
   end
 
+  test "#substract substracts two matrices" do
+    first  = [[1, 2, 3], [4, 5, 6]]
+    second = [[5, 2, 1], [3, 4, 6]]
+
+    expected = [[-4, 0, 2], [1, 1, 0]]
+
+    result = Matrix.substract(first, second)
+
+    assert result == expected
+  end
+
+  test "#substract_inverse substracts the second matrix from the first" do
+    first  = [[1, 2, 3], [4, 5, 6]]
+    second = [[5, 2, 1], [3, 4, 6]]
+
+    expected = [[4, 0, -2], [-1, -1, 0]]
+
+    result = Matrix.substract_inverse(first, second)
+
+    assert result == expected
+  end
+
+
   test "#transpose transposes a matrix" do
     input    = [[1, 2, 3], [4, 5, 6]]
     expected = [[1, 4], [2, 5], [3, 6]]

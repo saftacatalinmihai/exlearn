@@ -75,6 +75,14 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Substracts the second matrix from the first
+  """
+  @spec substract_inverse([[number]], [[number]]) :: []
+  def substract_inverse(first, second) do
+    substract(second, first)
+  end
+
+  @doc """
   Transposes a matrix
   """
   @spec transpose([[]]) :: [[]]

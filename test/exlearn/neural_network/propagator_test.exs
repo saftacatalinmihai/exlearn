@@ -4,124 +4,142 @@ defmodule PropagatorTest do
   alias ExLearn.NeuralNetwork.Propagator
 
   setup do
-    d = fn (_)    -> 1 end
-    o = fn (a, b) ->
+    derivative = fn (_)    -> 1 end
+    objective   = fn (a, b) ->
       Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
-
-    network = %{
-      network: %{
-        biases: [
-          [[1, 2, 3]],
-          [[4, 5]],
-          [[6, 7]]
-        ],
-        objective: %{derivative: o},
-        weights: [
-          [
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]
-          ],
-          [
-            [1, 2],
-            [3, 4],
-            [5, 6]
-          ],
-          [
-            [1, 2],
-            [3, 4]
-          ]
-        ]
-      },
-      parameters: %{learning_rate: 2}
-    }
-
-    first_activity = %{
-      activity: [
-        %{
-          derivative: d,
-          input:      [[31, 38, 45]],
-          output:     [[32, 39, 46]]
-        },
-        %{
-          derivative: d,
-          input:      [[383, 501]],
-          output:     [[384, 502]]
-        },
-        %{
-          derivative: d,
-          input:      [[1896, 2783]],
-          output:     [[1897, 2784]]
-        }
-      ],
-      output: [1897, 2784]
-    }
-
-    second_activity = %{
-      activity: [
-        %{
-          derivative: d,
-          input:      [[43, 53, 63]],
-          output:     [[44, 54, 64]]
-        },
-        %{
-          derivative: d,
-          input:      [[530, 693]],
-          output:     [[531, 694]]
-        },
-        %{
-          derivative: d,
-          input:      [[2619, 3845]],
-          output:     [[2620, 3846]]
-        }
-      ],
-      output: [2620, 3846]
-    }
-
-    forwarded = [first_activity, second_activity]
-
-    {:ok, setup: %{network: network, forwarded: forwarded, derivative: o}}
-  end
-
-  test "#back_propagate returns a map", %{setup: setup} do
-    %{network: network, forwarded: forwarded, derivative: o} = setup
 
     data = [
       {[1, 2, 3], [1900, 2800]},
       {[2, 3, 4], [2600, 3800]}
     ]
 
-    expected = %{
+    network_state = %{
       network: %{
-        biases: [
-          [[-837, -1828, -2819]],
-          [[-150, -337]],
-          [[-28,  -53]]
+        layers: [
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[1, 2, 3]],
+            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[4, 5]],
+            weights:  [[1, 2], [3, 4], [5, 6]]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[6, 7]],
+            weights:  [[1, 2], [3, 4]]
+          },
         ],
-        objective: %{derivative: o},
-        weights: [
-          [
-            [-2037, -4452, -6867 ],
-            [-2872, -6279, -9686 ],
-            [-3707, -8106, -12505]
-          ],
-          [
-            [-7615,  -16798],
-            [-9363,  -20654],
-            [-11111, -24510]
-          ],
-          [
-            [-18935, -36562],
-            [-24745, -47780]
-          ]
-        ]
+        objective: %{derivative: objective}
       },
       parameters: %{learning_rate: 2}
     }
 
-    new_state = Propagator.back_propagate(forwarded, data, network)
+    first_forward_state = %{
+      activity: [
+        %{
+          derivative: derivative,
+          input:      [[31, 38, 45]],
+          output:     [[32, 39, 46]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[383, 501]],
+          output:     [[384, 502]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[1896, 2783]],
+          output:     [[1897, 2784]]
+        }
+      ],
+      expected: [1900, 2800],
+      input:    [1, 2, 3],
+      output:   [1897, 2784]
+    }
 
-    assert new_state == expected
+    second_forward_state = %{
+      activity: [
+        %{
+          derivative: derivative,
+          input:      [[43, 53, 63]],
+          output:     [[44, 54, 64]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[530, 693]],
+          output:     [[531, 694]]
+        },
+        %{
+          derivative: derivative,
+          input:      [[2619, 3845]],
+          output:     [[2620, 3846]]
+        }
+      ],
+      expected: [1900, 2800],
+      input:    [2, 3, 4],
+      output:   [2600, 3800]
+    }
+
+    forward_batch = [first_forward_state, second_forward_state]
+
+    {:ok, setup: %{
+      data:          data,
+      derivative:    derivative,
+      forward_batch: forward_batch,
+      network_state: network_state,
+      objective:     objective
+    }}
+  end
+
+  test "#back_propagate returns a map", %{setup: setup} do
+    %{
+      derivative:    derivative,
+      forward_batch: forward_batch,
+      network_state: network_state,
+      objective:     objective
+    } = setup
+
+    expected = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-837, -1828, -2819]],
+            weights:  [
+              [-2037, -4452, -6867 ],
+              [-2872, -6279, -9686 ],
+              [-3707, -8106, -12505]
+            ]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-150, -337]],
+            weights:  [
+              [-7615,  -16798],
+              [-9363,  -20654],
+              [-11111, -24510]
+            ]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-28, -53]],
+            weights:  [
+              [-18935, -36562],
+              [-24745, -47780]
+            ]
+          }
+        ],
+        objective: %{derivative: objective}
+      },
+      parameters: %{learning_rate: 2}
+    }
+
+    new_network_state = Propagator.back_propagate(forward_batch, network_state)
+
+    assert expected == new_network_state
   end
 end

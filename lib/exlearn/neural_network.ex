@@ -165,6 +165,6 @@ defmodule ExLearn.NeuralNetwork do
   @spec train_network([{[], []}], %{}, pid) :: map
   defp train_network(batch, state, _caller) do
     Forwarder.forward_for_activity(batch, state)
-    |> Propagator.back_propagate(batch, state)
+    |> Propagator.back_propagate(state)
   end
 end

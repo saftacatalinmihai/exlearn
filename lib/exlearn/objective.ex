@@ -29,11 +29,11 @@ defmodule ExLearn.Objective do
   end
 
   @spec cross_entropy_function([number], [number]) :: float
-  defp cross_entropy_function(expected, actual) do
+  defp cross_entropy_function(_expected, _actual) do
   end
 
   @spec cross_entropy_derivative([], []) :: []
-  defp cross_entropy_derivative(expected, actual) do
+  defp cross_entropy_derivative(_expected, _actual) do
   end
 
   @spec quadratic_pair :: map
@@ -63,10 +63,10 @@ defmodule ExLearn.Objective do
   end
 
   @spec softmax_function([number], [number]) :: float
-  defp softmax_function(expected, actual) do
+  defp softmax_function(_expected, _actual) do
   end
 
   @spec softmax_derivative([], []) :: []
-  defp softmax_derivative(expected, actual) do
+  defp softmax_derivative(_expected, _actual) do
   end
 end

@@ -8,62 +8,76 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate([%{}], [{[], []}], %{}) :: map
-  def back_propagate(activities, batch, state) do
-    %{
-      network: %{
-        weights:   weights,
-        objective: %{derivative: derivative}
-      }
-    } = state
+  @spec back_propagate([%{}], %{}) :: map
+  def back_propagate(forward_batch, state) do
+    %{network: %{layers: network_layers}} = state
 
-    Enum.zip(batch, activities)
-      |> Enum.map(fn ({{input, target}, activity}) ->
-        %{activity: activity, output: output} = activity
+    Enum.reduce(forward_batch, state, fn (forward_state, new_state) ->
+      deltas = calculate_deltas(forward_state, network_layers, new_state)
 
-        cost_gradient = [derivative.(target, output)]
-        deltas = calculate_detlas(weights, activity, cost_gradient)
+      %{activity: activity, input: input} = forward_state
 
-        full_activity = [%{output: [input]}|activity]
-        bias_change   = deltas
-        weight_chage  = calculate_weight_change(full_activity, deltas, [])
+      full_activity  = [%{output: [input]}|activity]
+      bias_change    = deltas
+      weight_change  = calculate_weight_change(full_activity, deltas, [])
 
-        {bias_change, weight_chage}
-      end)
-      |> Enum.reduce(state, &apply_changes/2)
+      apply_changes(bias_change, weight_change, new_state)
+    end)
   end
 
-  defp calculate_detlas(ws, as, cost_gradient) do
-    weights    = Enum.reverse(ws)
-    activities = Enum.reverse(as)
+  defp calculate_deltas(forward_state, network_layers, state) do
+    %{
+      activity: activity_layers,
+      expected: expected,
+      output:   output
+    } = forward_state
 
-    [activity|rest] = activities
-    %{derivative: derivative, input: input} = activity
+    reversed_activity_layers = Enum.reverse(activity_layers)
+    reversed_network_layers  = Enum.reverse(network_layers)
+
+    [last_activity_layer|rest] = reversed_activity_layers
+
+    %{network: %{objective: %{derivative: objective}}} = state
+    cost_gradient = [objective.(expected, output)]
+
+    starting_delta = calculate_starting_delta(last_activity_layer, cost_gradient)
+
+    calculate_remaning_deltas(rest, reversed_network_layers, [starting_delta])
+  end
+
+  defp calculate_starting_delta(activity_layer, cost_gradient) do
+    %{derivative: derivative, input: input} = activity_layer
 
     input_gradient = Matrix.apply(input, derivative)
 
-    delta = Matrix.multiply(cost_gradient, input_gradient)
-
-    calculate_detla(weights, rest, [delta])
+    Matrix.multiply(cost_gradient, input_gradient)
   end
 
-  defp calculate_detla(_, [], totals) do
-    totals
+  defp calculate_remaning_deltas([], _, deltas) do
+    deltas
   end
 
-  defp calculate_detla([w|ws], [a|as], deltas) do
-    %{derivative: d, input: i} = a
+  defp calculate_remaning_deltas(activity_layers, network_layers, deltas) do
+    [activity_layer|other_activity_layers] = activity_layers
+    [network_layer|other_network_layers]   = network_layers
+
+    %{derivative: derivative, input: input} = activity_layer
+    %{weights: weights}                     = network_layer
 
     [delta|_] = deltas
 
-    wt = Matrix.transpose(w)
+    weights_transposed = Matrix.transpose(weights)
 
-    output_gradient = Matrix.dot(delta, wt)
-    input_gradient  = Matrix.apply(i, d)
+    output_gradient = Matrix.dot(delta, weights_transposed)
+    input_gradient  = Matrix.apply(input, derivative)
 
     next_delta = Matrix.multiply(output_gradient, input_gradient)
 
-    calculate_detla(ws, as, [next_delta|deltas])
+    calculate_remaning_deltas(
+      other_activity_layers,
+      other_network_layers,
+      [next_delta|deltas]
+    )
   end
 
   defp calculate_weight_change(_, [], totals) do
@@ -78,32 +92,42 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     calculate_weight_change(as, ds, [result|total])
   end
 
-  defp apply_changes(sample, net) do
-    {bias_change, weight_chage} = sample
-    %{network: %{biases: bs, weights: ws}} = net
+  defp apply_changes(bias_change, weight_change, state) do
+    %{network: %{layers: layers}} = state
 
-    new_biases  = calculate_new_matrix(bs, bias_change, net)
-    new_weights = calculate_new_matrix(ws, weight_chage, net)
-    create_new_network(net, new_weights, new_biases)
+    apply_changes(bias_change, weight_change, layers, state, [])
   end
 
-  defp calculate_new_matrix(matrix, chage, state) do
-    %{parameters: %{learning_rate: rate}} = state
-
-    Stream.zip(matrix, chage)
-      |> Enum.map(fn({x, y}) ->
-        z = Matrix.multiply_with_scalar(y, rate)
-        Matrix.substract(x,z)
-      end)
-      |> Enum.to_list
-  end
-
-  defp create_new_network(state, new_weights, new_biases) do
+  defp apply_changes([], [], [], state, new_layers) do
     %{network: network} = state
 
-    new_network = put_in(network, [:weights], new_weights)
-      |> put_in([:biases], new_biases)
+    new_network = put_in(network, [:layers], Enum.reverse(new_layers))
 
     put_in(state, [:network], new_network)
+  end
+
+  defp apply_changes(bias_changes, weight_changes, layers, state, new_layers) do
+    %{parameters: %{learning_rate: rate}} = state
+
+    [bias_change|other_bias_changes]     = bias_changes
+    [weight_change|other_weight_changes] = weight_changes
+
+    [%{activity: activity, biases: biases, weights: weights}|other_layers] = layers
+
+    new_biases = Matrix.multiply_with_scalar(bias_change, rate)
+      |> Matrix.substract_inverse(biases)
+
+    new_weights = Matrix.multiply_with_scalar(weight_change, rate)
+      |> Matrix.substract_inverse(weights)
+
+    new_layer = %{activity: activity, biases: new_biases, weights: new_weights}
+
+    apply_changes(
+      other_bias_changes,
+      other_weight_changes,
+      other_layers,
+      state,
+      [new_layer|new_layers]
+    )
   end
 end
