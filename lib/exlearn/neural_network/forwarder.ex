@@ -47,7 +47,9 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
       activity = calculate_activity([input], layers, [])
 
-      Map.put(activity, :expected, expected)
+      activity
+        |> Map.put(:expected, expected)
+        |> Map.put(:input, input)
     end)
   end
 

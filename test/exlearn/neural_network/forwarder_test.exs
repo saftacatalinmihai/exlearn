@@ -82,6 +82,7 @@ defmodule ForwarderTest do
         }
       ],
       expected: [1900, 2800],
+      input:    [1, 2, 3],
       output:   [1897, 2784]
     }
 
@@ -104,6 +105,7 @@ defmodule ForwarderTest do
         }
       ],
       expected: [2600, 3800],
+      input:    [2, 3, 4],
       output:   [2620, 3846]
     }
 
