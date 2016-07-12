@@ -13,7 +13,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     %{network: %{layers: network_layers}} = state
 
     Enum.reduce(forward_batch, state, fn (forward_state, new_state) ->
-      deltas = calculate_deltas(forward_state, network_layers, new_state)
+      deltas = calculate_deltas(forward_state, network_layers, state)
 
       %{activity: activity, input: input} = forward_state
 
