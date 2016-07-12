@@ -79,9 +79,9 @@ defmodule PropagatorTest do
           output:     [[2620, 3846]]
         }
       ],
-      expected: [1900, 2800],
+      expected: [2600, 3800],
       input:    [2, 3, 4],
-      output:   [2600, 3800]
+      output:   [2620, 3846]
     }
 
     forward_batch = [first_forward_state, second_forward_state]
