@@ -9,10 +9,7 @@ defmodule PropagatorTest do
       Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
 
-    data = [
-      {[1, 2, 3], [1900, 2800]},
-      {[2, 3, 4], [2600, 3800]}
-    ]
+    configuration = %{learning_rate: 2}
 
     network_state = %{
       network: %{
@@ -34,8 +31,7 @@ defmodule PropagatorTest do
           },
         ],
         objective: %{derivative: objective}
-      },
-      parameters: %{learning_rate: 2}
+      }
     }
 
     first_forward_state = %{
@@ -87,7 +83,7 @@ defmodule PropagatorTest do
     forward_batch = [first_forward_state, second_forward_state]
 
     {:ok, setup: %{
-      data:          data,
+      configuration: configuration,
       derivative:    derivative,
       forward_batch: forward_batch,
       network_state: network_state,
@@ -97,6 +93,7 @@ defmodule PropagatorTest do
 
   test "#back_propagate returns a map", %{setup: setup} do
     %{
+      configuration: configuration,
       derivative:    derivative,
       forward_batch: forward_batch,
       network_state: network_state,
@@ -134,12 +131,15 @@ defmodule PropagatorTest do
           }
         ],
         objective: %{derivative: objective}
-      },
-      parameters: %{learning_rate: 2}
+      }
     }
 
-    new_network_state = Propagator.back_propagate(forward_batch, network_state)
+    result = Propagator.back_propagate(
+      forward_batch,
+      configuration,
+      network_state
+    )
 
-    assert expected == new_network_state
+    assert expected == result
   end
 end

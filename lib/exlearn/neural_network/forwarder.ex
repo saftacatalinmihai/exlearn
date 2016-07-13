@@ -44,7 +44,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     end)
   end
 
-  defp calculate_test({output, expected}, []) do
+  defp calculate_test({output, _expected}, []) do
     List.first(output)
   end
 

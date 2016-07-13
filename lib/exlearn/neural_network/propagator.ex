@@ -8,8 +8,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate([%{}], %{}) :: map
-  def back_propagate(forward_batch, state) do
+  @spec back_propagate([%{}], map, %{}) :: map
+  def back_propagate(forward_batch, configuration, state) do
     %{network: %{layers: network_layers}} = state
 
     Enum.reduce(forward_batch, state, fn (forward_state, new_state) ->
@@ -21,7 +21,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
       bias_change    = deltas
       weight_change  = calculate_weight_change(full_activity, deltas, [])
 
-      apply_changes(bias_change, weight_change, new_state)
+      apply_changes(bias_change, weight_change, configuration, new_state)
     end)
   end
 
@@ -92,13 +92,13 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     calculate_weight_change(as, ds, [result|total])
   end
 
-  defp apply_changes(bias_change, weight_change, state) do
+  defp apply_changes(bias_change, weight_change, configuration, state) do
     %{network: %{layers: layers}} = state
 
-    apply_changes(bias_change, weight_change, layers, state, [])
+    apply_changes(bias_change, weight_change, configuration, layers, state, [])
   end
 
-  defp apply_changes([], [], [], state, new_layers) do
+  defp apply_changes([], [], _, [], state, new_layers) do
     %{network: network} = state
 
     new_network = put_in(network, [:layers], Enum.reverse(new_layers))
@@ -106,8 +106,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     put_in(state, [:network], new_network)
   end
 
-  defp apply_changes(bias_changes, weight_changes, layers, state, new_layers) do
-    %{parameters: %{learning_rate: rate}} = state
+  defp apply_changes(bias_changes, weight_changes, configuration, layers, state, new_layers) do
+    %{learning_rate: rate} = configuration
 
     [bias_change|other_bias_changes]     = bias_changes
     [weight_change|other_weight_changes] = weight_changes
@@ -125,6 +125,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     apply_changes(
       other_bias_changes,
       other_weight_changes,
+      configuration,
       other_layers,
       state,
       [new_layer|new_layers]

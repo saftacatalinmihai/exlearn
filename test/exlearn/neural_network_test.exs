@@ -49,18 +49,17 @@ defmodule NeuralNetworkTest do
       regularization: :L2
     }
 
-    {
-      :ok,
+    {:ok, setup: %{
       ask_data:      ask_data,
       configuration: configuration,
       network:       network,
       test_data:     training_data,
       training_data: training_data
-    }
+    }}
   end
 
-  test "#ask responds with a list of numbers", test_setup do
-    %{ask_data: data, network: network} = test_setup
+  test "#ask responds with a list of numbers", %{setup: setup} do
+    %{ask_data: data, network: network} = setup
 
     {:ok, result} = NeuralNetwork.ask(data, network)
 
@@ -73,25 +72,25 @@ defmodule NeuralNetworkTest do
     end)
   end
 
-  test "#feed can be called", test_setup do
+  test "#feed can be called", %{setup: setup} do
     %{
       configuration: configuration,
-      input:         input,
-      network:       network
-    } = test_setup
+      network:       network,
+      training_data: training_data
+    } = setup
 
-    NeuralNetwork.feed(input, configuration, network)
+    NeuralNetwork.feed(training_data, configuration, network)
   end
 
-  test "#initialize returns a running process", test_setup do
-    %{network: network} = test_setup
+  test "#initialize returns a running process", %{setup: setup} do
+    %{network: network} = setup
 
     assert network |> is_pid
     assert Process.alive?(network)
   end
 
-  test "#test responds with a tuple", test_setup do
-    %{test_data: data, network: network} = test_setup
+  test "#test responds with a tuple", %{setup: setup} do
+    %{test_data: data, network: network} = setup
 
     output = NeuralNetwork.test(data, network)
     {:ok, {result, cost}} = output
@@ -103,13 +102,16 @@ defmodule NeuralNetworkTest do
     assert cost |> is_list
   end
 
-  test "#train responds with a tuple", test_setup do
-    %{config: config, train_data: data, network: network} = test_setup
+  test "#train responds with a tuple", %{setup: setup} do
+    %{
+      configuration: configuration,
+      network:       network,
+      training_data: training_data,
+    } = setup
 
     expected = :ok
 
-    NeuralNetwork.configure(config, network)
-    result = NeuralNetwork.train(data, network)
+    result = NeuralNetwork.train(training_data, configuration, network)
 
     assert expected == result
   end

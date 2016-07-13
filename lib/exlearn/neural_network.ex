@@ -18,38 +18,28 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Configures the network hyper parameters
-  """
-  @spec configure(map, pid) :: any
-  def configure(parameters, pid) do
-    send pid, {:configure, parameters, self()}
-
-    receive do
-      response -> response
-    end
-  end
-
-  @doc """
   Feeds input to the NeuralNetwork
   """
-  @spec feed([{[number], [number]}], pid) :: atom
-  def feed(parameters, network) do
-    %{epochs: epochs} = parameters
-    feed_network(network, parameters, epochs)
+  @spec feed(list, map, pid) :: atom
+  def feed(data, configuration, network) do
+    %{epochs: epochs} = configuration
+
+    feed_network(data, configuration, network, epochs)
   end
 
-  @spec feed_network(map, pid, non_neg_integer) :: atom
-  defp feed_network(_network, _parameters, 0), do: :ok
-  defp feed_network(network, parameters, epochs) when is_integer(epochs) and epochs > 0 do
-    %{batch_size: batch_size, data: data} = parameters
+  @spec feed_network(list, map, pid, non_neg_integer) :: atom
+  defp feed_network(_, _, _, 0), do: :ok
+  defp feed_network(data, configuration, network, epochs)
+      when is_integer(epochs) and epochs > 0 do
 
+    %{batch_size: batch_size} = configuration
     batches = Enum.shuffle(data) |> Enum.chunk(batch_size)
 
-    Enum.each(batches, fn (batch) ->
-      train(batch, network)
+    Enum.each(batches, fn(batch) ->
+      train(batch, configuration, network)
     end)
 
-    feed_network(network, parameters, epochs - 1)
+    feed_network(data, configuration, network, epochs - 1)
   end
 
   @doc """
@@ -77,9 +67,9 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Trains the neural network
   """
-  @spec train(any, pid) :: any
-  def train(batch, pid) do
-    send pid, {:train, batch, self()}
+  @spec train(list, map, pid) :: any
+  def train(batch, configuration, pid) do
+    send pid, {:train, batch, configuration, self()}
 
     receive do
       response -> response
@@ -131,8 +121,8 @@ defmodule ExLearn.NeuralNetwork do
       {:test, input, caller} ->
         test_network(input, state, caller)
         network_loop(state)
-      {:train, batch, caller} ->
-        new_state = train_network(batch, state, caller)
+      {:train, batch, configuration, caller} ->
+        new_state = train_network(batch, configuration, state)
         send caller, :ok
         network_loop(new_state)
     end
@@ -162,9 +152,10 @@ defmodule ExLearn.NeuralNetwork do
     send caller, {:ok, {outputs, costs}}
   end
 
-  @spec train_network([{[], []}], %{}, pid) :: map
-  defp train_network(batch, state, _caller) do
-    Forwarder.forward_for_activity(batch, state)
-    |> Propagator.back_propagate(state)
+  @spec train_network(list, map, map) :: map
+  defp train_network(batch, configuration, state) do
+    batch
+    |> Forwarder.forward_for_activity(state)
+    |> Propagator.back_propagate(configuration, state)
   end
 end
