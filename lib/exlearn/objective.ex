@@ -38,15 +38,15 @@ defmodule ExLearn.Objective do
 
   @spec quadratic_pair :: map
   defp quadratic_pair do
-    function   = &quadratic_cost_function/2
+    function   = &quadratic_cost_function/3
     derivative = &quadratic_cost_partial_derivative/2
 
     %{function: function, derivative: derivative}
   end
 
-  @spec quadratic_cost_function([number], [number]) :: float
-  defp quadratic_cost_function(expected, actual) do
-    1 / 2 * Vector.dot_square_difference(expected, actual)
+  @spec quadratic_cost_function([number], [number], non_neg_integer) :: float
+  defp quadratic_cost_function(expected, actual, data_size) do
+    1 / (2 * data_size) * Vector.dot_square_difference(expected, actual)
   end
 
   @spec quadratic_cost_partial_derivative([], []) :: []

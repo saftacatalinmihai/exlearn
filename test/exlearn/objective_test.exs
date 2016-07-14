@@ -22,8 +22,9 @@ defmodule ObjectiveTest do
   end
 
   test "#determine return the quadratic function pair" do
-    first    = [1, 2, 3]
-    second   = [1, 2, 7]
+    first     = [1, 2, 3]
+    second    = [1, 2, 7]
+    data_size = 1
 
     expected_from_function   = 8
     expected_from_derivative = [0, 0, 4]
@@ -32,7 +33,7 @@ defmodule ObjectiveTest do
 
     %{function: function, derivative: derivative} = Objective.determine(setup)
 
-    assert function.(first, second)   == expected_from_function
-    assert derivative.(first, second) == expected_from_derivative
+    assert function.(first, second, data_size) == expected_from_function
+    assert derivative.(first, second)          == expected_from_derivative
   end
 end

@@ -4,8 +4,8 @@ defmodule PropagatorTest do
   alias ExLearn.NeuralNetwork.Propagator
 
   setup do
-    derivative = fn (_)    -> 1 end
-    objective   = fn (a, b) ->
+    derivative = fn(_)    -> 1 end
+    objective  = fn(a, b) ->
       Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
 

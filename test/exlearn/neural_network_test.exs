@@ -17,7 +17,7 @@ defmodule NeuralNetworkTest do
         output: %{
           activity: :identity,
           name:     "Output",
-          size: 1
+          size:     1
         }
       },
       objective: :quadratic,
@@ -90,12 +90,16 @@ defmodule NeuralNetworkTest do
   end
 
   test "#test responds with a tuple", %{setup: setup} do
-    %{test_data: data, network: network} = setup
+    %{
+      configuration: configuration,
+      network:       network,
+      test_data:     test_data
+    } = setup
 
-    output = NeuralNetwork.test(data, network)
+    output = NeuralNetwork.test(test_data, configuration, network)
     {:ok, {result, cost}} = output
 
-    assert length(result) == length(data)
+    assert length(result) == length(test_data)
     Enum.each(result, fn (element) ->
       assert element |> is_list
     end)

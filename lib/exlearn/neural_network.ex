@@ -55,9 +55,9 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Makes a prediction and returs the cost
   """
-  @spec test(any, pid) :: any
-  def test(input, pid) do
-    send pid, {:test, input, self()}
+  @spec test(any, map, pid) :: any
+  def test(batch, configuration, pid) do
+    send pid, {:test, batch, configuration, self()}
 
     receive do
       response -> response
@@ -118,8 +118,9 @@ defmodule ExLearn.NeuralNetwork do
         new_state = configure_network(parameters, state)
         send caller, :ok
         network_loop(new_state)
-      {:test, input, caller} ->
-        test_network(input, state, caller)
+      {:test, batch, configuration, caller} ->
+        result = test_network(batch, configuration, state)
+        send caller, {:ok, result}
         network_loop(state)
       {:train, batch, configuration, caller} ->
         new_state = train_network(batch, configuration, state)
@@ -139,17 +140,18 @@ defmodule ExLearn.NeuralNetwork do
     put_in(state, [:parameters], parameters)
   end
 
-  defp test_network(batch, state, caller) do
+  defp test_network(batch, configuration, state) do
     outputs = Forwarder.forward_for_test(batch, state)
 
     %{network: %{objective: %{function: objective}}} = state
+    %{data_size: data_size} = configuration
 
     targets = Enum.map(batch, fn ({_, target}) -> target end)
 
     costs = Enum.zip(targets, outputs)
-      |> Enum.map(fn ({target, output}) -> objective.(target, output) end)
+      |> Enum.map(fn ({target, output}) -> objective.(target, output, data_size) end)
 
-    send caller, {:ok, {outputs, costs}}
+    {outputs, costs}
   end
 
   @spec train_network(list, map, map) :: map
