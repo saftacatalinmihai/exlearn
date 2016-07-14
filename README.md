@@ -9,51 +9,39 @@ Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 ```elixir
 alias ExLearn.NeuralNetwork, as: NN
 
-# Define the network structure
-structure = %{
+structure_parameters = %{
   layers: %{
-    input:   %{size: 1},
-    hidden: [%{activity: :identity, size: 1}],
-    output:  %{activity: :identity, size: 1}
+    input:   %{size: 2},
+    hidden: [%{activity: :logistic, name: "First Hidden", size: 2}],
+    output:  %{activity: :tanh,     name: "Output",       size: 1}
   },
   objective: :quadratic,
   random:    %{distribution: :uniform, range: {-1, 1}}
 }
 
-# Initialize the network
-network = NN.initialize(structure)
+network = NN.initialize(structure_parameters)
 
-# Define the learning configuration
-configuration = %{
-  dropout:        0.5,
-  learning_rate:  0.5,
-  regularization: :L2
-}
-
-# Configure the network
-NN.configure(configuration, network)
-
-# Define the training data
-data = [
+training_data = [
   {[0, 0], [0]},
   {[0, 1], [0]},
   {[1, 0], [0]},
   {[1, 1], [1]}
 ]
 
-# Define the network input
-input = %{
-  batch_size: 2,
-  data:       data,
-  data_size:  4,
-  epochs:     1000
+configuration = %{
+  batch_size:     2,
+  data_size:      4,
+  epochs:         1000,
+  dropout:        0.5,
+  learning_rate:  0.5,
+  regularization: :L2
 }
 
-# Feed the input into the network
-NN.feed(input, network)
+NN.feed(training_data, configuration, network)
 
-# Ask the network to predict values
-result = NN.ask(data, network)
+ask_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
+
+result = NN.ask(ask_data, network)
 
 IO.inspect result
 ```
