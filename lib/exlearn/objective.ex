@@ -3,7 +3,7 @@ defmodule ExLearn.Objective do
   Translates objective names to functions
   """
 
-  alias ExLearn.{Vector}
+  alias ExLearn.Vector
 
   @doc """
   Returns the appropriate function
@@ -22,18 +22,26 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_pair :: map
   defp cross_entropy_pair do
-    function   = &cross_entropy_function/2
+    function   = &cross_entropy_function/3
     derivative = &cross_entropy_derivative/2
 
     %{function: function, derivative: derivative}
   end
 
-  @spec cross_entropy_function([number], [number]) :: float
-  defp cross_entropy_function(_expected, _actual) do
+  @spec cross_entropy_function([number], [number], non_neg_integer) :: float
+  defp cross_entropy_function(expected, actual, data_size) do
+    cross_entropy = Enum.zip(expected, actual)
+      |> Enum.map(fn({x, y}) ->
+        x * :math.log(y) + (1 - x) * :math.log(1 - y)
+      end)
+      |> Enum.sum
+
+    -1 / data_size * cross_entropy
   end
 
-  @spec cross_entropy_derivative([], []) :: []
-  defp cross_entropy_derivative(_expected, _actual) do
+  @spec cross_entropy_derivative([number], [number]) :: [number]
+  defp cross_entropy_derivative(expected, actual) do
+    Vector.substract(actual, expected)
   end
 
   @spec quadratic_pair :: map
