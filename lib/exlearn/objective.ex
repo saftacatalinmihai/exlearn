@@ -30,13 +30,13 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_function([number], [number], non_neg_integer) :: float
   defp cross_entropy_function(expected, actual, data_size) do
-    cross_entropy = Enum.zip(expected, actual)
+    binary_entropy = Enum.zip(expected, actual)
       |> Enum.map(fn({x, y}) ->
         x * :math.log(y) + (1 - x) * :math.log(1 - y)
       end)
       |> Enum.sum
 
-    -1 / data_size * cross_entropy
+    -1 / data_size * binary_entropy
   end
 
   @spec cross_entropy_derivative([number], [number]) :: [number]
