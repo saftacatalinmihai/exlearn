@@ -3,7 +3,7 @@ defmodule ObjectiveTest do
 
   alias ExLearn.Objective
 
-  test "#determine return the given function pair" do
+  test "#determine returns the given function pair" do
     first  = 1
     second = 2
 
@@ -21,7 +21,23 @@ defmodule ObjectiveTest do
     assert derivative.(first, second) == expected_from_derivative
   end
 
-  test "#determine return the quadratic function pair" do
+  test "#determine returns the cross entropy function pair" do
+    first     = [0.2, 0.2, 0.6]
+    second    = [0.4, 0.5, 0.6]
+    data_size = 1
+
+    expected_from_function   = 1.9580774929568254
+    expected_from_derivative = [0.2, 0.3, 0.0]
+
+    setup = :cross_entropy
+
+    %{function: function, derivative: derivative} = Objective.determine(setup)
+
+    assert function.(first, second, data_size) == expected_from_function
+    assert derivative.(first, second)          == expected_from_derivative
+  end
+
+  test "#determine returns the quadratic function pair" do
     first     = [1, 2, 3]
     second    = [1, 2, 7]
     data_size = 1
