@@ -1,6 +1,7 @@
 # ExLearn
 
 [![Build Status](https://travis-ci.org/sdwolf/exlearn.svg?branch=master)](https://travis-ci.org/sdwolf/exlearn)
+[![Coverage Status](https://coveralls.io/repos/github/sdwolf/exlearn/badge.svg?branch=master)](https://coveralls.io/github/sdwolf/exlearn?branch=master)
 
 Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
 
