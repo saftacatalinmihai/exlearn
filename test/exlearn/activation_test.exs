@@ -212,6 +212,22 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
+  # TODO finish this
+  test "#determine the softmax pair" do
+    all      = [-1.5, 0.2, 0.3, 3]
+    argument = 3
+
+    expected_from_function   = 0.8778671136285249
+    expected_from_derivative = 1
+
+    setup = :softmax
+
+    %{function: function, derivative: derivative} = Activation.determine(setup)
+
+    assert function.(argument, all)   == expected_from_function
+    # assert derivative.(argument, true) == expected_from_derivative
+  end
+
   test "#determine the sinc pair" do
     setup = :sinc
 

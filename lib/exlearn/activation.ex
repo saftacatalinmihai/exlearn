@@ -180,7 +180,11 @@ defmodule ExLearn.Activation do
     function   = fn(x, all) ->
       :math.exp(x) / Enum.sum(Enum.map(all, &:math.exp/1))
     end
-    derivative = fn(x) -> x * (1 - x) end
+    # TODO finish this
+    derivative = fn
+        (x, true)  -> x * (1 - x)
+        (x, false) -> 0
+      end
 
     %{arity: 2, function: function, derivative: derivative}
   end
