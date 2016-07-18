@@ -3,7 +3,15 @@ defmodule ExLearn do
   Machine Learning
   """
 
+  @major_version "0"
+  @minor_version "1"
+  @patch_version "0"
+  @pre_release   ""
+
   def version do
-    "0.1.0"
+    @major_version <> "." <>
+    @minor_version <> "." <>
+    @patch_version <>
+    @pre_release
   end
 end
