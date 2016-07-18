@@ -8,8 +8,11 @@ otp_release:
 
 sudo: false
 
+env:
+  - MIX_ENV=test
+
 before_script:
   - mix deps.get --only test
 
 script:
-  - mix test
+  - mix coveralls.travis
