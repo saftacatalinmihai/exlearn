@@ -3,6 +3,26 @@ defmodule ActivationTest do
 
   alias ExLearn.Activation
 
+  test "#apply_function for arity 1" do
+    activity = %{arity: 1, function: &(&1 + 1)}
+    data     = [[1, 2, 3]]
+    expected = [[2, 3, 4]]
+
+    result = Activation.apply_function(data, activity)
+
+    assert expected == result
+  end
+
+  test "#apply_function for arity 2" do
+    activity = %{arity: 2, function: &(&1 + Enum.sum(&2))}
+    data     = [[1, 2, 3]]
+    expected = [[7, 8, 9]]
+
+    result = Activation.apply_function(data, activity)
+
+    assert expected == result
+  end
+
   test "#determine a given function pair" do
     argument = 1
 
