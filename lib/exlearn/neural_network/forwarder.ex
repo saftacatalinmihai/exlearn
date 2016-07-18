@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   Feed forward functionality
   """
 
-  alias ExLearn.Matrix
+  alias ExLearn.{Activation, Matrix}
 
   @doc """
   Propagates input forward trough a network and return the output
@@ -23,14 +23,14 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_output(input, [layer|rest]) do
     %{
-      activity: %{function: function},
+      activity: activity,
       biases:   biases,
       weights:  weights
     } = layer
 
     output = Matrix.dot(input, weights)
       |> Matrix.add(biases)
-      |> Matrix.apply(function)
+      |> Activation.apply_function(activity)
 
     calculate_output(output, rest)
   end
@@ -50,14 +50,14 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_test({input, expected}, [layer|rest]) do
     %{
-      activity: %{function: function},
+      activity: activity,
       biases:   biases,
       weights:  weights
     } = layer
 
     output = Matrix.dot(input, weights)
       |> Matrix.add(biases)
-      |> Matrix.apply(function)
+      |> Activation.apply_function(activity)
 
     calculate_test({output, expected}, rest)
   end
@@ -88,16 +88,18 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_activity(layer_input, [layer|rest], activities) do
     %{
-      activity: %{function: function, derivative: derivative},
+      activity: activity,
       biases:   biases,
       weights:  weights
     } = layer
 
+    %{derivative: derivative} = activity
+
     input  = Matrix.dot(layer_input, weights) |> Matrix.add(biases)
-    output = Matrix.apply(input, function)
+    output = Activation.apply_function(input, activity)
 
-    activity =  %{derivative: derivative, input: input, output: output}
+    new_activity =  %{derivative: derivative, input: input, output: output}
 
-    calculate_activity(output, rest, [activity|activities])
+    calculate_activity(output, rest, [new_activity|activities])
   end
 end

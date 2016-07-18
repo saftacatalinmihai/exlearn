@@ -3,6 +3,24 @@ defmodule ExLearn.Activation do
   Translates distributon names to functions
   """
 
+  alias ExLearn.Matrix
+
+  @doc """
+  Applies the givem function based on arity
+  """
+  @spec apply_function([[number]], map) :: [[]]
+  def apply_function(data, activity) do
+    %{arity: arity, function: function} = activity
+
+    case arity do
+      1 -> Matrix.apply(data, function)
+      2 ->
+        Enum.map(data, fn(row) ->
+          Enum.map(row, &function.(&1, row))
+        end)
+    end
+  end
+
   @doc """
   Returns the appropriate function
   """
@@ -21,6 +39,7 @@ defmodule ExLearn.Activation do
       :relu          -> relu_pair
       :sinc          -> sinc_pair
       :sinusoid      -> sinusoid_pair
+      :softmax       -> softmax_pair
       :softplus      -> softplus_pair
       :softsign      -> softsign_pair
       :tanh          -> tanh_pair
@@ -31,18 +50,18 @@ defmodule ExLearn.Activation do
 
   @spec arctan_pair :: map
   defp arctan_pair do
-    function   = fn (x) -> :math.atan(x) end
-    derivative = fn (x) -> 1 / (x * x + 1) end
+    function   = fn(x) -> :math.atan(x) end
+    derivative = fn(x) -> 1 / (x * x + 1) end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec bent_identity_pair :: map
   defp bent_identity_pair do
-    function   = fn (x) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
-    derivative = fn (x) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
+    function   = fn(x) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
+    derivative = fn(x) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec binary_pair :: map
@@ -58,7 +77,7 @@ defmodule ExLearn.Activation do
       _             -> 0
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec elu_pair(number) :: map
@@ -73,34 +92,34 @@ defmodule ExLearn.Activation do
       _            -> 1
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec gaussian_pair :: map
   defp gaussian_pair do
-    function   = fn (x) -> :math.exp(-x * x) end
-    derivative = fn (x) -> -2 * x * :math.exp(-x * x) end
+    function   = fn(x) -> :math.exp(-x * x) end
+    derivative = fn(x) -> -2 * x * :math.exp(-x * x) end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec identity_pair :: map
   defp identity_pair do
-    function   = fn (x) -> x end
-    derivative = fn (_) -> 1 end
+    function   = fn(x) -> x end
+    derivative = fn(_) -> 1 end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec logistic_pair :: map
   defp logistic_pair do
-    function   = fn (x) -> 1 / (1 + :math.exp(-x)) end
-    derivative = fn (x) ->
+    function   = fn(x) -> 1 / (1 + :math.exp(-x)) end
+    derivative = fn(x) ->
       result = function.(x)
       result * (1 - result)
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec prelu_pair(number) :: map
@@ -115,7 +134,7 @@ defmodule ExLearn.Activation do
       _            -> 1
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec relu_pair :: map
@@ -130,7 +149,7 @@ defmodule ExLearn.Activation do
       _            -> 1
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec sinc_pair :: map
@@ -145,44 +164,54 @@ defmodule ExLearn.Activation do
       x             -> :math.cos(x) / x - :math.sin(x) / (x * x)
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec sinusoid_pair :: map
   defp sinusoid_pair do
-    function   = fn (x) -> :math.sin(x) end
-    derivative = fn (x) -> :math.cos(x) end
+    function   = fn(x) -> :math.sin(x) end
+    derivative = fn(x) -> :math.cos(x) end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
+  end
+
+  @spec softmax_pair :: map
+  defp softmax_pair do
+    function   = fn(x, all) ->
+      :math.exp(x) / Enum.sum(Enum.map(all, &:math.exp/1))
+    end
+    derivative = fn(x) -> x * (1 - x) end
+
+    %{arity: 2, function: function, derivative: derivative}
   end
 
   @spec softplus_pair :: map
   defp softplus_pair do
-    function   = fn (x) -> :math.log(1 + :math.exp(x)) end
-    derivative = fn (x) -> 1 / (1 + :math.exp(-x)) end
+    function   = fn(x) -> :math.log(1 + :math.exp(x)) end
+    derivative = fn(x) -> 1 / (1 + :math.exp(-x)) end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec softsign_pair :: map
   defp softsign_pair do
-    function   = fn (x) -> x / (1 + abs(x)) end
-    derivative = fn (x) ->
+    function   = fn(x) -> x / (1 + abs(x)) end
+    derivative = fn(x) ->
       base = 1 + abs(x)
       1 / (base * base)
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 
   @spec tanh_pair :: map
   defp tanh_pair do
-    function   = fn (x) -> :math.tanh(x) end
-    derivative = fn (x) ->
+    function   = fn(x) -> :math.tanh(x) end
+    derivative = fn(x) ->
       result = function.(x)
       1 - result * result
     end
 
-    %{function: function, derivative: derivative}
+    %{arity: 1, function: function, derivative: derivative}
   end
 end

@@ -23,17 +23,17 @@ defmodule ForwarderTest do
       network: %{
         layers: [
           %{
-            activity: %{function: f, derivative: d},
+            activity: %{arity: 1, function: f, derivative: d},
             biases:   [[1, 2, 3]],
             weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
           },
           %{
-            activity: %{function: f, derivative: d},
+            activity: %{arity: 1, function: f, derivative: d},
             biases:   [[4, 5]],
             weights:  [[1, 2], [3, 4], [5, 6]]
           },
           %{
-            activity: %{function: f, derivative: d},
+            activity: %{arity: 1, function: f, derivative: d},
             biases:   [[6, 7]],
             weights:  [[1, 2], [3, 4]]
           },
