@@ -37,6 +37,22 @@ defmodule ObjectiveTest do
     assert derivative.(first, second)          == expected_from_derivative
   end
 
+  test "#determine returns the negative log likelihood function pair" do
+    first     = [1,   0,   0  ]
+    second    = [0.6, 0.3, 0.1]
+    data_size = 1
+
+    expected_from_function   = 0.5108256237659907
+    expected_from_derivative = [-0.4, 0.3, 0.1]
+
+    setup = :negative_log_likelihood
+
+    %{function: function, derivative: derivative} = Objective.determine(setup)
+
+    assert function.(first, second, data_size) == expected_from_function
+    assert derivative.(first, second)          == expected_from_derivative
+  end
+
   test "#determine returns the quadratic function pair" do
     first     = [1, 2, 3]
     second    = [1, 2, 7]

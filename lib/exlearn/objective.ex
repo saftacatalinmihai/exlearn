@@ -72,7 +72,12 @@ defmodule ExLearn.Objective do
 
   @spec negative_log_likelihood_function([number], [number], non_neg_integer) :: float
   defp negative_log_likelihood_function(expected, actual, data_size) do
-    -1 / data_size * :math.log(Enum.sum(Vector.multiply(expected, actual)))
+    -1 / data_size * Enum.sum(
+      Vector.multiply(
+        expected,
+        Vector.apply(actual, &:math.log/1)
+      )
+    )
   end
 
   @spec negative_log_likelihood_partial_derivative([number], [number]) :: []
