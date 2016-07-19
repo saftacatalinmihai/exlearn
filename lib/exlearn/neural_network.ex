@@ -114,10 +114,6 @@ defmodule ExLearn.NeuralNetwork do
       {:ask, input, caller} ->
         ask_network(input, state, caller)
         network_loop(state)
-      {:configure, parameters, caller} ->
-        new_state = configure_network(parameters, state)
-        send caller, :ok
-        network_loop(new_state)
       {:test, batch, configuration, caller} ->
         result = test_network(batch, configuration, state)
         send caller, {:ok, result}
@@ -133,11 +129,6 @@ defmodule ExLearn.NeuralNetwork do
     output = Forwarder.forward_for_output(input, state)
 
     send caller, {:ok, output}
-  end
-
-  @spec configure_network(map, map) :: map
-  defp configure_network(parameters, state) do
-    put_in(state, [:parameters], parameters)
   end
 
   defp test_network(batch, configuration, state) do
