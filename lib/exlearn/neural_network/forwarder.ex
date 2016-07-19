@@ -93,8 +93,6 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       weights:  weights
     } = layer
 
-    %{derivative: derivative} = activity
-
     input  = Matrix.dot(layer_input, weights) |> Matrix.add(biases)
     output = Activation.apply_function(input, activity)
 

@@ -46,7 +46,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   end
 
   defp calculate_starting_delta(activity_layer, cost_gradient) do
-    %{derivative: derivative, input: input} = activity_layer
+    %{input: input} = activity_layer
 
     input_gradient = Activation.apply_derivative(input, activity_layer)
 
@@ -61,8 +61,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     [activity_layer|other_activity_layers] = activity_layers
     [network_layer|other_network_layers]   = network_layers
 
-    %{derivative: derivative, input: input} = activity_layer
-    %{weights: weights}                     = network_layer
+    %{input: input}     = activity_layer
+    %{weights: weights} = network_layer
 
     [delta|_] = deltas
 
