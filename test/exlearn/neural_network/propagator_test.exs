@@ -37,16 +37,19 @@ defmodule PropagatorTest do
     first_forward_state = %{
       activity: [
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[31, 38, 45]],
           output:     [[32, 39, 46]]
         },
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[383, 501]],
           output:     [[384, 502]]
         },
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[1896, 2783]],
           output:     [[1897, 2784]]
@@ -60,16 +63,19 @@ defmodule PropagatorTest do
     second_forward_state = %{
       activity: [
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[43, 53, 63]],
           output:     [[44, 54, 64]]
         },
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[530, 693]],
           output:     [[531, 694]]
         },
         %{
+          arity:      1,
           derivative: derivative,
           input:      [[2619, 3845]],
           output:     [[2620, 3846]]

@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   Backpropagates the error trough a network
   """
 
-  alias ExLearn.Matrix
+  alias ExLearn.{Activation, Matrix}
 
   @doc """
   Performs backpropagation
@@ -48,7 +48,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   defp calculate_starting_delta(activity_layer, cost_gradient) do
     %{derivative: derivative, input: input} = activity_layer
 
-    input_gradient = Matrix.apply(input, derivative)
+    input_gradient = Activation.apply_derivative(input, activity_layer)
 
     Matrix.multiply(cost_gradient, input_gradient)
   end
@@ -69,7 +69,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     weights_transposed = Matrix.transpose(weights)
 
     output_gradient = Matrix.dot(delta, weights_transposed)
-    input_gradient  = Matrix.apply(input, derivative)
+    input_gradient  = Activation.apply_derivative(input, activity_layer)
 
     next_delta = Matrix.multiply(output_gradient, input_gradient)
 

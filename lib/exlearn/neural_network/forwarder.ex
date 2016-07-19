@@ -98,7 +98,8 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     input  = Matrix.dot(layer_input, weights) |> Matrix.add(biases)
     output = Activation.apply_function(input, activity)
 
-    new_activity =  %{derivative: derivative, input: input, output: output}
+    new_activity = Map.put(activity, :input, input)
+      |> Map.put(:output, output)
 
     calculate_activity(output, rest, [new_activity|activities])
   end

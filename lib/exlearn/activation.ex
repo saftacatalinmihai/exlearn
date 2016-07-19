@@ -6,9 +6,22 @@ defmodule ExLearn.Activation do
   alias ExLearn.Matrix
 
   @doc """
-  Applies the givem function based on arity
+  Applies the given derivative based on arity
   """
-  @spec apply_function([[number]], map) :: [[]]
+  @spec apply_derivative([[number]], map) :: [[number]]
+  def apply_derivative(data, activity) do
+    %{arity: arity, derivative: derivative} = activity
+
+    case arity do
+      1 -> Matrix.apply(data, derivative)
+      2 -> derivative.(data)
+    end
+  end
+
+  @doc """
+  Applies the given function based on arity
+  """
+  @spec apply_function([[number]], map) :: [[number]]
   def apply_function(data, activity) do
     %{arity: arity, function: function} = activity
 
@@ -180,11 +193,20 @@ defmodule ExLearn.Activation do
     function   = fn(x, all) ->
       :math.exp(x) / Enum.sum(Enum.map(all, &:math.exp/1))
     end
-    # TODO finish this
-    derivative = fn
-        (x, true)  -> x * (1 - x)
-        (x, false) -> 0
-      end
+
+    derivative = fn(x) ->
+      data_with_index = Enum.with_index(x)
+
+      Enum.map(data_with_index, fn({hi, i}) ->
+        Enum.map(data_with_index, fn({hj, j}) ->
+          case i == j do
+            true  -> hi * (1 - hj)
+            false -> -1 * hi * hj
+          end
+        end)
+      end)
+      |> Enum.map(&Enum.sum/1)
+    end
 
     %{arity: 2, function: function, derivative: derivative}
   end

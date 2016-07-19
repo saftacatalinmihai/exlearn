@@ -3,6 +3,26 @@ defmodule ActivationTest do
 
   alias ExLearn.Activation
 
+  test "#apply_derivative for arity 1" do
+    activity = %{arity: 1, derivative: &(&1 + 1)}
+    data     = [[1, 2, 3]]
+    expected = [[2, 3, 4]]
+
+    result = Activation.apply_derivative(data, activity)
+
+    assert expected == result
+  end
+
+  test "#apply_derivative for arity 2" do
+    activity = %{arity: 2, derivative: &Enum.sum/1}
+    data     = [1, 2, 3]
+    expected = 6
+
+    result = Activation.apply_derivative(data, activity)
+
+    assert expected == result
+  end
+
   test "#apply_function for arity 1" do
     activity = %{arity: 1, function: &(&1 + 1)}
     data     = [[1, 2, 3]]
@@ -212,20 +232,19 @@ defmodule ActivationTest do
     assert derivative.(argument) == expected_from_derivative
   end
 
-  # TODO finish this
   test "#determine the softmax pair" do
     all      = [-1.5, 0.2, 0.3, 3]
     argument = 3
 
     expected_from_function   = 0.8778671136285249
-    expected_from_derivative = 1
+    expected_from_derivative = [1.5, -0.2, -0.29999999999999993, -3.0]
 
     setup = :softmax
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument, all)   == expected_from_function
-    # assert derivative.(argument, true) == expected_from_derivative
+    assert function.(argument, all) == expected_from_function
+    assert derivative.(all)         == expected_from_derivative
   end
 
   test "#determine the sinc pair" do

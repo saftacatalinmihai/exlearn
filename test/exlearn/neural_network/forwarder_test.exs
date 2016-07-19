@@ -41,7 +41,11 @@ defmodule ForwarderTest do
       }
     }
 
-    {:ok, setup: %{state: state, derivative: d}}
+    {:ok, setup: %{
+      derivative: d,
+      function:   f,
+      state:      state,
+    }}
   end
 
   test "#forward_for_output returns the outputs", %{setup: setup} do
@@ -56,7 +60,11 @@ defmodule ForwarderTest do
   end
 
   test "#forward_for_activity returns the activities", %{setup: setup} do
-    %{state: state, derivative: derivative} = setup
+    %{
+      derivative: derivative,
+      function:   function,
+      state:      state
+    } = setup
 
     input = [
       {[1, 2, 3], [1900, 2800]},
@@ -66,16 +74,22 @@ defmodule ForwarderTest do
     first_activity = %{
       activity: [
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[31, 38, 45]],
           output:     [[32, 39, 46]]
         },
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[383, 501]],
           output:     [[384, 502]]
         },
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[1896, 2783]],
           output:     [[1897, 2784]]
@@ -89,16 +103,22 @@ defmodule ForwarderTest do
     second_activity = %{
       activity: [
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[43, 53, 63]],
           output:     [[44, 54, 64]]
         },
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[530, 693]],
           output:     [[531, 694]]
         },
         %{
+          arity:      1,
+          function:   function,
           derivative: derivative,
           input:      [[2619, 3845]],
           output:     [[2620, 3846]]
