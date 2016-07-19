@@ -194,10 +194,10 @@ defmodule ExLearn.Activation do
       :math.exp(x) / Enum.sum(Enum.map(all, &:math.exp/1))
     end
 
-    derivative = fn(x) ->
+    derivative = fn([x]) ->
       data_with_index = Enum.with_index(x)
 
-      Enum.map(data_with_index, fn({hi, i}) ->
+      result = Enum.map(data_with_index, fn({hi, i}) ->
         Enum.map(data_with_index, fn({hj, j}) ->
           case i == j do
             true  -> hi * (1 - hj)
@@ -206,6 +206,8 @@ defmodule ExLearn.Activation do
         end)
       end)
       |> Enum.map(&Enum.sum/1)
+
+      [result]
     end
 
     %{arity: 2, function: function, derivative: derivative}
