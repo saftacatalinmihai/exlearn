@@ -76,37 +76,37 @@ defmodule ExLearn.NeuralNetwork do
     end
   end
 
-  @doc """
-  Returns a snapshot of the neural network
-  """
-  @spec inspect(pid) :: map
-  def inspect(pid) do
-    send pid, :inspect
-  end
+  # @doc """
+  # Returns a snapshot of the neural network
+  # """
+  # @spec inspect(pid) :: map
+  # def inspect(pid) do
+  #   send pid, :inspect
+  # end
 
-  @doc """
-  Returns a snapshot of a certain part of the neural network
-  """
-  @spec inspect(atom, pid) :: map
-  def inspect(input, pid) do
-    send pid, {:inspect, input}
-  end
+  # @doc """
+  # Returns a snapshot of a certain part of the neural network
+  # """
+  # @spec inspect(atom, pid) :: map
+  # def inspect(input, pid) do
+  #   send pid, {:inspect, input}
+  # end
 
-  @doc """
-  Saves the neural network to disk
-  """
-  @spec save(pid) :: any
-  def save(pid) do
-    pid
-  end
+  # @doc """
+  # Saves the neural network to disk
+  # """
+  # @spec save(pid) :: any
+  # def save(pid) do
+  #   pid
+  # end
 
-  @doc """
-  Loads the neural network from disk
-  """
-  @spec load(any) :: pid
-  def load(file) do
-    file
-  end
+  # @doc """
+  # Loads the neural network from disk
+  # """
+  # @spec load(any) :: pid
+  # def load(file) do
+  #   file
+  # end
 
   @spec network_loop(map) :: no_return
   defp network_loop(state) do
