@@ -251,15 +251,15 @@ defmodule ActivationTest do
     all      = [-1.5, 880, 0.3, 3]
     argument = 880
 
-    expected_from_function   = 0.8778671136285249
-    # expected_from_derivative = [[1.5, -0.2, -0.29999999999999993, -3.0]]
+    expected_from_function   = 1.0
+    expected_from_derivative = [[1321.2, -775104.0, -264.24, -2642.4]]
 
     setup = :softmax
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
     assert function.(argument, all) == expected_from_function
-    # assert derivative.([all])       == expected_from_derivative
+    assert derivative.([all])       == expected_from_derivative
   end
 
   test "#determine the sinc pair" do

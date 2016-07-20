@@ -191,7 +191,13 @@ defmodule ExLearn.Activation do
   @spec softmax_pair :: map
   defp softmax_pair do
     function   = fn(x, all) ->
-      :math.exp(x) / Enum.sum(Enum.map(all, &:math.exp/1))
+      maximum_element = Enum.max(all)
+      normalizer = Enum.map(
+        all,
+        fn(element) -> :math.exp(element - maximum_element) end
+      ) |> Enum.sum
+
+      :math.exp(x - maximum_element) / normalizer
     end
 
     derivative = fn([x]) ->
